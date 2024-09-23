@@ -1,0 +1,4 @@
+-crear mensaje (obviamente)
+
+-ejecutar desde powershell:
+	>python (nombre_del_archivo.py)
