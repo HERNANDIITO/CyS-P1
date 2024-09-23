@@ -33,6 +33,9 @@
 ### RSA desde 0 con fundamentos mátemáticos explicados y código Python
 [Ver en YouTube](https://youtu.be/D_PfV_IcUdA?si=xYVLV8fup_WjkkP2)
 
+### Modular inverse code
+[Ver web](https://cp-algorithms.com/algebra/module-inverse.html)
+
 ## Extra
 ### 7 fundamentos criptográficos que todo programador debería conocer
 [Ver en YouTube](https://youtu.be/NuyzuNBFWxQ?si=TEiVrJ2lgXlR22gh)
