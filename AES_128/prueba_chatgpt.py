@@ -46,7 +46,7 @@ if __name__ == "__main__":
     key = b'ThisIsA16ByteKey'  # Asegúrate de tener una clave de 16 bytes para AES-128
     
     # Archivos de entrada y salida
-    input_file = 'archivo_original.txt'
+    input_file = 'patata.txt'
     encrypted_file = 'archivo_encriptado.bin'
     decrypted_file = 'archivo_descifrado.txt'
     
