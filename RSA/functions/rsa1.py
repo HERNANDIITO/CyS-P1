@@ -1,6 +1,6 @@
 # Código de: https://basseltech.com/watch?list=PL081AYo6R2BXtOGivh90dc_ZElPTSKD4R&v=txz8wYLITGk
 
-import rsa
+import rsa 
 
 def generate_keys():
     # el ejemplo era con 1024 bits pero lo he cambiado a 2048 bits ya que los certificados de 1024 bits ya están obsoleta

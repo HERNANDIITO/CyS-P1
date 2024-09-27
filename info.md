@@ -39,3 +39,12 @@
 ## Extra
 ### 7 fundamentos criptográficos que todo programador debería conocer
 [Ver en YouTube](https://youtu.be/NuyzuNBFWxQ?si=TEiVrJ2lgXlR22gh)
+
+### Recomendaciones del NIST para el manejo de claves - Mayo 2020
+[Leer pdf](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf)
+
+### Exportación de claves: base-64, DER y PEM
+[Leer respuestas](https://stackoverflow.com/questions/11692263/what-are-different-certificate-types-formats-in-cryptography#:~:text=Base64%20is%20a%20general%20way%20of%20encoding%20binary,end%20of%20each%2064-character%20chunk%2C%20placed%20between%20delimiters%3A)
+
+### Explicación y comparación DER y PEM
+[Leer artículo](https://www.howtouselinux.com/post/understanding-pem-and-der-file-formats)

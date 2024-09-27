@@ -73,6 +73,9 @@ n = p * q
 phi_n = (p-1) * (q-1)
 
 # ojo, no os confundais con range, en este caso phi_n-1 si que puede ser el numero aleatorio elegido
+# public exponent e must be odd and larger than 1.
+# with very few ones in its binary representation. The FIPS standard requires the public exponent to be at least 65537 (the default)
+# Falta comprobar que sea impar CUIDADO 
 e = random.randint(3, phi_n-1)
 # comprobamos si son coprimos, y mientras no lo sean generamos otra e
 while math.gcd(e, phi_n) != 1:
