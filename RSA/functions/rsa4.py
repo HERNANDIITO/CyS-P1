@@ -51,9 +51,15 @@ if __name__ == "__main__":
     encrypted_data = rsa_encrypt(data_to_encrypt, public_key)
     decrypted_data = rsa_decrypt(encrypted_data, key)
 
+    # Al ser la clave publica, publica (jajaja) no se asegura la autenticidad del mensaje por lo que seria
+    # interesante utilizar una firma digital, con sha-256 o algo por el estilo calcular un hash antes y despues
+    # del cifrado/descifrado y luego comparar
+
     export_keys(key, public_key)
     # Importar las claves
     private_key, public_key = import_keys()
+
+
 
 
     
