@@ -2,7 +2,7 @@ from customtkinter import *
 from CTkTable import CTkTable
 
 app = CTk()
-app.geometry("500x400")
+app.geometry("700x600")
 
 # set_appearance_mode("dark")
 ruta_archivo = None
@@ -21,6 +21,30 @@ subtitle = CTkLabel(master=app, text="Tu software favorito para proteger todos t
 btn_selec_archivo = CTkButton(master=app, text="Seleccionar archivo", corner_radius=32, fg_color="#009DDC", text_color="#ffffff", command=seleccionar_archivo)
 btn_cifrar = CTkButton(master=app, text="Cifrar archivo", corner_radius=32, fg_color="#009DDC", text_color="#ffffff", command=seleccionar_archivo)
 estado = CTkLabel(master=app, text="No se ha seleccionado ningún archivo.")
+
+def handle_order_id_click(order_id):
+    print(f"Order ID clicked: {order_id}")
+
+def handle_item_name_click(item_name):
+    print(f"Item Name clicked: {item_name}")
+
+def handle_customer_click(customer):
+    print(f"Customer clicked: {customer}")
+
+def cell_click(event):
+    # Get the clicked cell's row and column
+    row, column = table.get_row_column(event.x, event.y)
+    if row >= 0 and column >= 0:  # Check if a valid cell is clicked
+        # Get the value of the clicked cell
+        cell_value = table.get_value_at(row, column)
+        
+        # Call different functions based on the column
+        if column == 0:  # Order ID
+            handle_order_id_click(cell_value)
+        elif column == 1:  # Item Name
+            handle_item_name_click(cell_value)
+        elif column == 2:  # Customer
+            handle_customer_click(cell_value)
 
 table_data = [
     ["Order ID", "Item Name", "Customer", "Address", "Status", "Quantity"],
@@ -48,14 +72,15 @@ table_frame = CTkScrollableFrame(master=app, fg_color="transparent")
 table_frame.pack(expand=True, fill="both", padx=27, pady=21)
 table = CTkTable(master=table_frame, values=table_data, colors=["#E6E6E6", "#EEEEEE"], header_color="#2A8C55", hover_color="#B4B4B4")
 table.edit_row(0, text_color="#fff", hover_color="#2A8C55")
-table.pack(expand=True)
+
 
 title.pack(pady=20)
 subtitle.pack(pady=0)
 btn_selec_archivo.pack(pady=20) 
 btn_cifrar.pack(pady=20) 
 estado.pack(pady=0)
+table.pack(expand=True)
 
-
+table.bind("<Button-1>", cell_click)
 
 app.mainloop()
