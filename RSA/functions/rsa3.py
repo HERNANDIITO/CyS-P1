@@ -73,7 +73,8 @@ n = p * q
 phi_n = (p-1) * (q-1)
 
 # ojo, no os confundais con range, en este caso phi_n-1 si que puede ser el numero aleatorio elegido
-# public exponent e must be odd and larger than 1.
+# public exponent e must be odd and larger than 1. el 2 es el unico numero primo par asi que empezamos a generar
+# numero aleatorios desde el 3 y solucionado
 # with very few ones in its binary representation. The FIPS standard requires the public exponent to be at least 65537 (the default)
 # Falta comprobar que sea impar CUIDADO 
 e = random.randint(3, phi_n-1)
@@ -95,6 +96,7 @@ message = "¡Hola! Esto es RSA"
 message_encoded = [ord(char) for char in message]
 # (m ^ e) mod n = c
 # la funcion pow(base, exponente, modulo) se puede usar con 3 argumentos 
+# [print(char) for char in message_encoded]
 ciphertext = [pow(char, e, n) for char in message_encoded]
 
 # es una lista se podria unir en un string pero creo que no importa
