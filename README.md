@@ -6,11 +6,19 @@
 .
 ├── main.py             # Inicia el programa
 ├── readme.md           # Este archivo
+├── info.md             # Listado de documentacion e informacion varia
 ├── requirements.txt    # Dependencias
 ├── functions           # Carpeta contenedora de los módulos    
 │   ├── database.py     # Gestor de la base de datos
-├── data                # Almacena la base de datos
+│   ├── rsa.py          # Funciones relacionadas con RSA
+│   ├── database.py     # Gestor de la base de datos
+│   ├── ui.py           # Funciones de la interfaz
+├── data                # Almacena datos server side
 │   └── database.db     # Almacena la base de datos
+├── tests               # Carpeta con pruebas varias
+├── private_key.pem     # Contenedor de claves privadas (CLIENT SIDE)
+├── public_key.pem      # Contenedor de claves publicas (CLIENT SIDE)
+├── public_key.pem      # Dependencias
 └── ...
 ```
 
