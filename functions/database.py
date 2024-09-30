@@ -7,8 +7,16 @@ def start():
     cursor = database.cursor()
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS users (
-        IdDiscord int,
-        IdUsuario int
+        userId string,
+        user string, 
+        pass string
+    )""")
+
+    cursor.execute("""CREATE TABLE IF NOT EXISTS files (
+        fileId string,
+        userId string,
+        fileName string,
+        encryptedFile string
     )""")
 
 def merge_dicts(*dicts):
