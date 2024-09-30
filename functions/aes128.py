@@ -43,7 +43,10 @@ def decrypt_file(input_file, output_file, key):
 # Función principal para ejecutar el cifrado y descifrado
 if __name__ == "__main__":
     # Clave de 16 bytes (128 bits) - Debe ser secreta
-    key = b'ThisIsA16ByteKey'  # Asegúrate de tener una clave de 16 bytes para AES-128
+    key = os.urandom(16)  # Genera una clave aleatoria
+
+    # Mostrar la clave generada
+    # print(f"Clave generada: {key.hex()}")
     
     # Archivos de entrada y salida
     input_file = 'mensaje_ejemplo.txt'
