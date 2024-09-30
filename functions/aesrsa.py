@@ -5,8 +5,6 @@
 # - cifrar la clave AES128 con RSA
 # - cifrar la clave RSA con AES128
 
-
-
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from tkinter import messagebox
