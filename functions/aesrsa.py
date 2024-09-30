@@ -9,10 +9,12 @@
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-import os
+from tkinter import messagebox
+from tkinter import filedialog
+import secrets
 
 # Función para cifrar el contenido de un archivo
-def encrypt_file(input_file, output_file, key):
+def encrypt_file(input_file, output_file, key_aes):
     # Lectura del archivo original
     with open(input_file, 'rb') as f:
         data = f.read()
@@ -21,7 +23,7 @@ def encrypt_file(input_file, output_file, key):
     padded_data = pad(data, AES.block_size)
     
     # Creación del objeto AES en modo ECB
-    cipher = AES.new(key, AES.MODE_ECB)
+    cipher = AES.new(key_aes, AES.MODE_ECB)
     
     # Cifrado de los datos
     encrypted_data = cipher.encrypt(padded_data)
@@ -31,13 +33,13 @@ def encrypt_file(input_file, output_file, key):
         f.write(encrypted_data)
 
 # Función para descifrar un archivo
-def decrypt_file(input_file, output_file, key):
+def decrypt_file(input_file, output_file, key_aes):
     # Lectura del archivo cifrado
     with open(input_file, 'rb') as f:
         encrypted_data = f.read()
     
     # Creación del objeto AES en modo ECB
-    cipher = AES.new(key, AES.MODE_ECB)
+    cipher = AES.new(key_aes, AES.MODE_ECB)
     
     # Descifrado de los datos
     decrypted_data = cipher.decrypt(encrypted_data)
@@ -52,15 +54,15 @@ def decrypt_file(input_file, output_file, key):
 # Función principal para ejecutar el cifrado y descifrado
 if __name__ == "__main__":
     # Clave de 16 bytes (128 bits) - Debe ser secreta
-    key16 = os.urandom(16)  # Genera una clave aleatoria
+    key_aes_16 = secrets.token_bytes(16)  # Genera una clave aleatoria de 16 bytes de manera segura usando secrets
 
     # ...
-    # (AQUI SE ALMACENA LA CLAVE (key16) EN LA BD)
+    # (AQUI SE ALMACENA LA CLAVE (key_aes_16) EN LA BD)
     # ...
 
 
     # Mostrar la clave generada
-    # print(f"Clave generada: {key.hex()}")
+    # print(f"Clave generada: {key_aes_16.hex()}")
     
     # Archivos de entrada y salida
     input_file = 'mensaje_ejemplo.txt'
@@ -68,11 +70,11 @@ if __name__ == "__main__":
     decrypted_file = 'archivo_descifrado.txt'
     
     # Cifrar el archivo
-    encrypt_file(input_file, encrypted_file, key16)
+    encrypt_file(input_file, encrypted_file, key_aes_16)
     print(f"Archivo {input_file} cifrado en {encrypted_file}.")
     
     # Descifrar el archivo
-    decrypt_file(encrypted_file, decrypted_file, key16)
+    decrypt_file(encrypted_file, decrypted_file, key_aes_16)
     print(f"Archivo {encrypted_file} descifrado en {decrypted_file}.")
 
 
@@ -90,8 +92,8 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 def generate_rsa_keys():
-    key = RSA.generate(3072)
-    return key, key.public_key()
+    key_rsa = RSA.generate(3072)
+    return key_rsa, key_rsa.public_key()
 
 def rsa_encrypt(data_to_encrypt, public_key):
     cipher_rsa = PKCS1_OAEP.new(public_key)
@@ -131,9 +133,9 @@ def import_keys():
     return private_key, public_key
 
 if __name__ == "__main__":
-    data_to_encrypt = key16 #key16 es la clave aleatoria de 16 bytes generada en la parte de AES128
+    data_to_encrypt = key_aes_16 #key_aes_16 es la clave aleatoria de 16 bytes generada en la parte de AES128
 
-    key, public_key = generate_rsa_keys()
+    key_aes_16, public_key = generate_rsa_keys()
     encrypted_data = rsa_encrypt(data_to_encrypt, public_key)
     decrypted_data = rsa_decrypt(encrypted_data, key)
 
@@ -177,14 +179,45 @@ def decrypt_private_key_with_aes(encrypted_private_key, aes_key):
 
 
 
-# Cifrar clave privada RSA con AES128
-private_key_pem = key.export_key()
-encrypted_private_key = encrypt_private_key_with_aes(private_key_pem, key16)
 
 
-# Descifrar la clave privada con AES128
-decrypted_private_key_pem = decrypt_private_key_with_aes(encrypted_private_key, key16)
-decrypted_private_key = RSA.import_key(decrypted_private_key_pem)
+
+
+
+
+
+
+
+
+# FUNCIÓN PARA LLAMAR A LAS FUNCIONES EN ORDEN PARA ENCRIPTAR CORRECTAMENTE
+
+
+def cifrarArchivo():
+    # Paso 1: Generar claves RSA
+    key, public_key = generate_rsa_keys()
+    
+    # Exportar la clave privada original en formato PEM
+    private_key_pem_original = key.export_key()
+    
+    # Generar una clave AES aleatoria de 16 bytes (AES128)
+    key16 = secrets.token_bytes(16)
+    
+    # Paso 2: Cifrar la clave privada con AES128
+    encrypted_private_key = encrypt_private_key_with_aes(private_key_pem_original, key16)
+    print("Clave privada cifrada correctamente.")
+    
+    
+    # Paso 3: Descifrar la clave privada con AES128
+    decrypted_private_key_pem = decrypt_private_key_with_aes(encrypted_private_key, key16)
+    print("Clave privada descifrada correctamente.")
+    
+    
+    # Paso 4: Comparar la clave privada original con la descifrada
+    if private_key_pem_original == decrypted_private_key_pem:
+        print("La clave privada descifrada coincide con la original. ¡Cifrado y descifrado correctos!")
+        messagebox.showinfo("Éxito","La clave privada descifrada coincide con la original. ¡Cifrado y descifrado correctos!")
+    else:
+        print("Error: La clave privada descifrada no coincide con la original.")
 
 
 
@@ -200,7 +233,7 @@ decrypted_private_key = RSA.import_key(decrypted_private_key_pem)
 # private_key_pem_original = key.export_key()
 
 # # Generar una clave AES aleatoria de 16 bytes (AES128)
-# key16 = os.urandom(16)
+# key16 = secrets.token_bytes(16)
 
 # # Paso 2: Cifrar la clave privada con AES128
 # encrypted_private_key = encrypt_private_key_with_aes(private_key_pem_original, key16)
