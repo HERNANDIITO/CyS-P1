@@ -9,7 +9,7 @@ def start():
     cursor.execute("""CREATE TABLE IF NOT EXISTS users (
         userId string,
         user string, 
-        pass string
+        password string
     )""")
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS files (
