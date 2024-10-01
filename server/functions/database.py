@@ -1,9 +1,10 @@
 import sqlite3
+import os
 
 def start():
     global cursor, database
 
-    database = sqlite3.connect("data/database.db")
+    database = sqlite3.connect(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data\\database.db'))
     cursor = database.cursor()
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS users (
