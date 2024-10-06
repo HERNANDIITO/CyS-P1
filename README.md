@@ -5,17 +5,18 @@
 ```
 .
 ├── main.py                     # Inicia el programa
+├── __init__.py                 # Init
 ├── __init__.py                 # Hace de raíz para el paquete y se ejecuta cuando se importa
 ├── requirements.txt            # Dependencias
 ├── functions                   # Carpeta contenedora de los módulos    
-│   ├── rsa.py                  # Funciones relacionadas con RSA
-│   ├── aes.py                  # Funciones relacionadas con AES
-│   ├── aesrsa.py               # Funciones relacionadas con AES + RSA
-│   ├── interface               # Gestor de la base de datos
-│   │   ├── ui.py               # Funciones de la interfaz
-│   │   ├── ui_login.py         # Funciones de la interfaz de login
-│   └── └── imgs                # Imágenes
+│   ├── __init__.py             # Init de functions
+│   └── aesrsa.py               # Funciones relacionadas con AES + RSA
 ├── tests                       # Carpeta con pruebas varias
+├── ui                          # Carpeta con pruebas varias
+│   ├── __init__.py             # Init de ui
+│   ├── imgs                    # Imágenes
+│   ├── ui.py                   # Funciones de la interfaz
+│   └── ui_login.py             # Funciones de la interfaz de login
 ├── keys                        # Carpeta con pruebas varias
 │   ├── public_key.pem          # Contenedor de claves publicas (CLIENT SIDE)
 │   └── private_key.pem         # Contenedor de claves privadas (CLIENT SIDE)

@@ -1,6 +1,6 @@
 from customtkinter import *
 from CTkTable import CTkTable
-import functions.aesrsa as aesrsa
+from functions import aesrsa
 
 app = CTk()
 app.geometry("700x600")

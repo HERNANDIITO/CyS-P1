@@ -4,20 +4,29 @@ import os
 def start():
     global cursor, database
 
-    database = sqlite3.connect(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data\\database.db'))
+    database = sqlite3.connect(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data\\database.db'), check_same_thread=False)
     cursor = database.cursor()
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS users (
-        userId string,
+        userId INTEGER PRIMARY KEY,
         user string, 
-        password string
+        password string,
+        salt string,
+        publicRSA string,
+        privateRSA string,
+        email string
     )""")
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS files (
         fileId string,
         userId string,
         fileName string,
-        encryptedFile string
+        encryptedFile string,
+        AESKey string,
+        publicRSA string,
+        privateRSA string,
+        date string,
+        fileType string
     )""")
 
 def merge_dicts(*dicts):
