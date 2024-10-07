@@ -11,6 +11,10 @@ from tkinter import messagebox
 from tkinter import filedialog
 import secrets
 
+def generate_aeskey():
+    key_aes = secrets.token_bytes(16) 
+    return key_aes
+
 # Función para cifrar el contenido de un archivo
 def encrypt_file(input_file, output_file, key_aes):
     # Lectura del archivo original
@@ -52,7 +56,7 @@ def decrypt_file(input_file, output_file, key_aes):
 # Función principal para ejecutar el cifrado y descifrado
 if __name__ == "__main__":
     # Clave de 16 bytes (128 bits) - Debe ser secreta
-    key_aes_16 = secrets.token_bytes(16)  # Genera una clave aleatoria de 16 bytes de manera segura usando secrets
+    # key_aes_16 = secrets.token_bytes(16)  # Genera una clave aleatoria de 16 bytes de manera segura usando secrets
 
     # ...
     # (AQUI SE ALMACENA LA CLAVE (key_aes_16) EN LA BD)
@@ -90,7 +94,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 def generate_rsa_keys():
-    key_rsa = RSA.generate(3072)
+    key_rsa = RSA.generate(2048)
     return key_rsa, key_rsa.public_key()
 
 def rsa_encrypt(data_to_encrypt, public_key):
