@@ -10,7 +10,9 @@
 ├── requirements.txt            # Dependencias
 ├── functions                   # Carpeta contenedora de los módulos    
 │   ├── __init__.py             # Init de functions
-│   └── aesrsa.py               # Funciones relacionadas con AES + RSA
+│   └── aes.py                  # Funciones relacionadas con AES
+│   └── rsa.py                  # Funciones relacionadas con RSA
+│   └── encrypt_decrypt.py      # Utiliza las funciones de AES y RSA para hacer el cifrado y descifrado.
 ├── tests                       # Carpeta con pruebas varias
 ├── ui                          # Carpeta con pruebas varias
 │   ├── __init__.py             # Init de ui
