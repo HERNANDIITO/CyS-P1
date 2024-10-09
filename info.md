@@ -1,4 +1,4 @@
-# Enlaces de interes
+![imagen](https://github.com/user-attachments/assets/3cc0b12c-7212-4c8f-aaab-f86ab6257ca6)# Enlaces de interes
 
 ## Interfaz con Python
 ### Cómo poner 3 botones con flet y os
@@ -48,3 +48,11 @@
 
 ### Explicación y comparación DER y PEM
 [Leer artículo](https://www.howtouselinux.com/post/understanding-pem-and-der-file-formats)
+
+## Servicios y peticiones
+
+### Documentación de Requests (Peticiones de cliente)
+[Documentación](https://requests.readthedocs.io/en/latest/)
+
+### Documentación de Flask (Servicios del servidor)
+[Documentación]([https://requests.readthedocs.io/en/latest/](https://flask.palletsprojects.com/en/3.0.x/))
