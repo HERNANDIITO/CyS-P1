@@ -10,10 +10,10 @@ print(os.getcwd())
 
 # set_appearance_mode("dark")
 
-side_img_data = Image.open("imgs\\side-img.png")
-email_icon_data = Image.open("imgs\\email-icon.png")
-password_icon_data = Image.open("imgs\\password-icon.png")
-google_icon_data = Image.open("imgs\\google-icon.png")
+side_img_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\side-img.png'))
+email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\email-icon.png'))
+password_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\password-icon.png'))
+google_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\google-icon.png'))
 
 side_img = CTkImage(dark_image=side_img_data, light_image=side_img_data, size=(300, 480))
 email_icon = CTkImage(dark_image=email_icon_data, light_image=email_icon_data, size=(20,20))
