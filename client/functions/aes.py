@@ -1,4 +1,5 @@
 
+import base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import secrets
@@ -15,6 +16,7 @@ def encrypt_file(input_file, output_file, aes_key):
     padded_data = pad(data, AES.block_size)
     cipher = AES.new(aes_key, AES.MODE_ECB)
     encrypted_data = cipher.encrypt(padded_data)
+    encrypted_data = base64.b64encode(encrypted_data)
 
     with open(output_file, 'wb') as f:
         f.write(encrypted_data)
@@ -24,6 +26,7 @@ def decrypt_file(input_file, output_file, aes_key):
     with open(input_file, 'rb') as f:
         encrypted_data = f.read()
 
+    encrypted_data = base64.b64decode(encrypted_data)
     cipher = AES.new(aes_key, AES.MODE_ECB)
     decrypted_data = cipher.decrypt(encrypted_data)
     original_data = unpad(decrypted_data, AES.block_size)
@@ -35,11 +38,12 @@ def decrypt_file(input_file, output_file, aes_key):
 def encrypt_private_key_with_aes(private_key_pem, aes_key):
     padded_private_key = pad(private_key_pem, AES.block_size)
     cipher = AES.new(aes_key, AES.MODE_ECB)
-    encrypted_private_key = cipher.encrypt(padded_private_key)
+    encrypted_private_key = base64.b64encode(cipher.encrypt(padded_private_key))
     return encrypted_private_key
 
     #Descifra una clave privada RSA utilizando AES128.
-def decrypt_private_key_with_aes(encrypted_private_key, aes_key):
+def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
+    encrypted_private_key_pem = base64.b64decode(encrypted_private_key_pem)
     cipher = AES.new(aes_key, AES.MODE_ECB)
     decrypted_private_key_pem = cipher.decrypt(encrypted_private_key)
     private_key_pem = unpad(decrypted_private_key_pem, AES.block_size)
