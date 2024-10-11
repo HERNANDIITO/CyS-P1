@@ -7,3 +7,6 @@ Pillow==10.4.0
 pycryptodome==3.20.0
 Requests==2.32.3
 rsa==4.9
+# Estas de abajo el pipreqs no las pone porque no se usa directamente, pero hacen falta igual
+google-auth==2.35.0 
+google-auth-httplib2==0.2.0
