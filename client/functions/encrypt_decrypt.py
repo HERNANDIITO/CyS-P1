@@ -37,7 +37,7 @@ def get_file_name_and_type(file_path):
     file = os.path.splitext(file_name)
     return file[0], file[1]
 
-def store_encrypted_data_into_db(file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type):
+def store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type):
     # obtener userId, date con SYSDATE?, fileId creo que no hace falta
     file_data {
         fileName: file_name,
