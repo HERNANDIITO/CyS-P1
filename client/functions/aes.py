@@ -45,6 +45,6 @@ def encrypt_private_key_with_aes(private_key_pem, aes_key):
 def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
     encrypted_private_key_pem = base64.b64decode(encrypted_private_key_pem)
     cipher = AES.new(aes_key, AES.MODE_ECB)
-    decrypted_private_key_pem = cipher.decrypt(encrypted_private_key)
+    decrypted_private_key_pem = cipher.decrypt(encrypted_private_key_pem)
     private_key_pem = unpad(decrypted_private_key_pem, AES.block_size)
     return private_key_pem

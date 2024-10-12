@@ -1,5 +1,4 @@
-# from aes import generate_aes_key, encrypt_file, decrypt_file, encrypt_private_key_with_aes, decrypt_private_key_with_aes
-# from rsa import generate_rsa_keys, rsa_encrypt, rsa_decrypt, export_keys, import_keys
+
 import os
 from aes import *
 from rsa import *
@@ -28,7 +27,7 @@ def encrypt_decrypt():
     else:
         print("Error: La clave privada descifrada no coincide con la original.")
 
-    # Exportar las claves a archivos PEM
+    # Exportar las claves RSA a archivos PEM
     export_keys(private_key, public_key)
 
 
@@ -80,6 +79,20 @@ def encrypt(file_path):
 
     # Almacenamos la informacion en la base de datos
     store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type)
+
+
+
+def decrypt():
+    
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
