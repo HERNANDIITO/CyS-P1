@@ -48,3 +48,36 @@ def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
     decrypted_private_key_pem = cipher.decrypt(encrypted_private_key_pem)
     private_key_pem = unpad(decrypted_private_key_pem, AES.block_size)
     return private_key_pem
+
+
+
+# codigos de encrypt y decrypt por bloques (de prueba)
+def block_encrypt_file(input_file, output_file, aes_key, block_size=16):
+    cipher = AES.new(aes_key, AES.MODE_ECB)
+
+    with open(input_file, 'rb') as f_in, open(output_file, 'wb') as f_out:
+        while True:
+            block = f_in.read(block_size)
+            if len(block) == 0:  # Fin del archivo
+                break
+            elif len(block) % block_size != 0:  # Rellenar el último bloque si es necesario
+                block = pad(block, AES.block_size)
+            
+            encrypted_block = cipher.encrypt(block)
+            f_out.write(encrypted_block)
+
+
+def block_decrypt_file(input_file, output_file, aes_key, block_size=16):
+    cipher = AES.new(aes_key, AES.MODE_ECB)
+
+    with open(input_file, 'rb') as f_in, open(output_file, 'wb') as f_out:
+        while True:
+            block = f_in.read(block_size)
+            if len(block) == 0:  # Fin del archivo
+                break
+            
+            decrypted_block = cipher.decrypt(block)
+            if len(block) < block_size:  # El último bloque podría necesitar un unpad
+                decrypted_block = unpad(decrypted_block, AES.block_size)
+            
+            f_out.write(decrypted_block)

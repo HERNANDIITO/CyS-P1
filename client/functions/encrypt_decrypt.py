@@ -3,32 +3,12 @@ import os
 from aes import *
 from rsa import *
 
-def encrypt_decrypt():
-    # Generar claves RSA
-    private_key, public_key = generate_rsa_keys()
 
-    # Generar una clave AES de 16 bytes
-    aes_key = generate_aes_key()
 
-    #(aqui almaceno clave en la bd)
 
-    # Cifrar la clave privada con AES128
-    private_key_pem = private_key.export_key()
-    encrypted_private_key = encrypt_private_key_with_aes(private_key_pem, aes_key)
-    print("Clave privada cifrada correctamente.")
+# FUNCIONES DE CONTACTO CON LA BD----------------------------------------------------------------------------------------------------------------
 
-    # Descifrar la clave privada con AES128
-    decrypted_private_key_pem = decrypt_private_key_with_aes(encrypted_private_key, aes_key)
-    print("Clave privada descifrada correctamente.")
 
-    # Verificar que la clave privada descifrada coincida con la original
-    if private_key_pem == decrypted_private_key_pem:
-        print("La clave privada descifrada coincide con la original. ¡Cifrado y descifrado correctos!")
-    else:
-        print("Error: La clave privada descifrada no coincide con la original.")
-
-    # Exportar las claves RSA a archivos PEM
-    export_keys(private_key, public_key)
 
 
 def get_file_name_and_type(file_path):
@@ -49,6 +29,34 @@ def store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted
     }
 
     save_new_file(file_data)
+
+
+    # (codigo de freestyle de mi colega chatGPT)
+import sqlite3
+def get_encrypted_data_from_db(file_path):
+    # Conexión a la base de datos SQLite
+    conn = sqlite3.connect('tu_base_de_datos.db')
+    cursor = conn.cursor()
+
+    # Consulta para obtener los datos del archivo cifrado
+    cursor.execute("SELECT fileName, encryptedFile, AESKey, publicRSA, privateRSA, rsaAESKey, fileType FROM archivos WHERE id = ?", (file_path,))
+    result = cursor.fetchone()
+
+    conn.close()
+
+    if result:
+        file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type = result
+        return file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type
+    else:
+        print("No se encontraron datos para el archivo especificado.")
+        return None
+
+
+
+# FUNCIONES DE ENCRIPTADO Y DESENCRIPTADO--------------------------------------------------------------------------------------------------------
+
+
+
 
 # Funcion principal para gestionar el cifrado de archivos multimedia
 def encrypt(file_path): 
@@ -82,19 +90,34 @@ def encrypt(file_path):
 
 
 
-def decrypt():
+
+
+# Funcion principal para gestionar el descifrado de archivos multimedia
+def decrypt(file_path):
+    # Recuperar la información almacenada en la base de datos
+    file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type = get_encrypted_data_from_db(file_path)
+
+    # Importar las claves RSA desde formato PEM
+    rsa_private_key, rsa_public_key = import_keys()
+
+    # Descifrar la clave privada RSA con la clave AES128
+    rsa_private_key_pem = decrypt_private_key_with_aes(encrypted_rsa_private_key_pem, rsa_aes_key)
+
+    # Convertir la clave privada RSA desde el formato PEM
+    rsa_private_key = RSA.import_key(rsa_private_key_pem)
+
+    # Descifrar la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
+    file_aes_key = rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
+
+    # Descifrar el archivo con la clave AES128
+    decrypted_file = "file_decrypted" + file_type
+    decrypt_file(encrypted_file, decrypted_file, file_aes_key)
+
+    print(f"Archivo descifrado correctamente y guardado como {decrypted_file}")
     
 
 
 
-
-
-
-
-
-
-
-
+# main para hacer pruebas
 if __name__ == "__main__":
-    encrypt_decrypt()
     encrypt(r"C:\Users\Laura\Desktop\Captura de pantalla 2024-10-10 172227.png")
