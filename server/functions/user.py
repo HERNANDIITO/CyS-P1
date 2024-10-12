@@ -57,10 +57,10 @@ class User:
         return Result(200, "Usuario registrado con éxito", True)
     
     @classmethod
-    def login(self, user: str, password: str) -> Result:
+    def login(self, email: str, password: str) -> Result:
 
-        # Intentamos recoger un usuario con el mismo user que acabamos de recibir
-        userData = db.get_data( "users", { "user": user })
+        # Intentamos recoger un usuario con el mismo email que acabamos de recibir
+        userData = db.get_data( "users", { "email": email })
 
         # Si no hay nada en la variable, significa que el usuario no existe
         # No permitimos otro
