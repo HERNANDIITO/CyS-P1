@@ -1,20 +1,15 @@
-
 import os
 from aes import *
 from rsa import *
-
-
-
-
-# FUNCIONES DE CONTACTO CON LA BD----------------------------------------------------------------------------------------------------------------
-
-
 
 
 def get_file_name_and_type(file_path):
     file_name = os.path.basename(file_path)
     file = os.path.splitext(file_name)
     return file[0], file[1]
+
+# FUNCIONES DE CONTACTO CON LA BD----------------------------------------------------------------------------------------------------------------
+
 
 def store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type):
     # obtener userId, date con SYSDATE?, fileId creo que no hace falta
@@ -55,9 +50,6 @@ def get_encrypted_data_from_db(file_path):
 
 # FUNCIONES DE ENCRIPTADO Y DESENCRIPTADO--------------------------------------------------------------------------------------------------------
 
-
-
-
 # Funcion principal para gestionar el cifrado de archivos multimedia
 def encrypt(file_path): 
     # Generamos una clave AES128 para cifrar el archivo
@@ -86,38 +78,31 @@ def encrypt(file_path):
     encrypted_rsa_private_key_pem = encrypt_private_key_with_aes(rsa_private_key_pem, rsa_aes_key)
 
     # Almacenamos la informacion en la base de datos
-    store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type)
-
-
-
+    # store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type)
 
 
 # Funcion principal para gestionar el descifrado de archivos multimedia
 def decrypt(file_path):
-    # Recuperar la información almacenada en la base de datos
+    # Recuperamos la información almacenada en la base de datos
     file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type = get_encrypted_data_from_db(file_path)
 
-    # Importar las claves RSA desde formato PEM
-    rsa_private_key, rsa_public_key = import_keys()
-
-    # Descifrar la clave privada RSA con la clave AES128
+    # Desciframos la clave privada RSA con la clave AES128
     rsa_private_key_pem = decrypt_private_key_with_aes(encrypted_rsa_private_key_pem, rsa_aes_key)
 
-    # Convertir la clave privada RSA desde el formato PEM
-    rsa_private_key = RSA.import_key(rsa_private_key_pem)
+    # Convertimos la clave privada RSA desde el formato PEM
+    rsa_private_key = import_private_key(rsa_private_key_pem)
 
-    # Descifrar la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
+    # Desciframos la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
     file_aes_key = rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
 
-    # Descifrar el archivo con la clave AES128
-    decrypted_file = "file_decrypted" + file_type
+    # Desciframos el archivo con la clave AES128
+    decrypted_file = file_name + file_type
     decrypt_file(encrypted_file, decrypted_file, file_aes_key)
 
-    print(f"Archivo descifrado correctamente y guardado como {decrypted_file}")
+    # return decrypted_file
+
+    # print(f"Archivo descifrado correctamente y guardado como {decrypted_file}")
     
-
-
-
 # main para hacer pruebas
 if __name__ == "__main__":
     encrypt(r"C:\Users\Laura\Desktop\Captura de pantalla 2024-10-10 172227.png")
