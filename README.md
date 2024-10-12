@@ -97,3 +97,9 @@ Una vez hecho esto, vais a la raíz del proyecto y escribis el siguiente comando
 #### Servidor
 
 `pipreqs .\server --force`
+
+## Ejecutar servidor
+
+Desde la carpeta server...
+
+`flask --app main run`

@@ -3,5 +3,5 @@ from functions.user import User
 
 db.start()
 
-User.createUser("Pablo", "123", "salty salty", "rsapub", "privrsa", "phg21")
-User.createUser("lAURA", "123", "salty salty", "rsapub", "privrsa", "lsc82")
+# User.createUser("Pablo", "123", "phg21")
+# User.createUser("lAURA", "123", "lsc82")
