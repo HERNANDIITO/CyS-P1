@@ -15,11 +15,9 @@ def rsa_encrypt(data, public_key):
         cipher_rsa = PKCS1_OAEP.new(public_key, hashAlgo=SHA256)
         return base64.b64encode(cipher_rsa.encrypt(data))
     except ValueError as e:
-        print("Error, mensaje demasiado largo máximo 190 bytes: ", e)
-        return None
+        raise Exception("Error, mensaje demasiado largo máximo 190 bytes: ", e)
     except Exception as e:
-        print("Lo sentimos, se ha producido un error innesperado durante la encriptación con RSA: ", e)
-        return None
+        raise Exception("Lo sentimos, se ha producido un error innesperado durante la encriptación con RSA: ", e)
 
 # Descifra datos utilizando la clave privada RSA con OAEP durante el descifrado validamos el relleno y la 
 # estructura del mensaje cifrado y eliminamos el padding.
