@@ -5,10 +5,10 @@ from Crypto.Util.Padding import pad, unpad
 import secrets
 
     #Genera una clave AES de 16 bytes (128 bits).
-def generate_aes_key():
-    return secrets.token_bytes(16)
+# def generate_aes_key():
+#     return secrets.token_bytes(16)
 
-    #Descifra un archivo utilizando AES en modo ECB.
+#    Descifra un archivo utilizando AES en modo ECB.
 # def decrypt_file(input_file, output_file, aes_key):
 #     with open(input_file, 'rb') as f:
 #         encrypted_data = f.read()
@@ -39,55 +39,83 @@ def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
 
 
 # Codigos de encrypt y decrypt por bloques (de prueba)
-def encrypt_file(input_file, output_file, aes_key, block_size=128):
+def encrypt_file(input_file, output_file, encoded_file, aes_key, block_size=16):
     cipher = AES.new(aes_key, AES.MODE_ECB)
 
+
+    # Encriptar
     with open(input_file, 'rb') as f_in, open(output_file, 'wb') as f_out:
         while True:
-            block = f_in.read(block_size)
+            block = f_in.read(AES.block_size)
             if len(block) == 0:  # Fin del archivo
                 break
 
-            elif len(block) % 16 != 0:  # Rellenar el último bloque si es necesario
+            elif len(block) % AES.block_size != 0:  # Rellenar el último bloque si es necesario
                 block = pad(block, AES.block_size)
             
             encrypted_block = cipher.encrypt(block)
-
-            cod_block_b64 = base64.b64encode(encrypted_block) # Codificar en base64
             
-            f_out.write(cod_block_b64)
+            f_out.write(encrypted_block)
 
 
-def decrypt_file(input_file, decoded_input_file, output_file, aes_key, block_size=128):
+    # Codificar
+    with open(output_file, 'rb') as f_in, open(encoded_file, 'wb') as f_out:
+        while True:
+            block = f_in.read(3 * 1024 * 1024)
+            if len(block) == 0:  # Fin del archivo
+                break
+
+            encoded_block_b64 = base64.b64encode(block) # Codificar en base64
+            
+            f_out.write(encoded_block_b64)
+
+
+def decrypt_file(input_file, decoded_input_file, output_file, aes_key, block_size=16):
 
     cipher = AES.new(aes_key, AES.MODE_ECB)
 
+    # Decodificar
     with open(input_file, 'rb') as f_in, open(decoded_input_file, 'wb') as f_out:
+        buffer = b""  # Buffer para manejar fragmentos incompletos de Base64
+        
         while True:
-            
-            block = f_in.read(block_size)
+            block = f_in.read(4 * 1024 * 1024)
 
             if len(block) == 0:  # Fin del archivo
                 break
+
+            block = buffer + block  # Combinar con los restos del bloque anterior
+            remainder = len(block) % 4  # Determinar si quedó incompleto
+
+            if remainder != 0:
+                buffer = block[-remainder:]  # Guardar lo que sobró en el buffer
+                block = block[:-remainder]  # Formar un bloque con todo menos lo que sobró
+            else:
+                buffer = b""
             
             block = base64.b64decode(block)
             
             f_out.write(block)
 
+
+
+
+    # Desencriptar
     with open(decoded_input_file, 'rb') as f_in, open(output_file, 'wb') as f_out:
         while True:
 
-            block = f_in.read(block_size)
+            block = f_in.read(AES.block_size)
 
             if len(block) == 0:  # Fin del archivo
                 break
             
-            # block = base64.b64decode(block)
+            #block = base64.b64decode(block)
             decrypted_block = cipher.decrypt(block)
 
-            if len(block) % 16 != 0:  # El último bloque podría necesitar un unpad
+            try:
                 decrypted_block = unpad(decrypted_block, AES.block_size)
-            
+            except ValueError:
+                pass  # Unpad solo si es el último bloque con padding
             
             f_out.write(decrypted_block)    
 
