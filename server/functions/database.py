@@ -73,6 +73,12 @@ def insert_data(table, data):
     cursor.execute("INSERT INTO {0} VALUES ({1})".format(table, keys_str), data)
     database.commit()
 
+def prueba_insert_data(table, data):
+    fields = get_keys(data, "{0}", ", ")
+    keys_str = get_keys(data, ":{0}", ", ")
+    cursor.execute("INSERT INTO {0} ({1}) VALUES ({2})".format(table, fields, keys_str), data)
+    database.commit()
+
 def check_input(input):
     try: int(input)
     except: return True

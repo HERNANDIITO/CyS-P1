@@ -26,26 +26,8 @@ def store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted
     save_new_file(file_data)
 
 
-    # (codigo de freestyle de mi colega chatGPT)
-import sqlite3
 def get_encrypted_data_from_db(file_path):
-    # Conexión a la base de datos SQLite
-    conn = sqlite3.connect('tu_base_de_datos.db')
-    cursor = conn.cursor()
-
-    # Consulta para obtener los datos del archivo cifrado
-    cursor.execute("SELECT fileName, encryptedFile, AESKey, publicRSA, privateRSA, rsaAESKey, fileType FROM archivos WHERE id = ?", (file_path,))
-    result = cursor.fetchone()
-
-    conn.close()
-
-    if result:
-        file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type = result
-        return file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type
-    else:
-        print("No se encontraron datos para el archivo especificado.")
-        return None
-
+    
 
 
 # FUNCIONES DE ENCRIPTADO Y DESENCRIPTADO--------------------------------------------------------------------------------------------------------

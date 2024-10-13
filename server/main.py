@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__)
 
-@app.put("/users/regsiter")
+@app.put("/users/register")
 def registerUserPassword():
     # Esto de aquí abajo de un docstirng, es como un comentario multilinea para comentar sobre una funcion
     # Si le haceis hover sobre registerUserPassword lo veréis como tooltip (deberia ser sobre la funcion de abajo pero los decoradores lo vuelven un poco loco).

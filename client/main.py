@@ -1,10 +1,11 @@
 import requests, json
 import secrets
 from functions.aes import encrypt_file, decrypt_file
-#r = requests.get('http://127.0.0.1:5000/users')
+from functions.rsa import rsa_encrypt, generate_rsa_keys
+from functions.aes import generate_aes_key
 
-# for s in json.loads(r.text):
-#     print(s,"\n")
+global server
+server = "http://127.0.0.1:5000"
 
 file_aes_key = secrets.token_bytes(16)
 
@@ -17,8 +18,3 @@ decrypted_file = "decrypted_file.mp4"
 deco_file = "file_deco.txt"
 
 decrypt_file(r"C:\Users\donsi\Desktop\MALFA\UNI\AÑO 3\CS\P1\CyS-P1\file_encrypt.txt", deco_file, decrypted_file, file_aes_key)
-
-#print(json.loads(r.text)[1]["user"])
-
-# ui_prueba.seleccionar_archivo()
-
