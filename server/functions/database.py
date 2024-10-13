@@ -70,7 +70,7 @@ def update_data(table, update, filter):
 # insert_data("tabla", {"id": msg.author.id})
 def insert_data(table, data):
     keys_str = get_keys(data, ":{0}", ", ")
-    cursor.execute("INSERT INTO {0} VALUES ({2})".format(table, keys_str), data)
+    cursor.execute("INSERT INTO {0} VALUES ({1})".format(table, keys_str), data)
     database.commit()
 
 def prueba_insert_data(table, data):
