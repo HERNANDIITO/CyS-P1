@@ -9,3 +9,9 @@ def generate_secure_password(length=16):
 
 passphrase = generate_secure_password()
 print(f"Generated passphrase: {passphrase}")
+
+
+def register(email, password): 
+
+
+def login(email, password):
