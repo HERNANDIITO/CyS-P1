@@ -46,7 +46,9 @@ def loginUserPassword():
     - result.msg: mensaje de contexto
     - result.code: codigo de error http
     - result.status: si ha sido realizada la petición o no
-    - result.body: ID del suaurio
+    - result.body:  
+        · userId: ID del suaurio
+        · privateRSA: RSA Privado
     '''
 
     # Se leen los parametros del body

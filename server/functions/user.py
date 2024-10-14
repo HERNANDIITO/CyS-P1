@@ -72,7 +72,7 @@ class User:
         
         # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
         # y poder utilizarla en los siguientes servicios
-        return Result(200, "Sesión iniciada con éxito", True, {"userID": userData[0]})
+        return Result(200, "Sesión iniciada con éxito", True, {"userID": userData[0], "privateRSA": userData[5]})
 
     @classmethod
     def getAllUsers( self ) -> List['User']:
