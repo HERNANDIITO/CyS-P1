@@ -11,7 +11,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\donsi\Desktop\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / "imgs" / "registro"  # Apunta a la carpeta subir_archivo dentro de imgs
 
 
 def relative_to_assets(path: str) -> Path:
