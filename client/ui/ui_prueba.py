@@ -1,6 +1,6 @@
 from customtkinter import *
 from CTkTable import CTkTable
-from functions import aesrsa
+#from functions import aesrsa
 
 app = CTk()
 app.geometry("700x600")
@@ -20,7 +20,7 @@ def seleccionar_archivo():
 title = CTkLabel(master=app, text="Asegurados304", font=("Arial", 24))
 subtitle = CTkLabel(master=app, text="Tu software favorito para proteger todos tus archivos multimedia")
 btn_selec_archivo = CTkButton(master=app, text="Seleccionar archivo", corner_radius=32, fg_color="#009DDC", text_color="#ffffff", command=seleccionar_archivo)
-btn_cifrar = CTkButton(master=app, text="Cifrar archivo", corner_radius=32, fg_color="#009DDC", text_color="#ffffff", command=aesrsa.cifrarArchivo)
+btn_cifrar = CTkButton(master=app, text="Cifrar archivo", corner_radius=32, fg_color="#009DDC", text_color="#ffffff")
 estado = CTkLabel(master=app, text="No se ha seleccionado ningún archivo.")
 
 def handle_order_id_click(order_id):
