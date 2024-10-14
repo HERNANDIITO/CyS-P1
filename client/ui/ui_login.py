@@ -1,6 +1,6 @@
 from customtkinter import *
 from PIL import Image
-from functions import user_auth
+#from functions import user_auth
 
 app = CTk()
 app.geometry("600x480")
