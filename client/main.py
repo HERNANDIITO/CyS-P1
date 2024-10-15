@@ -1,24 +1,23 @@
 import requests, json
 from functions.aes import encrypt_file, decrypt_file,generate_aes_key
 from functions.rsa import rsa_encrypt, generate_rsa_keys
+from customtkinter import CTk, set_appearance_mode
+from ui import ui_login, ui_home
 
 
+# Variables para las peticiciones
 global server
 server = "http://127.0.0.1:5000"
 
-file_aes_key = generate_aes_key()
+# Inicializacion de variables para la gestion de interfaces
+app = CTk()
 
-encrypted_file = "file_encrypt.txt"
-encode_file = "file_encode.txt"
+app.geometry("600x400")
+app.configure(bg="white")
+set_appearance_mode("light")
 
-encrypt_file(r"C:\Users\donsi\Desktop\MALFA\COSAS DE STREAMER\YOUTUBE\VIDEOS\HOLLOW RADIANTE\OBBLOBBLE\OBBLOBBLE.mp4", encrypted_file, encode_file, file_aes_key)
+# Llamamos a la interfaz "login" pasandole la app por parametro
+# ui_login.login_menu(app)
+ui_home.home(app)
 
-
-decrypted_file = "decrypted_file.mp4"
-
-decrypt_file(r"C:\Users\donsi\Desktop\MALFA\UNI\AÑO 3\CS\P1\CyS-P1\file_encode.txt", decrypted_file, file_aes_key)
-
-#print(json.loads(r.text)[1]["user"])
-
-# ui_prueba.seleccionar_archivo()
-
+app.mainloop()

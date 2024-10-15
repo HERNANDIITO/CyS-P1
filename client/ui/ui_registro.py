@@ -18,235 +18,228 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
-window = Tk()
+def registro(app):
+    canvas = Canvas(
+        app,
+        bg = "#000000",
+        height = 400,
+        width = 600,
+        bd = 0,
+        highlightthickness = 0,
+        relief = "ridge"
+    )
 
-window.geometry("600x400")
-window.configure(bg = "#000000")
+    canvas.place(x = 0, y = 0)
+    canvas.create_rectangle(
+        300.0,
+        0.0,
+        600.0,
+        400.0,
+        fill="#FFFFFF",
+        outline="")
 
+    canvas.create_text(
+        318.0,
+        15.0,
+        anchor="nw",
+        text="Registro",
+        fill="#550080",
+        font=("jsMath cmbx10", 20 * -1)
+    )
 
-canvas = Canvas(
-    window,
-    bg = "#000000",
-    height = 400,
-    width = 600,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-)
+    canvas.create_text(
+        318.0,
+        35.0,
+        anchor="nw",
+        text="Introduce los datos para crear una cuenta",
+        fill="#606060",
+        font=("KantumruyPro Medium", 10 * -1)
+    )
 
-canvas.place(x = 0, y = 0)
-canvas.create_rectangle(
-    300.0,
-    0.0,
-    600.0,
-    400.0,
-    fill="#FFFFFF",
-    outline="")
+    canvas.create_text(
+        349.0,
+        125.0,
+        anchor="nw",
+        text="Contraseña:",
+        fill="#550080",
+        font=("KantumruyPro Medium", 12 * -1)
+    )
 
-canvas.create_text(
-    318.0,
-    15.0,
-    anchor="nw",
-    text="Registro",
-    fill="#550080",
-    font=("jsMath cmbx10", 20 * -1)
-)
+    canvas.create_text(
+        349.0,
+        63.0,
+        anchor="nw",
+        text="Nombre de usuario:",
+        fill="#550080",
+        font=("KantumruyPro Medium", 12 * -1)
+    )
 
-canvas.create_text(
-    318.0,
-    35.0,
-    anchor="nw",
-    text="Introduce los datos para crear una cuenta",
-    fill="#606060",
-    font=("KantumruyPro Medium", 10 * -1)
-)
+    image_image_1 = PhotoImage(
+        file=relative_to_assets("image_1.png"))
+    image_1 = canvas.create_image(
+        328.0,
+        134.0,
+        image=image_image_1
+    )
 
-canvas.create_text(
-    349.0,
-    125.0,
-    anchor="nw",
-    text="Contraseña:",
-    fill="#550080",
-    font=("KantumruyPro Medium", 12 * -1)
-)
+    canvas.create_text(
+        349.0,
+        185.0,
+        anchor="nw",
+        text="Confirmar contraseña:",
+        fill="#550080",
+        font=("KantumruyPro Medium", 12 * -1)
+    )
 
-canvas.create_text(
-    349.0,
-    63.0,
-    anchor="nw",
-    text="Nombre de usuario:",
-    fill="#550080",
-    font=("KantumruyPro Medium", 12 * -1)
-)
+    image_image_2 = PhotoImage(
+        file=relative_to_assets("image_2.png"))
+    image_2 = canvas.create_image(
+        328.0,
+        193.0,
+        image=image_image_2
+    )
 
-image_image_1 = PhotoImage(
-    file=relative_to_assets("image_1.png"))
-image_1 = canvas.create_image(
-    328.0,
-    134.0,
-    image=image_image_1
-)
+    canvas.create_text(
+        349.0,
+        245.0,
+        anchor="nw",
+        text="Correo electrónico:",
+        fill="#550080",
+        font=("KantumruyPro Medium", 12 * -1)
+    )
 
-canvas.create_text(
-    349.0,
-    185.0,
-    anchor="nw",
-    text="Confirmar contraseña:",
-    fill="#550080",
-    font=("KantumruyPro Medium", 12 * -1)
-)
+    image_image_3 = PhotoImage(
+        file=relative_to_assets("image_3.png"))
+    image_3 = canvas.create_image(
+        328.0,
+        255.0,
+        image=image_image_3
+    )
 
-image_image_2 = PhotoImage(
-    file=relative_to_assets("image_2.png"))
-image_2 = canvas.create_image(
-    328.0,
-    193.0,
-    image=image_image_2
-)
+    image_image_4 = PhotoImage(
+        file=relative_to_assets("image_4.png"))
+    image_4 = canvas.create_image(
+        150.0,
+        200.0,
+        image=image_image_4
+    )
 
-canvas.create_text(
-    349.0,
-    245.0,
-    anchor="nw",
-    text="Correo electrónico:",
-    fill="#550080",
-    font=("KantumruyPro Medium", 12 * -1)
-)
+    entry_image_1 = PhotoImage(
+        file=relative_to_assets("entry_1.png"))
+    entry_bg_1 = canvas.create_image(
+        446.5,
+        101.5,
+        image=entry_image_1
+    )
+    entry_1 = Entry(
+        bd=0,
+        bg="#D9D9D9",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_1.place(
+        x=333.0,
+        y=90.0,
+        width=227.0,
+        height=21.0
+    )
 
-image_image_3 = PhotoImage(
-    file=relative_to_assets("image_3.png"))
-image_3 = canvas.create_image(
-    328.0,
-    255.0,
-    image=image_image_3
-)
+    entry_image_2 = PhotoImage(
+        file=relative_to_assets("entry_2.png"))
+    entry_bg_2 = canvas.create_image(
+        446.5,
+        164.5,
+        image=entry_image_2
+    )
+    entry_2 = Entry(
+        bd=0,
+        bg="#D9D9D9",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_2.place(
+        x=333.0,
+        y=153.0,
+        width=227.0,
+        height=21.0
+    )
 
-image_image_4 = PhotoImage(
-    file=relative_to_assets("image_4.png"))
-image_4 = canvas.create_image(
-    150.0,
-    200.0,
-    image=image_image_4
-)
+    entry_image_3 = PhotoImage(
+        file=relative_to_assets("entry_3.png"))
+    entry_bg_3 = canvas.create_image(
+        446.5,
+        223.5,
+        image=entry_image_3
+    )
+    entry_3 = Entry(
+        bd=0,
+        bg="#D9D9D9",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_3.place(
+        x=333.0,
+        y=212.0,
+        width=227.0,
+        height=21.0
+    )
 
-entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_1.png"))
-entry_bg_1 = canvas.create_image(
-    446.5,
-    101.5,
-    image=entry_image_1
-)
-entry_1 = Entry(
-    bd=0,
-    bg="#D9D9D9",
-    fg="#000716",
-    highlightthickness=0
-)
-entry_1.place(
-    x=333.0,
-    y=90.0,
-    width=227.0,
-    height=21.0
-)
+    entry_image_4 = PhotoImage(
+        file=relative_to_assets("entry_4.png"))
+    entry_bg_4 = canvas.create_image(
+        446.5,
+        281.5,
+        image=entry_image_4
+    )
+    entry_4 = Entry(
+        bd=0,
+        bg="#D9D9D9",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_4.place(
+        x=333.0,
+        y=270.0,
+        width=227.0,
+        height=21.0
+    )
 
-entry_image_2 = PhotoImage(
-    file=relative_to_assets("entry_2.png"))
-entry_bg_2 = canvas.create_image(
-    446.5,
-    164.5,
-    image=entry_image_2
-)
-entry_2 = Entry(
-    bd=0,
-    bg="#D9D9D9",
-    fg="#000716",
-    highlightthickness=0
-)
-entry_2.place(
-    x=333.0,
-    y=153.0,
-    width=227.0,
-    height=21.0
-)
+    image_image_5 = PhotoImage(
+        file=relative_to_assets("image_5.png"))
+    image_5 = canvas.create_image(
+        330.0,
+        74.0,
+        image=image_image_5
+    )
 
-entry_image_3 = PhotoImage(
-    file=relative_to_assets("entry_3.png"))
-entry_bg_3 = canvas.create_image(
-    446.5,
-    223.5,
-    image=entry_image_3
-)
-entry_3 = Entry(
-    bd=0,
-    bg="#D9D9D9",
-    fg="#000716",
-    highlightthickness=0
-)
-entry_3.place(
-    x=333.0,
-    y=212.0,
-    width=227.0,
-    height=21.0
-)
+    button_image_1 = PhotoImage(
+        file=relative_to_assets("button_1.png"))
+    button_1 = Button(
+        image=button_image_1,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: print("button_1 clicked"),
+        relief="flat"
+    )
+    button_1.place(
+        x=328.0,
+        y=356.0,
+        width=237.0,
+        height=36.0
+    )
 
-entry_image_4 = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
-entry_bg_4 = canvas.create_image(
-    446.5,
-    281.5,
-    image=entry_image_4
-)
-entry_4 = Entry(
-    bd=0,
-    bg="#D9D9D9",
-    fg="#000716",
-    highlightthickness=0
-)
-entry_4.place(
-    x=333.0,
-    y=270.0,
-    width=227.0,
-    height=21.0
-)
-
-image_image_5 = PhotoImage(
-    file=relative_to_assets("image_5.png"))
-image_5 = canvas.create_image(
-    330.0,
-    74.0,
-    image=image_image_5
-)
-
-button_image_1 = PhotoImage(
-    file=relative_to_assets("button_1.png"))
-button_1 = Button(
-    image=button_image_1,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_1 clicked"),
-    relief="flat"
-)
-button_1.place(
-    x=328.0,
-    y=356.0,
-    width=237.0,
-    height=36.0
-)
-
-button_image_2 = PhotoImage(
-    file=relative_to_assets("button_2.png"))
-button_2 = Button(
-    image=button_image_2,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_2 clicked"),
-    relief="flat"
-)
-button_2.place(
-    x=328.0,
-    y=309.0,
-    width=237.0,
-    height=38.0
-)
-window.resizable(False, False)
-window.mainloop()
+    button_image_2 = PhotoImage(
+        file=relative_to_assets("button_2.png"))
+    button_2 = Button(
+        image=button_image_2,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: print("button_2 clicked"),
+        relief="flat"
+    )
+    button_2.place(
+        x=328.0,
+        y=309.0,
+        width=237.0,
+        height=38.0
+    )

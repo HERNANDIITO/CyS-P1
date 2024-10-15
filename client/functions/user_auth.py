@@ -12,6 +12,8 @@ print(f"Generated passphrase: {passphrase}")
 
 
 def register(email, password): 
+    print(email, password)
 
 
 def login(email, password):
+    print(email, password)
