@@ -1,6 +1,6 @@
 from customtkinter import *
 from PIL import Image
-from functions import user_auth
+#from functions import user_auth
 import os
 
 #from functions import user_auth
@@ -12,7 +12,7 @@ def on_login():
     password = password_var.get()  # Obtener el texto ingresado en el campo de contraseña
     print(username)
     print(password)
-    user_auth.login(username, password) 
+    # user_auth.login(username, password) 
 
 def login_menu(app):
     # Variables para almacenar los datos introducidos por el usuario
