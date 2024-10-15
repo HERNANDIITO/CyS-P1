@@ -3,7 +3,6 @@ from CTkTable import CTkTable
 from ui.ui_subir_archivo import subir_archivo
 
 def home(app):
-    ruta_archivo = None
 
     # Frame para colocar el título y el botón en la misma línea 
     # (Idea de ChatGPT pero he entendido lo que ha puesto y he modificado cosas, no me acribilleis por favor, os puedo explicar todo el código si hace falta)
