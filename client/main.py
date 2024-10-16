@@ -18,7 +18,7 @@ set_appearance_mode("light")
 
 # Llamamos a la interfaz "login" pasandole la app por parametro
 #ui_login.login_menu(app)
-# ui_home.home(app)
+#ui_home.home(app)
 ui_registro.register_menu(app)
 
 app.mainloop()
