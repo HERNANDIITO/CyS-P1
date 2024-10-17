@@ -2,7 +2,7 @@ import requests, json
 from functions.aes import encrypt_file, decrypt_file,generate_aes_key
 from functions.rsa import rsa_encrypt, generate_rsa_keys
 from customtkinter import CTk, set_appearance_mode
-from ui import ui_login, ui_home, ui_registro
+from ui import ui_login
 
 
 # Variables para las peticiciones
@@ -17,8 +17,6 @@ app.configure(bg="white")
 set_appearance_mode("light")
 
 # Llamamos a la interfaz "login" pasandole la app por parametro
-#ui_login.login_menu(app)
-#ui_home.home(app)
-ui_registro.register_menu(app)
+ui_login.login_menu(app)
 
 app.mainloop()
