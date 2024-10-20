@@ -1,93 +1,90 @@
-from pathlib import Path
-from tkinter import PhotoImage, Button, Canvas
 
+from customtkinter import *
+import tkinter as tk
+from tkinter import filedialog
+from ui.clearApp import clearApp
+# from functions.encrypt_decrypt import encrypt
 
-# Definir el path base relativo a la ubicación del archivo actual
-OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / "imgs" / "subir_archivo"
+archivo_path = None
 
-def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH / Path(path)
+def on_volver(app):
+    from ui.ui_home import home
+    clearApp(app)
+    home(app)
+
+def seleccionar_archivo():
+    global archivo_path #referencio la var global para modificarla
+
+    # Abrir explorador de archivos
+    archivo = filedialog.askopenfilename(title="Seleccionar archivo")
+    
+    if archivo:
+        archivo_path = archivo
+        # Mostrar texto debajo del botón si el archivo se selecciona
+        archivo_subido_label.configure(text=f"Archivo subido correctamente: {archivo.split('/')[-1]}", text_color="green")
+        archivo_subido_label.pack(pady=(5, 20))
+    else:
+        archivo_subido_label.configure(text="No se ha seleccionado ningún archivo", text_color="red")
+        archivo_subido_label.pack(pady=(5, 20))
+
+def on_cifrar_archivo(): 
+    # (CODIGO DE EJEMPLO) no controla si se hace correctamente el cifrado
+    # encrypt(archivo_path)
+    print('si todo va bien el archivo se cifra')
+    archivo_cifrado_label.configure(text="Archivo cifrado correctamente", text_color="blue")
+    archivo_cifrado_label.pack(pady=(5, 20))
+
 
 def subir_archivo(app):
-    canvas = Canvas(
-        app,
-        bg="#000000",
-        height=400,
-        width=600,
-        bd=0,
-        highlightthickness=0,
-        relief="ridge"
-    )
+    # # Crear ventana principal
+    # app = CTk()
+    # app.geometry("600x400")  # Tamaño de la ventana
+    # app.title("Encriptación de Archivos")
+    # app.configure(fg_color="white")  # Fondo blanco
 
-    canvas.place(x=0, y=0)
+    # Título grande centrado en morado
+    title_label = CTkLabel(master=app, text="ENCRIPTACIÓN DE ARCHIVOS", 
+                           text_color="#601E88", font=("Arial Bold", 32))
+    title_label.pack(pady=(40, 5)) 
 
-    # Cargar la imagen utilizando el path relativo
-    image_image_1 = PhotoImage(file=relative_to_assets("image_1.png"))
-    
-    image_1 = canvas.create_image(
-        300.0,
-        200.0,
-        image=image_image_1
-    )
+    # Subtítulo centrado en gris
+    subtitle_label = CTkLabel(master=app, text="Sube tus archivos y encriptalos aquí", 
+                              text_color="#606060", font=("Arial", 15))
+    subtitle_label.pack(pady=(5, 40))
 
-    canvas.create_rectangle(
-        17.0,
-        10.0,
-        577.0,
-        390.0,
-        fill="#FFFFFF",
-        outline="")
+    # Botón para "Seleccionar archivo"
+    seleccionar_button = CTkButton(master=app, text="Seleccionar archivo", 
+                                   fg_color="#601E88", text_color="white", font=("Arial", 14),
+                                   hover_color="#D073F2", 
+                                   command= seleccionar_archivo)
+    seleccionar_button.pack(pady=(5, 20)) 
 
-    canvas.create_text(
-        180.0,
-        75.0,
-        anchor="nw",
-        text="Sube tus archivos y encriptalos aquí",
-        fill="#606060",
-        font=("KantumruyPro Medium", 15 * -1)
-    )
+    # Etiqueta para mostrar el estado del archivo subido (vacía por defecto)
+    global archivo_subido_label
+    archivo_subido_label = CTkLabel(master=app, text="", 
+                                    text_color="green", font=("Arial", 12))
 
-    # Cargar los botones utilizando el path relativo
-    button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
 
-    button_1 = Button(
-        image=button_image_1,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_1 clicked"),
-        relief="flat"
-    )
+    # Botón para cifrar archivo
+    cifrar_button = CTkButton(master=app, text="Cifrar archivo", 
+                              fg_color="#601E88", text_color="white", font=("Arial", 14),
+                              hover_color="#D073F2", 
+                              command= on_cifrar_archivo)
+    cifrar_button.pack(pady=(5, 20))
 
-    button_1.place(
-        x=182.0,
-        y=129.0,
-        width=237.0,
-        height=38.0
-    )
+    # Etiqueta para mostrar si el archivo se ha cifrado bien (vacía por defecto)
+    global archivo_cifrado_label
+    archivo_cifrado_label = CTkLabel(master=app, text="", 
+                                    text_color="green", font=("Arial", 12))
 
-    button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
+    # Botón volver
+    volver_button = CTkButton(master=app, text="Volver", fg_color="#601E88", 
+                              text_color="white", font=("Arial", 12), 
+                              hover_color="#D073F2", 
+                              command=lambda: on_volver(app))
+    volver_button.place(x=10, y=350)  # Colocar en la parte inferior izquierda
 
-    button_2 = Button(
-        image=button_image_2,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_2 clicked"),
-        relief="flat"
-    )
+    # Ejecutar la aplicación
+    app.mainloop()
 
-    button_2.place(
-        x=181.0,
-        y=233.0,
-        width=237.0,
-        height=38.0
-    )
 
-    canvas.create_text(
-        65.0,
-        39.0,
-        anchor="nw",
-        text="ENCRIPTACIÓN DE ARCHIVOS",
-        fill="#601E88",
-        font=("KantumruyPro Medium", 32 * -1)
-    )

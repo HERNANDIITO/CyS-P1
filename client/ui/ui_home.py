@@ -1,6 +1,11 @@
 from customtkinter import *
 from CTkTable import CTkTable
+from ui.clearApp import clearApp
 from ui.ui_subir_archivo import subir_archivo
+
+def on_subir_archivo(app):
+    clearApp(app)
+    subir_archivo(app)
 
 def home(app):
 
@@ -22,7 +27,7 @@ def home(app):
         fg_color = "purple",
         hover_color = "#A16FB0",
         text_color = "#ffffff",
-        command = lambda : subir_archivo(app)
+        command = lambda : on_subir_archivo(app)
     )
 
     btn_selec_archivo.pack(side="right")
