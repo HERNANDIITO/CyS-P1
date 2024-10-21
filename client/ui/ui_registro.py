@@ -1,5 +1,6 @@
 from customtkinter import *
 from PIL import Image
+from functions import user_auth
 from functions.rsa import generate_rsa_keys
 from ui import ui_home, ui_login
 from ui.clearApp import clearApp
@@ -21,29 +22,11 @@ def on_register(app):
     pass2 = pass2_var.get()
     email = email_var.get()
 
-    # Verificar que las contraseñas coinciden
-    if pass2 != password:
-        print("Error: Datos incorrectos: las contraseñas no coinciden")
-        return
+    result = user_auth.register(username, email, password, pass2)
 
-    # Generar las claves RSA
-    privateRSA, publicRSA = generate_rsa_keys()
-
-    # Llamar a la función register() para realizar un registro
-    r = requests.put(server+"/users/register", json = {
-        "user": username,
-        "password": password,
-        "email": email,
-        "publicRSA": str (publicRSA),
-        "privateRSA": str (privateRSA)
-    })
-
-    print(json.loads(r.text))  
-
-    if(json.loads(r.text)["code"] == "200"):
-        print("CAMBIA DE INTERFAZ... O LO INTENTA")
-        clearApp(app)
-        ui_home.home(app)
+    # if(json.loads(r.text)["code"] == "200"):
+    #     clearApp(app)
+    #     ui_home.home(app)
 
 def on_login(app):
     clearApp(app)

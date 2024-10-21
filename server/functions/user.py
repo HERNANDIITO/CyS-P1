@@ -27,7 +27,7 @@ class User:
 
         # Comprobar que tenemos todos los parametros necesarios
         # En caso de no tenerlo montamos un objeto tipo result para devolverlo
-        if user == None or password == None or email == None or publicRSA == None or privateRSA == None:
+        if user == None or password == None or email == None:
             # Esta funcion crea un objeto tipo result con los parametros indicados
             # en este ejemplo concreto he puesto lo que significan los parametros, pero mas adelante se omitira
             return Result( code = 400, msg = "Mala solicitud: faltan parámetros", status = False)
@@ -37,8 +37,8 @@ class User:
 
         # Si hay algo en la variable, significa que ya hay un usuario registrado bajo ese email
         # No permitimos otro
-        if userData:
-            return Result(400, "Mala solicitud: email en uso", False)
+        # if userData:
+        #     return Result(400, "Mala solicitud: email en uso", False)
 
         # Intentamos introducir el usuario nuevo en la base de datos 
         try:
@@ -51,12 +51,13 @@ class User:
                 "privateRSA": privateRSA,
                 "email": email
             })
+            userID = db.get_data( "users", { "email": email } )[0]
         # Si algo falla devolvemos un result informando
         except:
             return Result(500, "Algo ha ido mal", False)
 
         # Si el código ha llegado hasta aquí significa que todo ha ido bien, por lo que devolvemos un mensaje positivo
-        return Result(200, "Usuario registrado con éxito", True)
+        return Result(200, "Usuario registrado con éxito", True, {"userID": userID})
     
     @classmethod
     def login(self, email: str, password: str) -> Result:
@@ -85,6 +86,17 @@ class User:
             userList.append( User(user[0]) )
 
         return userList
+    
+    def modifyKeys( self, privateRSA: str, publicRSA: str ):
+        try: 
+            db.update_data( "users", {
+                "privateRSA": privateRSA,
+                "publicRSA": publicRSA
+            }, { "userId": self.userId })
+            return Result(body= None, code="200", msg= "Claves modificadas con éxito", status=True)
+        except:
+            return Result(body= None, code="500", msg= "Error del servidor, inténtalo más tarde", status=False)
+        
 
     def modifyUser( self, userId: str, user: str | None = None, password: str | None = None ) -> "User":
         toModify = User(userId)

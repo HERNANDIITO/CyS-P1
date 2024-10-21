@@ -2,7 +2,7 @@ from customtkinter import *
 from PIL import Image
 from ui import ui_registro, ui_home
 from ui.clearApp import clearApp
-#from functions import user_auth
+from functions import user_auth
 import os
 
 

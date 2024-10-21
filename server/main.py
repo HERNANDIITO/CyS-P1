@@ -26,6 +26,8 @@ def registerUserPassword():
     - result.msg: mensaje de contexto
     - result.code: codigo de error http
     - result.status: si ha sido realizada la petición o no
+    - result.body:
+        · userId: ID del usuario
     '''
 
     # Se leen los parametros del body
@@ -59,6 +61,35 @@ def loginUserPassword():
 
     # Se consume la función de clase para crear un usuario
     result = User.login(input_json["email"], input_json["password"])
+
+    # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
+    return json.loads(str(result))
+
+@app.post("/users/update-keys")
+def updateKeys():
+    '''
+    Servicio para modificar las keys tras el registro.
+    Parámetros en el body de la petición:
+    - userID: str
+    - privateRSA: str
+    - publicRSA: str
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body:  
+        · privateRSA: RSA Privado
+        · publicRSA: RSA Publico
+    '''
+
+    # Se leen los parametros del body
+    input_json = request.get_json(force=True)
+
+    # Se consume la función de clase para crear un usuario
+    user = User(input_json["userId"])
+    
+    result = user.modifyKeys( privateRSA = input_json["privateRSA"], publicRSA = input_json["publicRSA"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
     return json.loads(str(result))
