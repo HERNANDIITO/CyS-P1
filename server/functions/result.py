@@ -1,3 +1,5 @@
+import json
+
 class Result:
     def __init__(self, code = None, msg = None, status = None, body = None):
         self.code = code
@@ -10,3 +12,13 @@ class Result:
     
     def __repr__( self ):
         return f'{{"code": "{self.code}", "msg": "{self.msg}", "status": "{self.status}", "body": "{self.body}"}}'
+
+    def jsonSelf( self ):
+        json_self = {
+            "code": self.code,
+            "msg": self.msg,
+            "status": self.status,
+            "body": self.body
+        }
+        
+        return json.dumps(json_self)

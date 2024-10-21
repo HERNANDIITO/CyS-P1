@@ -3,7 +3,7 @@ from functions.aes import encrypt_file, decrypt_file,generate_aes_key
 from functions.rsa import rsa_encrypt, generate_rsa_keys
 from customtkinter import CTk, set_appearance_mode
 from ui import ui_login
-from functions.user_auth import register
+from functions.user_auth import register, login
 
 
 # Variables para las peticiciones
@@ -21,6 +21,7 @@ server = "http://127.0.0.1:5000"
 # ui_login.login_menu(app)
 
 # register(email="g@gamil.com", password="12345678", password2="12345678", username="AAAA" )
+login(email="g@gamil.com", password="12345678")
 
 
 # japp.mainloop()

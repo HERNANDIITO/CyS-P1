@@ -73,9 +73,11 @@ class User:
         if str(password) != str(userData[2]):
             return Result(400, "Mala solicitud: contraseña equivocada", False)
         
+        user = User(userData[0])
+        
         # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
         # y poder utilizarla en los siguientes servicios
-        return Result(200, "Sesión iniciada con éxito", True, {"userID": userData[0], "privateRSA": userData[5]})
+        return Result(200, "Sesión iniciada con éxito", True, {"userID": user.userId, "privateRSA": user.privateRSA, "publicRSA": user.publicRSA})
 
     @classmethod
     def getAllUsers( self ) -> List['User']:
@@ -91,7 +93,8 @@ class User:
         try: 
             db.update_data( "users", {
                 "privateRSA": privateRSA,
-                "publicRSA": publicRSA
+                "publicRSA": publicRSA,
+                "userID": self.userId
             }, { "userId": self.userId })
             return Result(body= None, code="200", msg= "Claves modificadas con éxito", status=True)
         except:

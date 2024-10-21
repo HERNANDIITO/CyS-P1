@@ -3,8 +3,9 @@ import secrets
 import string
 from Crypto.Hash import SHA3_256
 import requests
+from pathlib import Path
 
-from functions.rsa import generate_rsa_keys, export_keys
+from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
 from functions.aes import encrypt_private_key_with_aes
 
 global server
@@ -48,26 +49,35 @@ def register(username, email, password, password2):
         "privateRSA": None
     })
 
-    
-    body = json.loads(register_result.text)["body"].replace("'", '"')
-    userID = json.loads(body)["userID"]
-    
-    if (json.loads(register_result.text)["code"] == "200"):
+    register_result_json = json.loads(register_result.text)
+
+    if (str(register_result_json["code"]) == "200"):
+        # Recogemos el userID
+        userID = register_result_json["body"]["userID"]
         # Generar las claves RSA
         privateRSA, publicRSA = generate_rsa_keys()
+        # Exportar las claves RSA
         pemPrivateRSA, pemPublicRSA = export_keys(private_key = privateRSA, public_key = publicRSA)
-        encryptedPEMPrivateRSA = encrypt_private_key_with_aes(private_key_pem = pemPrivateRSA, aes_key = aes_key)
+        # Encriptar la RSA privada antes de subirla al servidor
+        encryptedPEMPrivateRSA = encrypt_private_key_with_aes(private_key_pem = pemPrivateRSA, aes_key = aes_key.encode("utf-8"))
         
+        # Hacemos la peticion decodificando ambas claves para que la DB pueda interpretarlas (no acepta strings binarios)
         update_result = requests.post(server + "/users/update-keys", json = {
             "userID": userID,
-            "privateRSA": encryptedPEMPrivateRSA,
-            "publicRSA": pemPublicRSA
+            "privateRSA": encryptedPEMPrivateRSA.decode("utf-8"),
+            "publicRSA": pemPublicRSA.decode("utf-8")
         })
         
+        update_result_json = json.loads(update_result.text)
         
+        # Comprobamos el resultado de la request
+        if (update_result_json["code"] != "200"):
+            print( update_result_json["msg"] )
+    
+    else:
+        # En caso de que la primera request falle...
+        print( register_result_json["msg"] )
         
-        
-
 
 def login(email, password) -> str:
     respuesta = ''
@@ -89,17 +99,37 @@ def login(email, password) -> str:
     password, aes_key = hash_management(password)
     
     # Llamar a la función login() para realizar un registro
-    r = requests.put(server+"/users/login", json = {
+    login_result = requests.post(server+"/users/login", json = {
         "email": email,
         "password": password
     })
     
-    # if(json.loads(r.text)["code"] == "200"):
+    login_result_json = json.loads(login_result.text)
+    
+    if(str(json.loads(login_result.text)["code"]) == "200"):
         # hacer una peticion que me devuelva la clave privada del usuario
+        userID      = login_result_json["body"]["userID"]
+        privateRSA  = login_result_json["body"]["privateRSA"]
+        publicRSA   = login_result_json["body"]["publicRSA"]
+        
         # desencriptar con aes la pass_hash_part2, descifrar y guardar en local
         
+        # Las claves no van y no puedo mas :C
+        # importedPublicKey  = import_public_key(public_key_pem = publicRSA)
+        # importedPrivateKey = import_private_key(private_key_pem = privateRSA)
+            
+        # with open('client\\data\\userID.txt', 'wb') as f:
+        #     f.write(importedPublicKey)
+            
+        # with open('client\\data\\userID.txt', 'wb') as f:
+        #     f.write(importedPrivateKey)
+            
+        f = open('client\\data\\userID.txt', 'w+')
+        f.write(str(userID))
+        
+        
 
-def hash_management(password):
+def hash_management(password) -> str:
     pass_hash = SHA3_256.new()
     pass_hash.update(bytes(password, encoding="utf-8"))
     

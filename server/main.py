@@ -37,7 +37,7 @@ def registerUserPassword():
     result = User.register(input_json["user"], input_json["password"], input_json["email"], input_json["publicRSA"], input_json["privateRSA"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(str(result))
+    return json.loads(result.jsonSelf())
 
 @app.post("/users/login")
 def loginUserPassword():
@@ -54,6 +54,7 @@ def loginUserPassword():
     - result.body:  
         · userId: ID del suaurio
         · privateRSA: RSA Privado
+        - publicRSA: RSA Publico
     '''
 
     # Se leen los parametros del body
@@ -63,7 +64,7 @@ def loginUserPassword():
     result = User.login(input_json["email"], input_json["password"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(str(result))
+    return json.loads(result.jsonSelf())
 
 @app.post("/users/update-keys")
 def updateKeys():
@@ -87,12 +88,12 @@ def updateKeys():
     input_json = request.get_json(force=True)
 
     # Se consume la función de clase para crear un usuario
-    user = User(input_json["userId"])
+    user = User(input_json["userID"])
     
     result = user.modifyKeys( privateRSA = input_json["privateRSA"], publicRSA = input_json["publicRSA"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(str(result))
+    return json.loads(result.jsonSelf())
 
 @app.post("/users/login-google")
 def loginGoogle():
