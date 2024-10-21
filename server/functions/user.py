@@ -1,6 +1,8 @@
 from typing import List
 from functions import database as db 
 from functions.result import Result
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 class User:
     def __init__( self, userId: str ):
@@ -72,7 +74,7 @@ class User:
         
         # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
         # y poder utilizarla en los siguientes servicios
-        return Result(200, "Sesión iniciada con éxito", True, {"userID": userData[0]})
+        return Result(200, "Sesión iniciada con éxito", True, {"userID": userData[0], "privateRSA": userData[5]})
 
     @classmethod
     def getAllUsers( self ) -> List['User']:
@@ -101,3 +103,28 @@ class User:
 
     def getFiles( self ) -> List[str]:
         return db.get_data( "files", { "user": self.userId } )
+    
+    @classmethod
+    def loginGoogle(sel, token: str) -> Result:
+        try:
+            # Comprueba que el token es valido
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), '930275995654-845nchda7mj5aqm2dit8c7kvv8h92ag4.apps.googleusercontent.com')
+
+            # ID token is valid. Get the user's email from the decoded token.
+            user_email = idinfo['email']
+            
+            # Intentamos recoger un usuario con el mismo email que acabamos de recibir
+            userData = db.get_data( "users", { "email": user_email })
+
+            # Si no hay nada en la variable, significa que el usuario no existe
+            # No permitimos otro
+            if not userData:
+                return Result(400, "Mala solicitud: el usuario no existe", False)
+            
+            # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
+            # y poder utilizarla en los siguientes servicios
+            return Result(200, "Sesión iniciada con éxito", True, {"userID": userData[0], "privateRSA": userData[5]})
+        
+        except ValueError:
+            # Invalid token
+            return Result(400, "Mala solicitud: el id_token de Google no es válido", False)
