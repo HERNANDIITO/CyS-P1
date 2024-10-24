@@ -2,10 +2,14 @@ from customtkinter import *
 from CTkTable import CTkTable
 from ui.clearApp import clearApp
 from ui.ui_subir_archivo import subir_archivo
+from functions.file_requests import download_file
 
 def on_subir_archivo(app):
     clearApp(app)
     subir_archivo(app)
+
+def on_button_click(row_id):
+    print(f"Botón de la fila {row_id} presionado")
 
 def home(app):
 
@@ -33,20 +37,45 @@ def home(app):
     btn_selec_archivo.pack(side="right")
 
     subtitle = CTkLabel(master=app, text="Estos son tus archivos:", text_color="#6B6B6B", font=("Arial", 14))
-    subtitle.pack(pady=(20,0))
+    subtitle.pack(pady=(20,50))
 
     table_data = [
         ["ID", "Nombre de archivo", "Tamaño"],
-        ['3833', 'Smartphone', 'Alice'],
+        ['1', 'Smartphone', 'Alice'],
         ['6432', 'Laptop', 'Bob'],
         ['2180', 'Tablet', 'Crystal'],
         ['5438', 'Headphones', 'John'],
     ]
 
+    # Crear las filas manualmente con botones a la derecha
+    for idx, row in enumerate(table_data):
+        # Establecer el marco de la fila
+        if idx == 0:
+            row_frame = CTkFrame(master=app, fg_color="purple", border_color="purple", border_width=2)
+            row_frame.pack(fill="x", padx=20, pady=5)
+        else:
+            row_frame = CTkFrame(master=app, fg_color="#FFFFFF")
+            row_frame.pack(fill="x", padx=20, pady=5)
 
-    table = CTkTable(master=app, values=table_data, colors=["#FFFFFF", "#FFFFFF"], 
-                    header_color="purple", hover_color="#EEEEEE")
+        # Añadir celdas a la fila
+        for cell_idx, cell in enumerate(row):  # Usa enumerate para obtener el índice de la celda
+            # Si es la primera fila
+            if idx == 0:
+                cell_label = CTkLabel(master=row_frame, text=cell, text_color="#FFFFFF", anchor="w", width=100)
+                cell_label.pack(side="left", padx=10)
+            else:
+                cell_label = CTkLabel(master=row_frame, text=cell, anchor="w", width=100)
+                cell_label.pack(side="left", padx=10)
 
-    table.edit_row(0, text_color="#FFFFFF", hover_color="purple")
-
-    table.pack(expand=True)
+        # Añadir el botón a la derecha
+        if idx != 0:
+            btn_action = CTkButton(
+                master=row_frame, 
+                text="Descargar",
+                corner_radius=32, 
+                fg_color="purple",
+                hover_color="#A16FB0",
+                text_color="#ffffff",
+                command= lambda : download_file(0)
+            )
+            btn_action.pack(side="right", padx=(10, 0))

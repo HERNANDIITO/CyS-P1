@@ -1,6 +1,4 @@
-
 from customtkinter import *
-import tkinter as tk
 from tkinter import filedialog
 from ui.clearApp import clearApp
 # from functions.encrypt_decrypt import encrypt
