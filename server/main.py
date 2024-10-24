@@ -171,3 +171,14 @@ def download(file_id):
     uploads_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     # Devuelve el fichero con el nombre especificado
     return File.download(uploads_path, file_id)
+
+@app.delete('/files')
+def delete():
+    '''
+    Servicio de eliminación de ficheros
+    '''
+
+    input_json = request.get_json(force=True)
+    file = File(input_json["fileId"])
+    result = file.delete()
+    return json.loads(result.jsonSelf())

@@ -49,4 +49,14 @@ class File:
     def download(self, path: str, file_id: int) -> Response:
         fileData = db.get_data( "files", { "fileId": file_id })
         return send_from_directory(path, secure_filename(fileData[2]))
+    
+    def delete(self) -> Result:
+        fileData = db.get_data("files", {"fileId": self.fileId})
 
+        if not fileData:
+            return Result(400, "Archivo no encontrado", False)
+        try:
+            db.remove_data("files", {"fileId": self.fileId})
+            return Result(200, "Archivo eliminado con éxito", True)
+        except:
+            return Result(500, "Error del servidor", False)
