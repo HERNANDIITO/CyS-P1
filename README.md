@@ -14,12 +14,15 @@
 │   └── rsa.py                  # Funciones relacionadas con RSA
 │   └── encrypt_decrypt.py      # Utiliza las funciones de AES y RSA para hacer el cifrado y descifrado.
 ├── tests                       # Carpeta con pruebas varias
-├── ui                          # Carpeta con pruebas varias
+├── ui                          # Carpeta que contiene el sistema de interfaces
 │   ├── __init__.py             # Init de ui
 │   ├── imgs                    # Imágenes
-│   ├── ui.py                   # Funciones de la interfaz
+│   ├── ui_home.py              # Funciones de la interfaz
 │   └── ui_login.py             # Funciones de la interfaz de login
-├── keys                        # Carpeta con pruebas varias
+│   └── ui_prueba.py            # Funciones de la interfaz de preuba
+│   └── ui_registro.py          # Funciones de la interfaz de reg
+│   └── ui_subir_archivo.py     # Funciones de la interfaz de subir archivo
+├── keys                        # Carpeta con claves
 │   ├── public_key.pem          # Contenedor de claves publicas (CLIENT SIDE)
 │   └── private_key.pem         # Contenedor de claves privadas (CLIENT SIDE)
 └── ...
