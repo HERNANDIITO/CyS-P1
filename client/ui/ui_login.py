@@ -7,7 +7,10 @@ from ui.clearApp import clearApp
 from functions import user_auth
 from functions import google_auth
 import os
-
+        
+def successfullLogin(app, user):
+    clearApp(app) 
+    ui_home.home(app= app, user= user)
 
 # Función que maneja el evento de inicio de sesión
 def on_login(app):
@@ -19,21 +22,19 @@ def on_login(app):
     result = user_auth.login(email=email, password=password)
     
     if ( result ):
-        clearApp(app) 
-        ui_home.home(app= app, user= result)
+        successfullLogin(app=app, user=result)
         
-
-def on_register(app):
-    clearApp(app) 
-    ui_registro.register_menu(app)
-
 def on_google_login(app):
     resultado = google_auth.google_login()
     
     if (resultado['code'] == '200'):
-        successfulLogin(app)
+        successfullLogin(app, resultado)
     else:
         CTkMessagebox(title="Error", message="Error al iniciar sesión con Google", icon="cancel")
+
+def on_register(app):
+    clearApp(app) 
+    ui_registro.register_menu(app)
 
 def login_menu(app):
     # Variables para almacenar los datos introducidos por el usuario

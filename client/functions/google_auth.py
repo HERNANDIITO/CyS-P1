@@ -1,11 +1,13 @@
 import json
+from pathlib import Path
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import requests
 from functions.google_user import GoogleUser
+import os
 
 flow = InstalledAppFlow.from_client_secrets_file(
-    'secrets.json',
+    os.path.join(os.path.dirname(__file__), Path('secrets.json')),
     scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid'])
 
 # Abre un navegador para que el usuario elija la cuenta de google con la que autenticarse

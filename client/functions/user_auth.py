@@ -24,7 +24,7 @@ passphrase = generate_secure_password()
 print(f"Generated passphrase: {passphrase}")
 
 
-def register(username, email, password, password2): 
+def register(username, email, password, password2) -> User | None: 
     # Verificar que las contraseñas coinciden
     
     if username is None or email is None or password is None or password2 is None:
@@ -40,6 +40,7 @@ def register(username, email, password, password2):
         return
     
     # Encriptar la contraseña
+    plain_password = password
     password, aes_key = hash_management(password)
     
     
@@ -74,12 +75,13 @@ def register(username, email, password, password2):
         update_result_json = json.loads(update_result.text)
         
         # Comprobamos el resultado de la request
-        if (update_result_json["code"] != "200"):
-            print( update_result_json["msg"] )
+        if (str(update_result_json["code"]) == "200"):
+            user = login( email = email, password = plain_password )
+            return user
     
     else:
         # En caso de que la primera request falle...
-        print( register_result_json["msg"] )
+        return None
         
 
 def login(email, password) -> User | None:
@@ -110,7 +112,9 @@ def login(email, password) -> User | None:
     login_result_json = json.loads(login_result.text)
     
     print("PRE 200!")
-    print( "code", json.loads(login_result.text)["code"] )
+    print( "code", json.loads(login_result.text) )
+    print( "email", email )
+    print( "password", password )
     if(str(json.loads(login_result.text)["code"]) == "200"):
         
         # hacer una peticion que me devuelva la clave privada del usuario

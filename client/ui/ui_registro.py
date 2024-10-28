@@ -22,11 +22,12 @@ def on_register(app):
     pass2 = pass2_var.get()
     email = email_var.get()
 
-    result = user_auth.register(username, email, password, pass2)
+    user = user_auth.register(username, email, password, pass2)
+    print("user:", user)
 
-    # if(json.loads(r.text)["code"] == "200"):
-    #     clearApp(app)
-    #     ui_home.home(app)
+    if(user):
+        clearApp(app)
+        ui_home.home(app, user)
 
 def on_login(app):
     clearApp(app)

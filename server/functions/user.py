@@ -129,16 +129,17 @@ class User:
             user_email = idinfo['email']
             
             # Intentamos recoger un usuario con el mismo email que acabamos de recibir
-            userData = db.get_data( "users", { "email": user_email })
+            user = db.get_data( "users", { "email": user_email })
 
             # Si no hay nada en la variable, significa que el usuario no existe
             # No permitimos otro
-            if not userData:
+            if not user:
                 return Result(400, "Mala solicitud: el usuario no existe", False)
             
             # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
             # y poder utilizarla en los siguientes servicios
-            return Result(200, "Sesión iniciada con éxito", True, {"userID": userData[0], "privateRSA": userData[5]})
+            return Result(200, "Sesión iniciada con éxito", True, {"userID": user.userId, "privateRSA": user.privateRSA, "publicRSA": user.publicRSA})
+
         
         except ValueError:
             # Invalid token
