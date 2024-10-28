@@ -31,6 +31,9 @@ def encrypt_private_key_with_aes(private_key_pem, aes_key):
     #Descifra una clave privada RSA utilizando AES128.
 def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
     encrypted_private_key_pem = base64.b64decode(encrypted_private_key_pem)
+    
+    aes_key =  aes_key.encode("utf8")
+    
     cipher = AES.new(aes_key, AES.MODE_ECB)
     decrypted_private_key_pem = cipher.decrypt(encrypted_private_key_pem)
     private_key_pem = unpad(decrypted_private_key_pem, AES.block_size)

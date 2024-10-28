@@ -13,13 +13,12 @@ def on_login(app):
     print(email)
     print(password)
     
-    successfulLogin(app) # función para probar que funcionaba el cambio de ventana sin ensuciar esta
+    result = user_auth.login(email=email, password=password)
     
-    # user_auth.login(username, password)
-
-def successfulLogin(app):
-    clearApp(app)
-    ui_home.home(app)
+    if ( result ):
+        clearApp(app) 
+        ui_home.home(app= app, user= result)
+        
 
 def on_register(app):
     clearApp(app) 
@@ -51,7 +50,7 @@ def login_menu(app):
     CTkLabel(master=frame, text="A un solo paso de proteger tus archivos", text_color="#7E7E7E", anchor="w", justify="left", font=("Arial Bold", 12)).pack(anchor="w", padx=(15, 0))
 
     CTkLabel(master=frame, text="  Email:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=email_icon, compound="left").pack(anchor="w", pady=(38, 0), padx=(25, 0))
-    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", textvariable=username_var).pack(anchor="w", padx=(25, 0))
+    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", textvariable=email_var).pack(anchor="w", padx=(25, 0))
 
     CTkLabel(master=frame, text="  Contraseña:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=password_icon, compound="left").pack(anchor="w", pady=(21, 0), padx=(25, 0))
     CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", show="*", textvariable=password_var).pack(anchor="w", padx=(25, 0))

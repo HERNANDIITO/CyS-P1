@@ -11,7 +11,7 @@ def on_subir_archivo(app):
 def on_button_click(row_id):
     print(f"Botón de la fila {row_id} presionado")
 
-def home(app):
+def home(app, user):
 
     # Frame para colocar el título y el botón en la misma línea 
     # (Idea de ChatGPT pero he entendido lo que ha puesto y he modificado cosas, no me acribilleis por favor, os puedo explicar todo el código si hace falta)
@@ -22,7 +22,6 @@ def home(app):
     title = CTkLabel(master=header_frame, text="Página principal", font=("Arial", 24), 
                     text_color="purple", anchor="w", justify="left")
     title.pack(side="left")
-
 
     btn_selec_archivo = CTkButton(
         master = header_frame,

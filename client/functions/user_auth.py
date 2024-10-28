@@ -4,9 +4,12 @@ import string
 from Crypto.Hash import SHA3_256
 import requests
 from pathlib import Path
+import os
 
+from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
-from functions.aes import encrypt_private_key_with_aes
+from functions.aes import encrypt_private_key_with_aes, decrypt_private_key_with_aes
+
 
 global server
 server = "http://127.0.0.1:5000"
@@ -79,7 +82,7 @@ def register(username, email, password, password2):
         print( register_result_json["msg"] )
         
 
-def login(email, password) -> str:
+def login(email, password) -> User | None:
     respuesta = ''
 
     if(email == '' or password == ''):
@@ -106,7 +109,10 @@ def login(email, password) -> str:
     
     login_result_json = json.loads(login_result.text)
     
+    print("PRE 200!")
+    print( "code", json.loads(login_result.text)["code"] )
     if(str(json.loads(login_result.text)["code"]) == "200"):
+        
         # hacer una peticion que me devuelva la clave privada del usuario
         userID      = login_result_json["body"]["userID"]
         privateRSA  = login_result_json["body"]["privateRSA"]
@@ -115,18 +121,19 @@ def login(email, password) -> str:
         # desencriptar con aes la pass_hash_part2, descifrar y guardar en local
         
         # Las claves no van y no puedo mas :C
-        # importedPublicKey  = import_public_key(public_key_pem = publicRSA)
-        # importedPrivateKey = import_private_key(private_key_pem = privateRSA)
-            
-        # with open('client\\data\\userID.txt', 'wb') as f:
-        #     f.write(importedPublicKey)
-            
-        # with open('client\\data\\userID.txt', 'wb') as f:
-        #     f.write(importedPrivateKey)
-            
-        f = open('client\\data\\userID.txt', 'w+')
-        f.write(str(userID))
+        importedPublicKey  = import_public_key(public_key_pem = publicRSA)
         
+        decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem=privateRSA, aes_key=aes_key)
+        
+        importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)
+            
+        user = User( userId= userID, privateRSA= importedPrivateKey, publicRSA= importedPublicKey )
+        
+        return user
+    
+    else:
+        return None
+
         
 
 def hash_management(password) -> str:

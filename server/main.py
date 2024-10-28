@@ -182,3 +182,5 @@ def delete():
     file = File(input_json["fileId"])
     result = file.delete()
     return json.loads(result.jsonSelf())
+
+app.run()
