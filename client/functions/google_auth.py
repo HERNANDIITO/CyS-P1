@@ -2,8 +2,7 @@ import json
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import requests
-
-from google_user import GoogleUser
+from functions.google_user import GoogleUser
 
 flow = InstalledAppFlow.from_client_secrets_file(
     'secrets.json',
