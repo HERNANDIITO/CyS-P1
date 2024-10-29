@@ -116,8 +116,11 @@ class User:
 
         return toModify
 
-    def getFiles( self ) -> List[str]:
-        return db.get_data( "files", { "user": self.userId } )
+    def getFiles( self ) -> Result:
+        result = db.get_data_with_map( "files", { "userId": self.userId } )
+        if (result != None):
+            return Result(200, "Archivos obtenidos con éxito", True, {"files": result})
+        return Result(404, "El usuario no tiene ficheros", False, {})
     
     @classmethod
     def loginGoogle(sel, token: str) -> Result:
@@ -129,13 +132,14 @@ class User:
             user_email = idinfo['email']
             
             # Intentamos recoger un usuario con el mismo email que acabamos de recibir
-            user = db.get_data( "users", { "email": user_email })
+            userData = db.get_data( "users", { "email": user_email })
 
             # Si no hay nada en la variable, significa que el usuario no existe
             # No permitimos otro
-            if not user:
+            if not userData:
                 return Result(400, "Mala solicitud: el usuario no existe", False)
             
+            user = User(userData[0])
             # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
             # y poder utilizarla en los siguientes servicios
             return Result(200, "Sesión iniciada con éxito", True, {"userID": user.userId, "privateRSA": user.privateRSA, "publicRSA": user.publicRSA})

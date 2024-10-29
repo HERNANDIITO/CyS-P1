@@ -113,6 +113,18 @@ def get_data(table, data):
     data = cursor.fetchall()
     return len(data) > 0 and data[0] or None
 
+def get_data_with_map(table, data): 
+
+    keys_str = get_keys(data, "{0}=:{1}", ", ")
+    cursor.execute("SELECT * FROM {0} WHERE {1}".format(table, keys_str), data)
+    data = cursor.fetchall()
+
+    column_names = [desc[0] for desc in cursor.description]
+    results = [dict(zip(column_names, row)) for row in data]
+
+    return results if results else None
+    
+
 def remove_data(table, data):
     '''
         Eilimna la información solicitada de la tabla indicada por parámetro:

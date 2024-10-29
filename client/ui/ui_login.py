@@ -27,7 +27,7 @@ def on_login(app):
 def on_google_login(app):
     resultado = google_auth.google_login()
     
-    if (resultado['code'] == '200'):
+    if (resultado):
         successfullLogin(app, resultado)
     else:
         CTkMessagebox(title="Error", message="Error al iniciar sesión con Google", icon="cancel")
