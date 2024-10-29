@@ -122,7 +122,7 @@ def decrypt(file_path, user):
 
     # PETICION PARA RECUPERAR EL ARCHIVO DEL SERVIDOR
     # Recuperamos la información almacenada en la base de datos
-    file_name, encrypted_file, file_aes_key_encrypted, encrypted_rsa_private_key_pem, rsa_aes_key, file_type = get_encrypted_data_from_db(file_path)
+    file_name, encrypted_file, file_aes_key_encrypted, file_type = get_encrypted_data_from_db(file_path)
 
     # NO HACE FALTA YA ESTA EN LOCAL DESDE QUE SE REGISTRA/INICIA SESION (si SE HA HEHCO ANTES CLARO)
     # Desciframos la clave privada RSA con la clave AES128
