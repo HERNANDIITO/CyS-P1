@@ -1,4 +1,6 @@
-![imagen](https://github.com/user-attachments/assets/3cc0b12c-7212-4c8f-aaab-f86ab6257ca6)# Enlaces de interes
+![imagen](https://github.com/user-attachments/assets/3cc0b12c-7212-4c8f-aaab-f86ab6257ca6)
+
+# Enlaces de interes
 
 ## Interfaz con Python
 ### Cómo poner 3 botones con flet y os

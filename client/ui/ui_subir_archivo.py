@@ -5,10 +5,10 @@ from ui.clearApp import clearApp
 
 archivo_path = None
 
-def on_volver(app):
+def on_volver(app, user):
     from ui.ui_home import home
     clearApp(app)
-    home(app)
+    home(app, user)
 
 def seleccionar_archivo():
     global archivo_path #referencio la var global para modificarla
@@ -33,7 +33,7 @@ def on_cifrar_archivo():
     archivo_cifrado_label.pack(pady=(5, 20))
 
 
-def subir_archivo(app):
+def subir_archivo(app, user):
     # # Crear ventana principal
     # app = CTk()
     # app.geometry("600x400")  # Tamaño de la ventana
@@ -79,7 +79,7 @@ def subir_archivo(app):
     volver_button = CTkButton(master=app, text="Volver", fg_color="#601E88", 
                               text_color="white", font=("Arial", 12), 
                               hover_color="#D073F2", 
-                              command=lambda: on_volver(app))
+                              command=lambda: on_volver(app, user))
     volver_button.place(x=10, y=350)  # Colocar en la parte inferior izquierda
 
     # Ejecutar la aplicación

@@ -4,9 +4,12 @@ import rsa
 
 
 def get_file_name_and_type(file_path):
-    file_name = os.path.basename(file_path)
-    file = os.path.splitext(file_name)
-    return file[0], file[1]
+    try:
+        file_name = os.path.basename(file_path)
+        file = os.path.splitext(file_name)
+        return file[0], file[1]
+    except FileNotFoundError:
+        print("Error: No se encontró el archivo especificado.")
 
 # FUNCIONES DE CONTACTO CON LA BD----------------------------------------------------------------------------------------------------------------
 
@@ -33,12 +36,13 @@ def get_file_name_and_type(file_path):
 # FUNCIONES DE ENCRIPTADO Y DESENCRIPTADO--------------------------------------------------------------------------------------------------------
 
 # Funcion principal para gestionar el cifrado de archivos multimedia
-def encrypt(file_path): 
+def encrypt(file_path, user): 
     # Generamos una clave AES128 para cifrar el archivo
     file_aes_key = aes.generate_aes_key()
 
     # UN ERROR SI EL ARCHIVO NO SE ENCUENTRA ESTARÍA CHULO
     # Obtenemos el nombre y extension del fichero
+    
     file_name, file_type = get_file_name_and_type(file_path)
 
     # Creamos el archivo de salida, resultado cifrado

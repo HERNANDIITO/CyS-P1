@@ -4,9 +4,9 @@ from ui.clearApp import clearApp
 from ui.ui_subir_archivo import subir_archivo
 from functions.file_requests import download_file
 
-def on_subir_archivo(app):
+def on_subir_archivo(app, user):
     clearApp(app)
-    subir_archivo(app)
+    subir_archivo(app, user)
 
 def on_button_click(row_id):
     print(f"Botón de la fila {row_id} presionado")
@@ -30,7 +30,7 @@ def home(app, user):
         fg_color = "purple",
         hover_color = "#A16FB0",
         text_color = "#ffffff",
-        command = lambda : on_subir_archivo(app)
+        command = lambda : on_subir_archivo(app, user)
     )
 
     btn_selec_archivo.pack(side="right")
