@@ -54,7 +54,7 @@ def google_login() -> User | None:
         
         #importedPrivateKey = import_private_key(private_key_pem = 'esto no va')
             
-        user = User( userId= userID, privateRSA= 'esto no va', publicRSA= importedPublicKey )
+        user = User( userId= userID, privateRSA= 'esto no va', publicRSA= importedPublicKey, aesHash= 'Esto lo tengo que arreglar' )
         
         return user
     

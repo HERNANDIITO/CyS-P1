@@ -53,8 +53,6 @@ def start():
         fileName string,
         encryptedFile string,
         AESKey string,
-        publicRSA string,
-        privateRSA string,
         date string,
         fileType string
     )""")
