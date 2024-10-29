@@ -1,6 +1,7 @@
 from customtkinter import *
 from tkinter import filedialog
 from ui.clearApp import clearApp
+from functions.encrypt_decrypt import encrypt
 # from functions.encrypt_decrypt import encrypt
 
 archivo_path = None
@@ -25,9 +26,9 @@ def seleccionar_archivo():
         archivo_subido_label.configure(text="No se ha seleccionado ningún archivo", text_color="red")
         archivo_subido_label.pack(pady=(5, 20))
 
-def on_cifrar_archivo(): 
+def on_cifrar_archivo(user): 
     # (CODIGO DE EJEMPLO) no controla si se hace correctamente el cifrado
-    # encrypt(archivo_path)
+    response = encrypt(archivo_path, user)
     print('si todo va bien el archivo se cifra')
     archivo_cifrado_label.configure(text="Archivo cifrado correctamente", text_color="blue")
     archivo_cifrado_label.pack(pady=(5, 20))
@@ -67,7 +68,7 @@ def subir_archivo(app, user):
     cifrar_button = CTkButton(master=app, text="Cifrar archivo", 
                               fg_color="#601E88", text_color="white", font=("Arial", 14),
                               hover_color="#D073F2", 
-                              command= on_cifrar_archivo)
+                              command= lambda: on_cifrar_archivo(user))
     cifrar_button.pack(pady=(5, 20))
 
     # Etiqueta para mostrar si el archivo se ha cifrado bien (vacía por defecto)
