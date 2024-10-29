@@ -1,3 +1,4 @@
+from pathlib import Path
 from customtkinter import *
 from PIL import Image
 from functions import user_auth
@@ -43,11 +44,11 @@ def register_menu(app):
     pass2_var = StringVar()
     email_var = StringVar()
 
-    side_img_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\side-img.png'))
-    email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\email-icon.png'))
-    password_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\password-icon.png'))
-    google_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\google-icon.png'))
-    user_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui\\imgs\\user_icon.png'))
+    side_img_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/side-img.png')))
+    email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/email-icon.png')))
+    password_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/password-icon.png')))
+    google_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/google-icon.png')))
+    user_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/user_icon.png')))
 
     side_img = CTkImage(dark_image=side_img_data, light_image=side_img_data, size=(300, 480))
     email_icon = CTkImage(dark_image=email_icon_data, light_image=email_icon_data, size=(20,20))

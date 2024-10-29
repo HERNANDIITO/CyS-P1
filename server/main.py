@@ -118,7 +118,7 @@ def loginGoogle():
     result = User.loginGoogle(input_json["idToken"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(str(result))
+    return json.loads(result.jsonSelf())
 
 @app.post('/upload')
 def uploadFile():
@@ -182,5 +182,23 @@ def delete():
     file = File(input_json["fileId"])
     result = file.delete()
     return json.loads(result.jsonSelf())
+
+@app.get('/files/<path:user_id>')
+def getFiles(user_id):
+    '''
+    Servicio de obtencion de ficheros de un usuario
+    Parámetros en el body de la petición:
+    - user_id: id del usuario
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: lista de ficheros
+    '''
+    # Ruta de los ficheros subidos, de donde se obtiene el fichero a descargar
+
+    user = User(user_id)
+    return json.loads(user.getFiles().jsonSelf())
 
 app.run()
