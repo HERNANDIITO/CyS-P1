@@ -127,11 +127,11 @@ def login(email, password) -> User | None:
         # Las claves no van y no puedo mas :C
         importedPublicKey  = import_public_key(public_key_pem = publicRSA)
         
-        decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem=privateRSA, aes_key=aes_key)
+        decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem = privateRSA, aes_key = aes_key)
         
         importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)
             
-        user = User( userId= userID, privateRSA= importedPrivateKey, publicRSA= importedPublicKey )
+        user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )
         
         return user
     
