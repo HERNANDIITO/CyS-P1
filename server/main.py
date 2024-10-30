@@ -128,6 +128,7 @@ def uploadFile():
     - fichero: file (ver test del cliente)
     - aesKey
     - userId
+    - fileType
 
     return Result
     - result.msg: mensaje de contexto
@@ -146,7 +147,7 @@ def uploadFile():
     
     if file:
         input_json = request.form.to_dict()
-        result = File.upload(file, app.config['UPLOAD_FOLDER'], input_json['aesKey'], input_json['userId'])
+        result = File.upload(file, app.config['UPLOAD_FOLDER'], input_json['aesKey'], input_json['userId'], input_json['fileType'])
         
     #file.close() 
     return json.loads(str(result))
@@ -169,6 +170,21 @@ def download(file_id):
     uploads_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     # Devuelve el fichero con el nombre especificado
     return File.download(uploads_path, file_id)
+
+@app.get('/get-file-info/<path:file_id>')
+def get_file_info(file_id):
+    '''
+    Servicio de bajada de ficheros
+    Parámetros en el body de la petición:
+    - file_id: id del fichero a descargar
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: el fichero
+    '''
+    return json.loads(File.getFileData(file_id).jsonSelf())
 
 @app.delete('/files')
 def delete():

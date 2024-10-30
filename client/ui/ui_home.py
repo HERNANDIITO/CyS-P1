@@ -4,6 +4,7 @@ from ui.clearApp import clearApp
 from ui.ui_subir_archivo import subir_archivo
 from functions.file_requests import download_file
 from functions.encrypt_decrypt import decrypt
+import functions.file_requests as file_request
 
 def on_subir_archivo(app, user):
     clearApp(app)
@@ -82,11 +83,12 @@ def home(app, user):
                 fg_color="purple",
                 hover_color="#A16FB0",
                 text_color="#ffffff",
-                command=lambda archivo_id=row[0], nombre_archivo=row[1]: procesar_guardado(archivo_id, nombre_archivo)  # Pasa el ID del archivo al botón
+                command=lambda archivo_id=row[0], nombre_archivo=row[1]: procesar_guardado(archivo_id, nombre_archivo, user)  # Pasa el ID del archivo al botón
             )
             btn_action.pack(side="right", padx=(10, 0))
         
-def procesar_guardado(archivo_id, nombre_archivo):
+def procesar_guardado(archivo_id, nombre_archivo, user):
     download_file(archivo_id, nombre_archivo)
+    fileInfo = file_request.get_file_info(archivo_id)    
 
-    decrypt(nombre_archivo)
+    decrypt(nombre_archivo, user, fileInfo["body"]["fileName"], fileInfo["body"]["encryptedFile"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"])

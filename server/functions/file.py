@@ -24,7 +24,7 @@ class File:
         return f'{{"fileId": "{self.fileId}", "userId": "{self.userId}","fileName": "{self.fileName}", "encryptedFile": "{self.encryptedFile}", "aesKey": "{self.aesKey}", "date": "{self.date}", "fileType": "{self.fileType}"}}'
     
     @classmethod
-    def upload(self, file: FileStorage, path: str, aesKey: str, userId: int) -> Result:
+    def upload(self, file: FileStorage, path: str, aesKey: str, userId: int, fileType: str) -> Result:
         filename = secure_filename(file.filename)
         try:
             file.save(os.path.join(path, filename))
@@ -35,7 +35,7 @@ class File:
                 "encryptedFile": os.path.join(path, filename),
                 "aesKey": aesKey,
                 "date": 'esto se podría poner solo',
-                "fileType": filename.split('.')[-1] # Extension del fichero
+                "fileType": fileType
             })
             return Result(200, "Fichero guardado con éxito", True)
         except:
@@ -45,6 +45,14 @@ class File:
     def download(self, path: str, file_id: int) -> Response:
         fileData = db.get_data( "files", { "fileId": file_id })
         return send_from_directory(path, secure_filename(fileData[2]))
+    
+    @classmethod
+    def getFileData(self, file_id: int) -> Response:
+        try:
+            file = File(file_id)
+            return Result(200, "Datos del fichero obtenidos con éxito", True, {"fileId": file.fileId, "userId": file.userId,"fileName": file.fileName, "encryptedFile": file.encryptedFile, "aesKey": file.aesKey, "date": file.date, "fileType": file.fileType})
+        except:
+            return Result(404, "No existe un fichero con el id facilitado", False)
     
     def delete(self) -> Result:
         fileData = db.get_data("files", {"fileId": self.fileId})
