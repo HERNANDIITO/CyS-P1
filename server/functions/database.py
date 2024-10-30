@@ -36,7 +36,7 @@ def start():
         email string
     )""")
 
-    # Creamos la tabla users
+    # Creamos la tabla files
     #   fileId: clave primaria autoincremental
     #   userId: Id del usuario dueño
     #   fileName: nombre de usuario
