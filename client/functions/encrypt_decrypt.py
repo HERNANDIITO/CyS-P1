@@ -64,9 +64,12 @@ def encrypt(file_path, user):
 
     # Subimos el archivo al servidor
     user_id = user.userId
-    file_request.upload_file(file_aes_key_encrypted, user.publicRSA, user.privateRSA, user_id, b64encoded_encrypted_file, file_type)
-
+    
+    # Los parámetros que creo que deberíamos de pasar
     # file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_name, file_type)
+
+    # Los que pasamos
+    file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type)
 
    
 # Funcion principal para gestionar el descifrado de archivos multimedia
