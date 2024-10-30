@@ -1,11 +1,9 @@
 import json
 import requests
 
-def upload_file(aesKey: str, publicRSA: str, privateRSA: str, userId: int, localFilePath: str, fileType: str):
+def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str):
     payload = {
         "aesKey": aesKey,
-        "publicRSA": publicRSA,
-        "privateRSA": privateRSA,
         "userId": userId,
         "fileType": fileType
     }

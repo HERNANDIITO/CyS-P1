@@ -48,7 +48,7 @@ def start():
     #   fileType: tipo de archivo 
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS files (
-        fileId string,
+        fileId INTEGER PRIMARY KEY,
         userId string,
         fileName string,
         encryptedFile string,
@@ -177,5 +177,6 @@ def insert_data(table, data):
                 Actualiza la fila indicada con la información proporcionada por parámetro
     '''
     keys_str = get_keys(data, ":{0}", ", ")
+    print("Las keyu7s: ")
     cursor.execute("INSERT INTO {0} VALUES ({1})".format(table, keys_str), data)
     database.commit()

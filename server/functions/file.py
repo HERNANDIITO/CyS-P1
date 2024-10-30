@@ -1,3 +1,4 @@
+from datetime import datetime
 from functions import database as db 
 import os
 from flask import Response, send_from_directory
@@ -33,8 +34,8 @@ class File:
                 "userId": userId,
                 "fileName": filename,
                 "encryptedFile": os.path.join(path, filename),
-                "aesKey": aesKey,
-                "date": 'esto se podría poner solo',
+                "AESKey": aesKey,
+                "date": datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 "fileType": fileType
             })
             return Result(200, "Fichero guardado con éxito", True)
