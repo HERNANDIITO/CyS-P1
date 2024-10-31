@@ -26,16 +26,16 @@ def home(app, user):
     header_frame.pack(pady=(30, 20), padx=20, fill="x")
 
 
-    title = CTkLabel(master=header_frame, text="Página principal", font=("Arial", 24), 
-                    text_color="purple", anchor="w", justify="left")
+    title = CTkLabel(master=header_frame, text="Página principal", font=("Arial", 24, "bold"), 
+                    text_color="#601E88", anchor="w", justify="left")
     title.pack(side="left")
 
     btn_selec_archivo = CTkButton(
         master = header_frame,
         text = "Ir a subir archivo",
         corner_radius = 32,
-        fg_color = "purple",
-        hover_color = "#A16FB0",
+        fg_color = "#601E88",
+        hover_color = "#D18AF0",
         text_color = "#ffffff",
         command = lambda : on_subir_archivo(app, user)
     )
@@ -62,7 +62,7 @@ def home(app, user):
     for idx, row in enumerate(table_data):
         # Establecer el marco de la fila
         if idx == 0:
-            row_frame = CTkFrame(master=app, fg_color="purple", border_color="purple", border_width=2)
+            row_frame = CTkFrame(master=app, fg_color="#601E88", border_color="#601E88", corner_radius=32, border_width=2)
             row_frame.pack(fill="x", padx=20, pady=5)
         else:
             row_frame = CTkFrame(master=app, fg_color="#FFFFFF")
@@ -71,7 +71,7 @@ def home(app, user):
         # Añadir celdas a la fila
         for cell in row:
             text_color = "#FFFFFF" if idx == 0 else "#000000"
-            cell_label = CTkLabel(master=row_frame, text=cell, text_color=text_color, anchor="w")
+            cell_label = CTkLabel(master=row_frame, text=cell, text_color=text_color, corner_radius=32, anchor="w")
             cell_label.pack(side="left", padx=10)
 
         # Añadir el botón de descarga a la derecha si no es la fila de encabezado
@@ -80,8 +80,8 @@ def home(app, user):
                 master=row_frame,
                 text="Eliminar",
                 corner_radius=32,
-                fg_color="purple",
-                hover_color="#A16FB0",
+                fg_color="#601E88",
+                hover_color="#EC5E5E",
                 text_color="#ffffff",
                 width = 5,
                 command=lambda archivo_id=row[0]: eliminar_archivo(archivo_id=archivo_id, app=app, user=user)  # Pasa el ID del archivo al botón
@@ -92,8 +92,8 @@ def home(app, user):
                 master=row_frame,
                 text="Descargar",
                 corner_radius=32,
-                fg_color="purple",
-                hover_color="#A16FB0",
+                fg_color="#601E88",
+                hover_color="#D18AF0",
                 text_color="#ffffff",
                 width = 5,
                 command=lambda archivo_id=row[0], nombre_archivo=row[1]: procesar_guardado(archivo_id, nombre_archivo, user)  # Pasa el ID del archivo al botón
