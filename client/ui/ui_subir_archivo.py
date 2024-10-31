@@ -42,12 +42,12 @@ def subir_archivo(app, user):
     # app.configure(fg_color="white")  # Fondo blanco
 
     # Título grande centrado en morado
-    title_label = CTkLabel(master=app, text="ENCRIPTACIÓN DE ARCHIVOS", 
+    title_label = CTkLabel(master=app, text="Protege tus archivos", 
                            text_color="#601E88", font=("Arial Bold", 32))
     title_label.pack(pady=(40, 5)) 
 
     # Subtítulo centrado en gris
-    subtitle_label = CTkLabel(master=app, text="Sube tus archivos y encriptalos aquí", 
+    subtitle_label = CTkLabel(master=app, text="Sube tus archivos y cífralos aquí", 
                               text_color="#606060", font=("Arial", 15))
     subtitle_label.pack(pady=(5, 40))
 
