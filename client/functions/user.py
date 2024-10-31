@@ -2,8 +2,8 @@
 class User:
     def __init__( self, userId: str, privateRSA, publicRSA, aesHash ):
         self.userId     = userId
-        self.publicRSA  = privateRSA
-        self.privateRSA = publicRSA
+        self.publicRSA  = publicRSA
+        self.privateRSA = privateRSA
         self.aesHash    = aesHash
         
         
