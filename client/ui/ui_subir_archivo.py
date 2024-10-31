@@ -43,7 +43,7 @@ def subir_archivo(app, user):
 
     # Título grande centrado en morado
     title_label = CTkLabel(master=app, text="Protege tus archivos", 
-                           text_color="#601E88", font=("Arial Bold", 32))
+                           text_color="#601E88", font=("Arial Bold", 24, "bold"))
     title_label.pack(pady=(40, 5)) 
 
     # Subtítulo centrado en gris
@@ -54,7 +54,7 @@ def subir_archivo(app, user):
     # Botón para "Seleccionar archivo"
     seleccionar_button = CTkButton(master=app, text="Seleccionar archivo", 
                                    fg_color="#601E88", text_color="white", font=("Arial", 14),
-                                   hover_color="#D073F2", 
+                                   hover_color="#D18AF0", corner_radius=32, width=200,
                                    command= seleccionar_archivo)
     seleccionar_button.pack(pady=(5, 20)) 
 
@@ -67,7 +67,7 @@ def subir_archivo(app, user):
     # Botón para cifrar archivo
     cifrar_button = CTkButton(master=app, text="Cifrar archivo", 
                               fg_color="#601E88", text_color="white", font=("Arial", 14),
-                              hover_color="#D073F2", 
+                              hover_color="#D18AF0", corner_radius=32,  width=200,
                               command= lambda: on_cifrar_archivo(user))
     cifrar_button.pack(pady=(5, 20))
 
@@ -79,9 +79,9 @@ def subir_archivo(app, user):
     # Botón volver
     volver_button = CTkButton(master=app, text="Volver", fg_color="#601E88", 
                               text_color="white", font=("Arial", 12), 
-                              hover_color="#D073F2", 
+                              hover_color="#D18AF0", corner_radius=32, width=20,
                               command=lambda: on_volver(app, user))
-    volver_button.place(x=10, y=350)  # Colocar en la parte inferior izquierda
+    volver_button.place(x=20, y=20)  # Colocar en la parte inferior izquierda
 
     # Ejecutar la aplicación
     app.mainloop()

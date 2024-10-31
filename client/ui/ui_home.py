@@ -65,7 +65,7 @@ def home(app, user):
             row_frame = CTkFrame(master=app, fg_color="#601E88", border_color="#601E88", corner_radius=32, border_width=2)
             row_frame.pack(fill="x", padx=20, pady=5)
         else:
-            row_frame = CTkFrame(master=app, fg_color="#FFFFFF")
+            row_frame = CTkFrame(master=app, fg_color="#FFFFFF", corner_radius=32)
             row_frame.pack(fill="x", padx=20, pady=5)
 
         # Añadir celdas a la fila
@@ -80,14 +80,14 @@ def home(app, user):
                 master=row_frame,
                 text="Eliminar",
                 corner_radius=32,
-                fg_color="#601E88",
+                fg_color="#9674AC",
                 hover_color="#EC5E5E",
-                text_color="#ffffff",
+                text_color="#FFFFFF",
                 width = 5,
                 command=lambda archivo_id=row[0]: eliminar_archivo(archivo_id=archivo_id, app=app, user=user)  # Pasa el ID del archivo al botón
             )
             btn_action.pack(side="right", padx=(2, 0))
-            
+
             btn_action = CTkButton(
                 master=row_frame,
                 text="Descargar",
