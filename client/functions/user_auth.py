@@ -112,7 +112,6 @@ def login(email, password) -> User | None:
     login_result_json = json.loads(login_result.text)
     
     print("PRE 200!")
-    print( "code", json.loads(login_result.text) )
     print( "email", email )
     print( "password", password )
     if(str(json.loads(login_result.text)["code"]) == "200"):
