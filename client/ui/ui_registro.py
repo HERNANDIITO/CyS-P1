@@ -62,21 +62,21 @@ def register_menu(app):
     frame.pack_propagate(0)
     frame.pack(expand=True, side="right")
 
-    CTkLabel(master=frame, text="Asegurados", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 24)).pack(anchor="w", pady=(20, 5), padx=(25, 0))
-    CTkLabel(master=frame, text="Registrate para proteger tus archivos", text_color="#7E7E7E", anchor="w", justify="left", font=("Arial Bold", 12)).pack(anchor="w", padx=(15, 0))
+    CTkLabel(master=frame, text="Asegurados", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 24, "bold")).pack(anchor="w", pady=(20, 5), padx=(25, 0))
+    CTkLabel(master=frame, text="Regístrate para proteger tus archivos", text_color="#7E7E7E", anchor="w", justify="left", font=("Arial Bold", 12)).pack(anchor="w", padx=(25, 0))
 
     CTkLabel(master=frame, text="  Usuario:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=user_icon, compound="left").pack(anchor="w", pady=(20, 0), padx=(25, 0))
-    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", textvariable=username_var).pack(anchor="w", padx=(25, 0))
+    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, corner_radius = 32, text_color="#000000", textvariable=username_var).pack(anchor="w", padx=(25, 0))
 
     CTkLabel(master=frame, text="  Contraseña:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=password_icon, compound="left").pack(anchor="w", pady=(10, 0), padx=(25, 0))
-    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", show="*", textvariable=password_var).pack(anchor="w", padx=(25, 0))
+    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, corner_radius = 32, text_color="#000000", show="*", textvariable=password_var).pack(anchor="w", padx=(25, 0))
 
     CTkLabel(master=frame, text="  Confirmar contraseña:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=password_icon, compound="left").pack(anchor="w", pady=(10, 0), padx=(25, 0))
-    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", show="*", textvariable=pass2_var).pack(anchor="w", padx=(25, 0))
+    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, corner_radius = 32, text_color="#000000", show="*", textvariable=pass2_var).pack(anchor="w", padx=(25, 0))
 
     CTkLabel(master=frame, text="  Email:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=email_icon, compound="left").pack(anchor="w", pady=(10, 0), padx=(25, 0))
-    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", textvariable=email_var).pack(anchor="w", padx=(25, 0))
+    CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, corner_radius = 32, text_color="#000000", textvariable=email_var).pack(anchor="w", padx=(25, 0))
     
-    CTkButton(master=frame, text="Registrarse", fg_color="#601E88", hover_color="#D073F2", font=("Arial Bold", 12), text_color="#ffffff", width=225, command= lambda : on_register(app)).pack(anchor="w", pady=(15, 0), padx=(25, 0))
-    CTkButton(master=frame, text="Iniciar sesión", fg_color="#601E88", hover_color="#D073F2", font=("Arial Bold", 12), text_color="#ffffff", width=225, command= lambda : on_login(app)).pack(anchor="w", pady=(10, 0), padx=(25, 0))
-    CTkButton(master=frame, text="Continue With Google", fg_color="#EEEEEE", hover_color="#CCCCCC", font=("Arial Bold", 9), text_color="#601E88", width=225, image=google_icon).pack(anchor="w", pady=(10, 0), padx=(25, 0))
+    CTkButton(master=frame, text="Registrarse", fg_color="#601E88", hover_color="#D18AF0", font=("Arial Bold", 12), text_color="#ffffff", corner_radius = 32, width=225, command= lambda : on_register(app)).pack(anchor="w", pady=(15, 0), padx=(25, 0))
+    CTkButton(master=frame, text="Iniciar sesión", fg_color="#9674AC", hover_color="#D18AF0", font=("Arial Bold", 12), text_color="#ffffff", corner_radius = 32, width=225, command= lambda : on_login(app)).pack(anchor="w", pady=(10, 0), padx=(25, 0))
+    CTkButton(master=frame, text="Continue With Google", fg_color="#EEEEEE", hover_color="#CCCCCC", font=("Arial Bold", 9), text_color="#601E88", corner_radius = 32, width=225, image=google_icon).pack(anchor="w", pady=(10, 0), padx=(25, 0))

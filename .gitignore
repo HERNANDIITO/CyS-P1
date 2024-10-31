@@ -166,3 +166,11 @@ cython_debug/
 server/data/uploads/*
 b64encoded_encrypted_file.txt
 file_encrypted.txt
+b64encoded_encrypted_file.txt
+file_encrypted.txt
+gatos
+gatos.jpeg
+hola
+hola.txt
+server/data/uploads/hola
+server/data/uploads/gatos
