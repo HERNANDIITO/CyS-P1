@@ -55,7 +55,7 @@ def home(app, user):
         # Rellenar la tabla con los datos obtenidos de la respuesta del servidor
         for archivo in archivos["body"]["files"]:
             archivo_id = archivo["fileId"]
-            nombre_archivo = archivo["fileName"]
+            nombre_archivo = archivo["fileName"] + archivo["fileType"]
             table_data.append([archivo_id, nombre_archivo])
 
     # Crear las filas manualmente con botones a la derecha
@@ -71,11 +71,23 @@ def home(app, user):
         # Añadir celdas a la fila
         for cell in row:
             text_color = "#FFFFFF" if idx == 0 else "#000000"
-            cell_label = CTkLabel(master=row_frame, text=cell, text_color=text_color, anchor="w", width=100)
+            cell_label = CTkLabel(master=row_frame, text=cell, text_color=text_color, anchor="w")
             cell_label.pack(side="left", padx=10)
 
         # Añadir el botón de descarga a la derecha si no es la fila de encabezado
         if idx != 0:
+            btn_action = CTkButton(
+                master=row_frame,
+                text="Eliminar",
+                corner_radius=32,
+                fg_color="purple",
+                hover_color="#A16FB0",
+                text_color="#ffffff",
+                width = 5,
+                command=lambda archivo_id=row[0]: eliminar_archivo(archivo_id=archivo_id, app=app, user=user)  # Pasa el ID del archivo al botón
+            )
+            btn_action.pack(side="right", padx=(2, 0))
+            
             btn_action = CTkButton(
                 master=row_frame,
                 text="Descargar",
@@ -83,12 +95,21 @@ def home(app, user):
                 fg_color="purple",
                 hover_color="#A16FB0",
                 text_color="#ffffff",
+                width = 5,
                 command=lambda archivo_id=row[0], nombre_archivo=row[1]: procesar_guardado(archivo_id, nombre_archivo, user)  # Pasa el ID del archivo al botón
             )
-            btn_action.pack(side="right", padx=(10, 0))
+            btn_action.pack(side="right", padx=(2, 0))
         
 def procesar_guardado(archivo_id, nombre_archivo, user):
     download_file(archivo_id, nombre_archivo)
     fileInfo = file_request.get_file_info(archivo_id)    
 
     decrypt(nombre_archivo, user, fileInfo["body"]["fileName"], fileInfo["body"]["encryptedFile"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"])
+
+def eliminar_archivo(archivo_id, app, user):
+    response = requests.delete(f'http://localhost:5000/files', json={"fileId": archivo_id})
+    response.raise_for_status()
+    response = response.json()
+    
+    clearApp(app)
+    home(app, user)

@@ -191,6 +191,15 @@ def get_file_info(file_id):
 def delete():
     '''
     Servicio de eliminación de ficheros
+    
+    Parámetros en el body de la petición:
+    - file_id: id del fichero a descargar
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: el fichero
     '''
 
     input_json = request.get_json(force=True)
