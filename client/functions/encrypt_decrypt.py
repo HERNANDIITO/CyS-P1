@@ -69,7 +69,7 @@ def encrypt(file_path, user):
     # file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_name, file_type)
 
     # Los que pasamos
-    file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type)
+    file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type, file_name)
 
    
 # Funcion principal para gestionar el descifrado de archivos multimedia

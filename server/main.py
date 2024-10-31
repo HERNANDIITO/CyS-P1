@@ -126,6 +126,7 @@ def uploadFile():
     Servicio de subida de ficheros
     Parámetros en el body de la petición:
     - fichero: file (ver test del cliente)
+    - fileName
     - aesKey
     - userId
     - fileType
@@ -147,7 +148,7 @@ def uploadFile():
     
     if file:
         input_json = request.form.to_dict()
-        result = File.upload(file, app.config['UPLOAD_FOLDER'], input_json['aesKey'], input_json['userId'], input_json['fileType'])
+        result = File.upload(file, app.config['UPLOAD_FOLDER'], input_json['aesKey'], input_json['userId'], input_json['fileType'], input_json['fileName'])
         
     #file.close() 
     return json.loads(str(result))

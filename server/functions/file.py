@@ -25,15 +25,15 @@ class File:
         return f'{{"fileId": "{self.fileId}", "userId": "{self.userId}","fileName": "{self.fileName}", "encryptedFile": "{self.encryptedFile}", "aesKey": "{self.aesKey}", "date": "{self.date}", "fileType": "{self.fileType}"}}'
     
     @classmethod
-    def upload(self, file: FileStorage, path: str, aesKey: str, userId: int, fileType: str) -> Result:
-        filename = secure_filename(file.filename)
+    def upload(self, file: FileStorage, path: str, aesKey: str, userId: int, fileType: str, fileName: str) -> Result:
+        secureFilename = secure_filename(fileName)
         try:
-            file.save(os.path.join(path, filename))
+            file.save(os.path.join(path, secureFilename))
             db.insert_data("files", {
                 "fileId": None,
                 "userId": userId,
-                "fileName": filename,
-                "encryptedFile": os.path.join(path, filename),
+                "fileName": secureFilename,
+                "encryptedFile": os.path.join(path, secureFilename),
                 "AESKey": aesKey,
                 "date": datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 "fileType": fileType
