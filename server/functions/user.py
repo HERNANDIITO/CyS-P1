@@ -37,8 +37,8 @@ class User:
 
         # Si hay algo en la variable, significa que ya hay un usuario registrado bajo ese email
         # No permitimos otro
-        # if userData:
-        #     return Result(400, "Mala solicitud: email en uso", False)
+        if userData:
+            return Result(400, "Mala solicitud: email en uso", False)
 
         # Intentamos introducir el usuario nuevo en la base de datos 
         try:

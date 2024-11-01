@@ -13,6 +13,7 @@ def on_volver(app, user):
 
 def seleccionar_archivo():
     global archivo_path #referencio la var global para modificarla
+    archivo_path = None
 
     # Abrir explorador de archivos
     archivo = filedialog.askopenfilename(title="Seleccionar archivo")
@@ -20,18 +21,33 @@ def seleccionar_archivo():
     if archivo:
         archivo_path = archivo
         # Mostrar texto debajo del botón si el archivo se selecciona
-        archivo_subido_label.configure(text=f"Archivo subido correctamente: {archivo.split('/')[-1]}", text_color="green")
+        archivo_subido_label.configure(text=f"Archivo seleccionado correctamente: {archivo.split('/')[-1]}", text_color="green")
         archivo_subido_label.pack(pady=(5, 20))
+
+        archivo_cifrado_label.configure(text="", text_color="orange")
+        archivo_cifrado_label.pack(pady=(5, 20))
     else:
+        archivo_path = None
         archivo_subido_label.configure(text="No se ha seleccionado ningún archivo", text_color="red")
         archivo_subido_label.pack(pady=(5, 20))
 
 def on_cifrar_archivo(user): 
+    global archivo_path #referencio la var global para acceder a ella
+    if archivo_path is None:
+        print('entra en la comprobacion de que no tienes archivo para encriptar')
+        archivo_cifrado_label.configure(text="Seleccione un archivo antes de encriptar", text_color="orange")
+        archivo_cifrado_label.pack(pady=(5, 20))
+        return
+
     # (CODIGO DE EJEMPLO) no controla si se hace correctamente el cifrado
     response = encrypt(archivo_path, user)
     print('si todo va bien el archivo se cifra')
+    archivo_path = None   #reinicia el archivo seleccionado a vacio
     archivo_cifrado_label.configure(text="Archivo cifrado correctamente", text_color="blue")
     archivo_cifrado_label.pack(pady=(5, 20))
+
+    archivo_subido_label.configure(text="", text_color="red")
+    archivo_subido_label.pack(pady=(5, 20))
 
 
 def subir_archivo(app, user):

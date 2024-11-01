@@ -55,7 +55,7 @@ def home(app, user):
         # Rellenar la tabla con los datos obtenidos de la respuesta del servidor
         for archivo in archivos["body"]["files"]:
             archivo_id = archivo["fileId"]
-            nombre_archivo = archivo["fileName"] + archivo["fileType"]
+            nombre_archivo = str(archivo["fileName"]) + archivo["fileType"]
             table_data.append([archivo_id, nombre_archivo])
 
     # Crear las filas manualmente con botones a la derecha
