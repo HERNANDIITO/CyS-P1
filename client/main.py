@@ -2,6 +2,7 @@ import requests, json
 from functions.aes import encrypt_file, decrypt_file,generate_aes_key
 from functions.rsa import rsa_encrypt, generate_rsa_keys
 from customtkinter import CTk, set_appearance_mode
+from ui import ui_home
 from ui import ui_login
 from ui import ui_registro
 from functions.user_auth import register, login
@@ -20,6 +21,7 @@ set_appearance_mode("light")
 
 # Llamamos a la interfaz "login" pasandole la app por parametro
 ui_login.login_menu(app=app)
+
 # ui_registro.register_menu(app=app)
 # register(email="g@gamil.com", password="12345678", password2="12345678", username="AAAA" )
 # login(email="g@gamil.com", password="12345678")

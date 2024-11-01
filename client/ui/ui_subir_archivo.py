@@ -35,7 +35,7 @@ def on_cifrar_archivo(user):
     global archivo_path #referencio la var global para acceder a ella
     if archivo_path is None:
         print('entra en la comprobacion de que no tienes archivo para encriptar')
-        archivo_cifrado_label.configure(text="Seleccione un archivo antes de encriptar", text_color="orange")
+        archivo_cifrado_label.configure(text="Seleccione un archivo antes de cifrar", text_color="orange")
         archivo_cifrado_label.pack(pady=(5, 20))
         return
 
