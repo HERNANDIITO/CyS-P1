@@ -49,12 +49,31 @@ def start():
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS files (
         fileId INTEGER PRIMARY KEY,
-        userId string,
+        userId INTEGER,
         fileName string,
         encryptedFile string,
         AESKey string,
         date string,
-        fileType string
+        fileType string,
+        FOREIGN KEY(userId) REFERENCES users(userId)
+    )""")
+    
+    # Creamos la tabla sharedFiles
+    #   sharingId: ID de la comparticion entre usuarios
+    #   sharedFileId: ID del archivo a compartir
+    #   transmitterId: ID del usuario que comparte
+    #   recieverId: ID del usuario con quien se comparte
+    #   key: Clave del archivo encriptado con la clave publica del reciever
+
+    cursor.execute("""CREATE TABLE IF NOT EXISTS sharedFiles (
+        sharingId INTEGER PRIMARY KEY,
+        sharedFileId INTEGER,
+        transmitterId INTEGER,
+        recieverId INTEGER,
+        key string,
+        FOREIGN KEY(sharedFileId) REFERENCES files(fileId),
+        FOREIGN KEY(transmitterId) REFERENCES users(userId),
+        FOREIGN KEY(recieverId) REFERENCES users(userId)
     )""")
 
 def merge_dicts(*dicts):
