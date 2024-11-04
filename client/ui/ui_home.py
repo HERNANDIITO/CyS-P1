@@ -104,7 +104,7 @@ def procesar_guardado(archivo_id, nombre_archivo, user):
     download_file(archivo_id, nombre_archivo)
     fileInfo = file_request.get_file_info(archivo_id)    
 
-    decrypt(nombre_archivo, user, fileInfo["body"]["fileName"], fileInfo["body"]["encryptedFile"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"])
+    decrypt(nombre_archivo, user, fileInfo["body"]["fileName"], fileInfo["body"]["fileName"] + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"])
 
 def eliminar_archivo(archivo_id, app, user):
     response = requests.delete(f'http://localhost:5000/files', json={"fileId": archivo_id})

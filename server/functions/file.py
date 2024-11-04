@@ -28,12 +28,13 @@ class File:
     def upload(self, file: FileStorage, path: str, aesKey: str, userId: int, fileType: str, fileName: str) -> Result:
         secureFilename = secure_filename(fileName)
         try:
-            file.save(os.path.join(path, secureFilename))
+            timestamp_str = datetime.now().timestamp().__str__()
+            file.save(os.path.join(path, timestamp_str + secureFilename))
             db.insert_data("files", {
                 "fileId": None,
                 "userId": userId,
                 "fileName": secureFilename,
-                "encryptedFile": os.path.join(path, secureFilename),
+                "encryptedFile": timestamp_str + secureFilename,
                 "AESKey": aesKey,
                 "date": datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 "fileType": fileType
@@ -45,7 +46,7 @@ class File:
     @classmethod
     def download(self, path: str, file_id: int) -> Response:
         fileData = db.get_data( "files", { "fileId": file_id })
-        return send_from_directory(path, secure_filename(fileData[2]))
+        return send_from_directory(path, secure_filename(fileData[3]))
     
     @classmethod
     def getFileData(self, file_id: int) -> Response:
