@@ -10,12 +10,26 @@ global server
 server = "http://127.0.0.1:5000"
 
 
-def share(sharedFileId, recieverId, user: User): 
+def share(sharedFileId, recieverId, transmitter: User): 
+    try:
+        # select publicRSA from users where userId = recieverId
+        # select AESKey from files where fileId = sharedFileId
+        recieverPublicRSAKey = '';
+        AESKey = '';
 
-    # get public_rsa from users where id = user_id
-    # get file_name, encrypted_file, file_aes_key_encrypted, file_type from files where id = file_id
+        # Obtenemos la clave RSA privada del usuario
+        transmitterPrivateRSAKey = transmitter.privateRSA
 
-    decrypted_file =  encrypt_decrypt.decrypt(user, file_name, encrypted_file, file_aes_key_encrypted, file_type)
+        # Desciframos la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
+        decryptedAESKey = rsa.rsa_decrypt(AESKey, transmitterPrivateRSAKey)
 
-    transmitterId = User.user_id
-    encrypt_decrypt.share_encrypt(sharedFileId, transmitterId, recieverId, decrypted_file, public_rsa_reciever)
+        # Cifrarmos la clave AES con la clave publica RSA del reciever.
+        encryptedAESKeyforReciever = rsa.rsa_encrypt(decryptedAESKey, recieverPublicRSAKey)
+
+        # Almacenamos los datos en la bd
+        userId = transmitter.userId
+        file_request.share_file(sharedFileId, userId, recieverId, encryptedAESKeyforReciever)
+
+    except Exception as e:
+        print(f"Error al compartir archivo: {e}")
+        raise

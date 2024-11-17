@@ -23,6 +23,9 @@
 ### RSA desde 0 con fundamentos mátemáticos explicados y código Python
 [Ver en YouTube](https://youtu.be/D_PfV_IcUdA?si=xYVLV8fup_WjkkP2)
 
+### RSA libreria python
+[Documentacion](https://pycryptodome.readthedocs.io/en/latest/src/public_key/rsa.html)
+
 ### Modular inverse code
 [Ver web](https://cp-algorithms.com/algebra/module-inverse.html)
 

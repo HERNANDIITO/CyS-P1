@@ -69,35 +69,6 @@ def encrypt(file_path, user):
     file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type, file_name)
 
 
-def share_encrypt(sharedFileId, transmitterId, recieverId, decrypted_file, public_rsa_reciever): 
-    # Generamos una clave AES128 para cifrar el archivo
-    file_aes_key = aes.generate_aes_key()
-
-    # Obtenemos el nombre y extension del fichero
-    file_name, file_type = get_file_name_and_type(file_path)
-
-    # Creamos el archivo de salida, resultado cifrado
-    encrypted_file = "file_encrypted.txt"
-    b64encoded_encrypted_file = "b64encoded_encrypted_file.txt"
-
-    # Ciframos el archivo con AES128
-    aes.encrypt_file(file_path, encrypted_file, b64encoded_encrypted_file, file_aes_key)
-
-    # Obtenemos la clave RSA pública del usuario pasado por parámetro
-    rsa_private_key = user.privateRSA
-    rsa_public_key = user.publicRSA
-
-    # Ciframos la clave AES128 con la que hemos cifrado el archivo con la clave pública RSA
-    file_aes_key_encrypted = rsa.rsa_encrypt(file_aes_key, rsa_public_key)
-
-    # Subimos el archivo al servidor
-    user_id = user.userId
-    
-    # Subimos el archivo
-    file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type, file_name)
-
-
-
 # Funcion principal para gestionar el descifrado de archivos multimedia
 def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type):
 
@@ -117,18 +88,3 @@ def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_
 
     return decrypted_file
 
-
-# Funcion principal para gestionar el descifrado de archivos multimedia
-def share_decrypt(user: User, file_aes_key_encrypted):
-
-    # PETICION PARA RECUPERAR EL ARCHIVO DEL SERVIDOR
-    # Recuperamos la información almacenada en la base de datos
-    #file_name, encrypted_file, file_aes_key_encrypted, file_type = get_encrypted_data_from_db(file_path)
-
-    # Obtenemos la clave RSA privada del usuario
-    rsa_private_key = user.privateRSA
-
-    # Desciframos la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
-    file_aes_key = rsa.rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
-
-    return file_aes_key
