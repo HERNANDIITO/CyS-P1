@@ -66,3 +66,9 @@
 
 ### Navegación usando Tkinter
 [Ver en YouTube](https://www.youtube.com/watch?v=39P4BMvvLdM)
+
+### Frame scrollable en CustomTkinter
+[Ver en Youtube](https://youtu.be/Envp9yHb2Ho?si=q-M3KUqyBHcqIKCo)
+
+### POO in CustomTkinter
+[Ver en Youtube](https://youtu.be/GPcCLiOYVe4?si=HfihxLlNEPKVRYXL)
