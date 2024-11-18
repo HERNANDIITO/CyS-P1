@@ -40,10 +40,9 @@ def start():
     #   fileId: clave primaria autoincremental
     #   userId: Id del usuario dueño
     #   fileName: nombre de usuario
-    #   encryptedFile: archivo encriptado
+    #   encryptedFile: archivo cifrado
+    #   signedFile: hash con SHA3-256 del archivo cifrado firmado con la clave RSA privada del usuario propietario
     #   AESKey: clave aes
-    #   publicRSA: clave rsa publica
-    #   privateRSA: clave rsa privada
     #   date: fecha de subida
     #   fileType: tipo de archivo 
 

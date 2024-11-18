@@ -4,6 +4,7 @@ from functions.user import User
 import functions.aes as aes
 import functions.rsa as rsa
 import functions.file_requests as file_request
+from Crypto.Hash import SHA3_256
 
 global server
 server = "http://127.0.0.1:5000"
@@ -55,22 +56,25 @@ def encrypt(file_path, user):
     # Ciframos el archivo con AES128
     aes.encrypt_file(file_path, encrypted_file, b64encoded_encrypted_file, file_aes_key)
 
-    # Obtenemos la clave RSA pública del usuario pasado por parámetro
+    # Obtenemos las claves RSA pública y privada del usuario pasado por parámetro
     rsa_private_key = user.privateRSA
     rsa_public_key = user.publicRSA
 
     # Ciframos la clave AES128 con la que hemos cifrado el archivo con la clave pública RSA
     file_aes_key_encrypted = rsa.rsa_encrypt(file_aes_key, rsa_public_key)
 
+    # Firmamos el archivo
+    signature = rsa.rsa_sign(encrypted_file, rsa_private_key)
+
     # Subimos el archivo al servidor
     user_id = user.userId
     
     # Subimos el archivo
-    file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type, file_name)
+    file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type, file_name, signature)
 
 
 # Funcion principal para gestionar el descifrado de archivos multimedia
-def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type):
+def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
 
     # PETICION PARA RECUPERAR EL ARCHIVO DEL SERVIDOR
     # Recuperamos la información almacenada en la base de datos
@@ -79,12 +83,21 @@ def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_
     # Obtenemos la clave RSA privada del usuario
     rsa_private_key = user.privateRSA
 
-    # Desciframos la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
-    file_aes_key = rsa.rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
+    autenticity = rsa_check_sign(encrypted_file, signatory_public_key, signature)
 
-    # Desciframos el archivo con la clave AES128
-    decrypted_file = str(file_name) + file_type
-    aes.decrypt_file(encrypted_file, decrypted_file, file_aes_key)
+    if(autenticity):
+        # Desciframos la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
+        file_aes_key = rsa.rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
 
-    return decrypted_file
+        # Desciframos el archivo con la clave AES128
+        decrypted_file = str(file_name) + file_type
+        aes.decrypt_file(encrypted_file, decrypted_file, file_aes_key)
+
+        return decrypted_file
+    else:
+        return "El archivo no es válido"
+
+    
+
+
 
