@@ -72,3 +72,8 @@
 
 ### POO in CustomTkinter
 [Ver en Youtube](https://youtu.be/GPcCLiOYVe4?si=HfihxLlNEPKVRYXL)
+
+
+## AES CTR
+### ¿Que hace?
+[Ver en Youtube](https://www.youtube.com/watch?v=6EbyCGrdKh8)
