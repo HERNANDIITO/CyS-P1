@@ -258,4 +258,21 @@ def getSharedFilesOfUser(user_id):
     user = User(user_id)
     return json.loads(user.getSharedFilesOfUser().jsonSelf())
 
+@app.get('/shared-files-to/<path:user_id>')
+def getSharedFilesToUser(user_id):
+    '''
+    Servicio de obtencion de los archivos compartidos a un usuario
+    Parámetros en el body de la petición:
+    - user_id: id del usuario
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: archivos compartidos al usuario
+    '''
+
+    user = User(user_id)
+    return json.loads(user.getSharedFilesToUser().jsonSelf())
+
 app.run()

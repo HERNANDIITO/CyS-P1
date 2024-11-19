@@ -131,6 +131,12 @@ class User:
             return Result(200, "Archivos compartidos por usuario obtenidos con éxito", True, {"sharedFiles": result})
         return Result(404, "El usuario no ha compartido ficheros", False, {})
     
+    def getSharedFilesToUser(self) -> Result:
+        result = db.get_data_with_map( "sharedFiles", { "recieverId": self.userId } )
+        if (result != None):
+            return Result(200, "Archivos compartidos al usuario obtenidos con éxito", True, {"sharedFiles": result})
+        return Result(404, "No hay archivos compartidos a este usuario", False, {})
+    
     @classmethod
     def loginGoogle(sel, token: str) -> Result:
         try:
