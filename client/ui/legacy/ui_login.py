@@ -3,7 +3,7 @@ from customtkinter import *
 from CTkMessagebox import CTkMessagebox
 from PIL import Image
 from ui import ui_registro, ui_home
-from ui.clearApp import clearApp
+from client.ui.legacy.clearApp import clearApp
 from functions import user_auth
 from functions import google_auth
 import os

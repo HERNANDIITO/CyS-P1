@@ -17,11 +17,14 @@
 ├── ui                          # Carpeta que contiene el sistema de interfaces
 │   ├── __init__.py             # Init de ui
 │   ├── imgs                    # Imágenes
-│   ├── ui_home.py              # Funciones de la interfaz
-│   └── ui_login.py             # Funciones de la interfaz de login
-│   └── ui_prueba.py            # Funciones de la interfaz de preuba
-│   └── ui_registro.py          # Funciones de la interfaz de reg
-│   └── ui_subir_archivo.py     # Funciones de la interfaz de subir archivo
+│   ├── template.py             # Fichero preparado para copiar y pegar archivos y hacer pantallas nuevas
+│   ├── app.py                  # Clase principal
+│   ├── home.py                 # Clase de la pantalla "home"
+│   ├── login.py                # Clase de la pantalla "login"
+│   ├── registro.py             # Clase de la pantalla "registro"
+│   ├── subir_archivo.py        # Clase de la pantalla "subir_archivo"
+│   └── legacy                  # Clase de la interfaz viejas
+│       └── ··· 
 ├── keys                        # Carpeta con claves
 │   ├── public_key.pem          # Contenedor de claves publicas (CLIENT SIDE)
 │   └── private_key.pem         # Contenedor de claves privadas (CLIENT SIDE)

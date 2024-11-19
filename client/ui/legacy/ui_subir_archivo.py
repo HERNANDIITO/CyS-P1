@@ -1,6 +1,6 @@
 from customtkinter import *
 from tkinter import filedialog
-from ui.clearApp import clearApp
+from client.ui.legacy.clearApp import clearApp
 from functions.encrypt_decrypt import encrypt
 # from functions.encrypt_decrypt import encrypt
 

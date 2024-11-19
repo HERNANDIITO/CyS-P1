@@ -1,6 +1,6 @@
 import requests
 from customtkinter import *
-from ui.clearApp import clearApp
+from client.ui.legacy.clearApp import clearApp
 from ui.ui_subir_archivo import subir_archivo
 from functions.file_requests import download_file
 from functions.encrypt_decrypt import decrypt

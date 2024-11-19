@@ -4,7 +4,7 @@ from PIL import Image
 from functions import user_auth
 from functions.rsa import generate_rsa_keys
 from ui import ui_home, ui_login
-from ui.clearApp import clearApp
+from client.ui.legacy.clearApp import clearApp
 import os
 import requests, json
 
