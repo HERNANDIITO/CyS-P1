@@ -125,6 +125,12 @@ class User:
     def getPublicRsa(self) -> Result:
         return Result(200, "Clave RSA pública obtenida con éxito", True, {"publicRSA": self.publicRSA})
     
+    def getSharedFilesOfUser(self) -> Result:
+        result = db.get_data_with_map( "sharedFiles", { "transmitterId": self.userId } )
+        if (result != None):
+            return Result(200, "Archivos compartidos por usuario obtenidos con éxito", True, {"sharedFiles": result})
+        return Result(404, "El usuario no ha compartido ficheros", False, {})
+    
     @classmethod
     def loginGoogle(sel, token: str) -> Result:
         try:

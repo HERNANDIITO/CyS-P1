@@ -241,4 +241,21 @@ def getPublicRsa(user_id):
     user = User(user_id)
     return json.loads(user.getPublicRsa().jsonSelf())
 
+@app.get('/shared-files-of/<path:user_id>')
+def getSharedFilesOfUser(user_id):
+    '''
+    Servicio de obtencion de los archivos compartidos por un usuario
+    Parámetros en el body de la petición:
+    - user_id: id del usuario
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: archivos compartidos por el usuario
+    '''
+
+    user = User(user_id)
+    return json.loads(user.getSharedFilesOfUser().jsonSelf())
+
 app.run()
