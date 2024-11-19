@@ -172,6 +172,5 @@ gatos
 gatos.jpeg
 hola
 hola.txt
-server/data/uploads/hola
-server/data/uploads/gatos
+server/data/uploads/*
 server/data/database.db
