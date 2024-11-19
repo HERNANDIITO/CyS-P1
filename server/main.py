@@ -220,9 +220,25 @@ def getFiles(user_id):
     - result.status: si ha sido realizada la petición o no
     - result.body: lista de ficheros
     '''
-    # Ruta de los ficheros subidos, de donde se obtiene el fichero a descargar
 
     user = User(user_id)
     return json.loads(user.getFiles().jsonSelf())
+
+@app.get('/public-rsa/<path:user_id>')
+def getPublicRsa(user_id):
+    '''
+    Servicio de obtencion de clave RSA publica de un usuario
+    Parámetros en el body de la petición:
+    - user_id: id del usuario
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: clave RSA publica del usuario
+    '''
+
+    user = User(user_id)
+    return json.loads(user.getPublicRsa().jsonSelf())
 
 app.run()

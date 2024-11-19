@@ -122,6 +122,9 @@ class User:
             return Result(200, "Archivos obtenidos con éxito", True, {"files": result})
         return Result(404, "El usuario no tiene ficheros", False, {})
     
+    def getPublicRsa(self) -> Result:
+        return Result(200, "Clave RSA pública obtenida con éxito", True, {"publicRSA": self.publicRSA})
+    
     @classmethod
     def loginGoogle(sel, token: str) -> Result:
         try:
