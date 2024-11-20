@@ -315,6 +315,22 @@ def deleteSharedFile():
     shared_file = SharedFile(input_json["sharing_id"])
     return json.loads(shared_file.delete().jsonSelf())
 
+@app.get('/users-shared-to/<path:file_id>')
+def getUsersSharedTo(file_id):
+    '''
+    Servicio de obtencion de la lista de usuarios con los que 
+    esta compartido un mismo archivo dada la ID del archivo
+    - file_id: id del fichero
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: archivos compartidos por el usuario
+    '''
+
+    return json.loads(SharedFile.getUsersSharedTo(file_id).jsonSelf())
+
 
 # Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
 if __name__ == "__main__":
