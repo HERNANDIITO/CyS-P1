@@ -4,6 +4,7 @@ from functions.user import User
 from functions.result import Result
 import json
 from functions.file import File
+from functions.shared_file import SharedFile
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] =  os.path.join(app.root_path, 'data', 'uploads')
@@ -274,5 +275,24 @@ def getSharedFilesToUser(user_id):
 
     user = User(user_id)
     return json.loads(user.getSharedFilesToUser().jsonSelf())
+
+@app.post('/share-file')
+def shareFile():
+    '''
+    Servicio de subida de ficheros
+    Parámetros en el body de la petición:
+    - fileId
+    - recieverId
+    - key
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    '''
+    
+    input_json = request.get_json(force=True)
+    file_to_share = File(input_json["fileId"])
+    return json.loads(SharedFile.share(file_to_share, input_json["recieverId"], input_json["key"]).jsonSelf())
 
 app.run()
