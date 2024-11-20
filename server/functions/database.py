@@ -16,6 +16,7 @@ def start():
     # cursor: guarda el cursor que ejectuta las sentencias
     database = sqlite3.connect(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'database.db'), check_same_thread=False)
     cursor = database.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON;")
 
     # Creamos la tabla users
     #   userId: clave primaria autoincremental
@@ -70,7 +71,7 @@ def start():
         transmitterId INTEGER,
         recieverId INTEGER,
         key string,
-        FOREIGN KEY(sharedFileId) REFERENCES files(fileId),
+        FOREIGN KEY(sharedFileId) REFERENCES files(fileId) ON DELETE CASCADE,
         FOREIGN KEY(transmitterId) REFERENCES users(userId),
         FOREIGN KEY(recieverId) REFERENCES users(userId)
     )""")

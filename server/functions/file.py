@@ -57,12 +57,8 @@ class File:
             return Result(404, "No existe un fichero con el id facilitado", False)
     
     def delete(self) -> Result:
-        fileData = db.get_data("files", {"fileId": self.fileId})
-
-        if not fileData:
-            return Result(400, "Archivo no encontrado", False)
         try:
             db.remove_data("files", {"fileId": self.fileId})
             return Result(200, "Archivo eliminado con éxito", True)
         except:
-            return Result(500, "Error del servidor", False)
+            return Result(500, "Error del servidor al borrar archivo", False)
