@@ -31,3 +31,10 @@ class SharedFile:
             return Result(200, "Archivo compartido con éxito", True, {"sharedFileId": file.fileId, "transmitterId": file.userId, "recieverId": recieverId, "key": key})
         except:
             return Result(500, "Error en el servidor al compartir fichero", False)
+    
+    def delete(self) -> Result:
+        try:
+            db.remove_data("sharedFiles", {"sharingId": self.sharingId})
+            return Result(200, "Archivo dejado de compartir con éxito", True)
+        except:
+            return Result(500, "Error del servidor al dejar de compartir archivo", False)

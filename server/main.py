@@ -189,7 +189,7 @@ def get_file_info(file_id):
     return json.loads(File.getFileData(file_id).jsonSelf())
 
 @app.delete('/files')
-def delete():
+def deleteFile():
     '''
     Servicio de eliminación de ficheros
     
@@ -281,18 +281,41 @@ def shareFile():
     '''
     Servicio de subida de ficheros
     Parámetros en el body de la petición:
-    - fileId
-    - recieverId
+    - file_id
+    - reciever_id
     - key
 
     return Result
     - result.msg: mensaje de contexto
     - result.code: codigo de error http
     - result.status: si ha sido realizada la petición o no
+    - result.body: los datos del fichero compartido
     '''
     
     input_json = request.get_json(force=True)
     file_to_share = File(input_json["fileId"])
     return json.loads(SharedFile.share(file_to_share, input_json["recieverId"], input_json["key"]).jsonSelf())
 
-app.run()
+@app.delete('/shared-files')
+def deleteSharedFile():
+    '''
+    Servicio de eliminación de ficheros compartidos
+    
+    Parámetros en el body de la petición:
+    - sharing_id: id del fichero a descargar
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: el fichero compartido borrado
+    '''
+
+    input_json = request.get_json(force=True)
+    shared_file = SharedFile(input_json["sharing_id"])
+    return json.loads(shared_file.delete().jsonSelf())
+
+
+# Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
+if __name__ == "__main__":
+    app.run()
