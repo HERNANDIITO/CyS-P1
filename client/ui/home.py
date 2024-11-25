@@ -112,10 +112,19 @@ class Home(CTkFrame):
             return archivos
 
     def procesar_guardado(self, archivo_id, nombre_archivo):
+        nombre_archivo = str(nombre_archivo)
         download_file(archivo_id, nombre_archivo)
         fileInfo = file_request.get_file_info(archivo_id)    
+# (user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
+        # decrypt(self.controller.user, nombre_archivo, str(fileInfo["body"]["fileName"]), str(fileInfo["body"]["fileName"]) + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"], fileInfo["body"]["signature"])
 
-        decrypt(nombre_archivo, self.controller.user, fileInfo["body"]["fileName"], fileInfo["body"]["fileName"] + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"])
+        decrypt(self.controller.user, 
+                nombre_archivo,
+                str(fileInfo["body"]["encryptedFile"]), 
+                str(fileInfo["body"]["fileName"]) + fileInfo["body"]["fileType"], 
+                fileInfo["body"]["aesKey"], 
+                fileInfo["body"]["fileType"], 
+                fileInfo["body"]["signature"])
 
     def eliminar_archivo(archivo_id):
         response = requests.delete(f'http://localhost:5000/files', json={"fileId": archivo_id})
