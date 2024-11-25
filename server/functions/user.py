@@ -170,6 +170,8 @@ class User:
                 "user": user,
                 "email": email,
             }, { "userId": self.userId })
-            return Result(200, "Datos del usuario modificados con éxito", True)
+            self.user = user
+            self.email = email
+            return Result(200, "Datos del usuario modificados con éxito", True, {"userId": self.userId, "user": self.user, "email": self.email, "publicRSA": self.publicRSA, "privateRSA": self.privateRSA, "password": self.password, "salt": self.salt})
         except:
             return Result(500, "Error del servidor al cambiar datos del usuario", False)
