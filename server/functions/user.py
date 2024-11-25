@@ -163,3 +163,13 @@ class User:
         except ValueError:
             # Invalid token
             return Result(400, "Mala solicitud: el id_token de Google no es válido", False)
+        
+    def changeData(self, user: str, email: str) -> Result:
+        try:
+            db.update_data( "users", {
+                "user": user,
+                "email": email,
+            }, { "userId": self.userId })
+            return Result(200, "Datos del usuario modificados con éxito", True)
+        except:
+            return Result(500, "Error del servidor al cambiar datos del usuario", False)

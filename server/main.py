@@ -332,6 +332,29 @@ def getUsersSharedTo(file_id):
 
     return json.loads(SharedFile.getUsersSharedTo(file_id).jsonSelf())
 
+@app.post("/users/change-data/<path:user_id>")
+def changeUserData(user_id):
+    '''
+    Servicio para cambiar datos de un usuario.
+    Parámetros en el body de la petición:
+    - user_id: str
+    - user: str
+    - email: str
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body:  
+        · user: Datos del usuario tras los cambios
+    '''
+
+    # Se leen los parametros del body
+    input_json = request.get_json(force=True)
+
+    user = User(user_id)
+    return json.loads(user.changeData(input_json["user"], input_json["email"]).jsonSelf())
+
 
 # Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
 if __name__ == "__main__":
