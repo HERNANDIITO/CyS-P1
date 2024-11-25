@@ -40,16 +40,17 @@ def rsa_decrypt(encrypted_data, private_key):
 # Firmamos los datos utilizando el esquema probabilistico de firmado PKCS#1 PSS basado en RSA. (RSASSA-PSS)
 def rsa_sign(data, private_key):
     try:
-        encrypted_file_hash = SHA3_256.new(data)
+        file_hash = SHA3_256.new(data)
         # encrypted_file_hash.update(bytes(encrypted_file_hash, encoding="utf-8"))
         # encrypted_file_hash_hex = encrypted_file_hash.hexdigest()
-        signature = pss.new(private_key).sign(encrypted_file_hash)
+        signature = pss.new(private_key).sign(file_hash)
         return base64.b64encode(signature)
     except Exception as e:
         raise Exception("Lo sentimos, se ha producido un error innesperado durante el firmado digital: ", e)
     
 def rsa_check_sign(data, signatory_public_key, signature):
     try:
+        signature = base64.b64decode(signature);
         data_hash = SHA3_256.new(data)
         verifier = pss.new(signatory_public_key)
         verifier.verify(data_hash, signature)

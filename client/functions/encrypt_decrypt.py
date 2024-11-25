@@ -64,7 +64,7 @@ def encrypt(file_path, user):
     file_aes_key_encrypted = rsa.rsa_encrypt(file_aes_key, rsa_public_key)
 
     # Firmamos el archivo
-    signature = rsa.rsa_sign(encrypted_file, rsa_private_key)
+    signature = rsa.rsa_sign(file_path, rsa_private_key)
 
     # Subimos el archivo al servidor
     user_id = user.userId
@@ -83,16 +83,16 @@ def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_
     # Obtenemos la clave RSA privada del usuario
     rsa_private_key = user.privateRSA
 
-    autenticity = rsa_check_sign(encrypted_file, signatory_public_key, signature)
+    # Desciframos la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
+    file_aes_key = rsa.rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
 
+    # Desciframos el archivo con la clave AES128
+    decrypted_file = str(file_name) + file_type
+    aes.decrypt_file(encrypted_file, decrypted_file, file_aes_key)
+
+    autenticity = rsa.rsa_check_sign(decrypted_file, signatory_public_key, signature)
+    
     if(autenticity):
-        # Desciframos la clave AES128 utilizada para cifrar el archivo con la clave privada RSA
-        file_aes_key = rsa.rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
-
-        # Desciframos el archivo con la clave AES128
-        decrypted_file = str(file_name) + file_type
-        aes.decrypt_file(encrypted_file, decrypted_file, file_aes_key)
-
         return decrypted_file
     else:
         return "El archivo no es válido"
