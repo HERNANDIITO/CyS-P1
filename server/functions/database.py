@@ -55,6 +55,7 @@ def start():
         AESKey string,
         date string,
         fileType string,
+        signature string,
         FOREIGN KEY(userId) REFERENCES users(userId)
     )""")
     

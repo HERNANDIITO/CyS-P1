@@ -131,6 +131,7 @@ def uploadFile():
     - aesKey
     - userId
     - fileType
+    - signature
 
     return Result
     - result.msg: mensaje de contexto
@@ -149,7 +150,7 @@ def uploadFile():
     
     if file:
         input_json = request.form.to_dict()
-        result = File.upload(file, app.config['UPLOAD_FOLDER'], input_json['aesKey'], input_json['userId'], input_json['fileType'], input_json['fileName'])
+        result = File.upload(file, app.config['UPLOAD_FOLDER'], input_json['aesKey'], input_json['userId'], input_json['fileType'], input_json['fileName'], input_json['signature'])
         
     #file.close() 
     return json.loads(str(result))
