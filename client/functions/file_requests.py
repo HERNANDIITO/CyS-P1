@@ -1,5 +1,6 @@
 import json
 import requests
+from  functions.result import Result
 
 def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fileName: str):
     payload = {
@@ -23,8 +24,7 @@ def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fil
         # Devuelve la info devuelta por el server
         return json.loads(r.text)
     except:
-        print("Error al subir el fichero")
-        return None
+        return Result(500, "Error al subir el archivo, inténtelo de nuevo", False, "")
 
 def download_file(fileId: int, savePath: str):
     # Envia petición GET para descargar un fichero
@@ -37,7 +37,7 @@ def download_file(fileId: int, savePath: str):
         file.write(r.content)
         file.close()
     except:
-        print("Error al descargar y guardar el fichero")
+        return Result(500, "Error al descargar y guardar el fichero", False, "")
         
 def get_file_info(fileId: int):
     # Envia peticion GET para obtener la informacion de un fichero

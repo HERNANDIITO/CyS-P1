@@ -9,7 +9,7 @@ import os
 from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
 from functions.aes import encrypt_private_key_with_aes, decrypt_private_key_with_aes
-
+from functions.result import Result
 
 global server
 server = "http://127.0.0.1:5000"
@@ -24,25 +24,24 @@ def generate_secure_password(length=16):
 # print(f"Generated passphrase: {passphrase}")
 
 
-def register(username, email, password, password2) -> User | None: 
+def register(username, email, password, password2) -> User | Result: 
     # Verificar que las contraseñas coinciden
+    error = ""
     
     if username is None or email is None or password is None or password2 is None:
-        print("Error: Hay campos vacíos")
-        return
+        error = "Error: Hay campos vacíos"
         
     if len(password) < 8:
-        print("Error: La contraseña tiene que tener minimo 8 caracteres")
-        return
+        error = "Error: La contraseña tiene que tener minimo 8 caracteres"
     
     if password2 != password:
-        print("Error: Datos incorrectos: las contraseñas no coinciden")
-        return
+        error = "Error: Datos incorrectos: las contraseñas no coinciden"
     
+    if ( error ):
+        return Result(400, error, False, error)
     # Encriptar la contraseña
     plain_password = password
     password, aes_key = hash_management(password)
-    
     
     # Llamar a la función register() para realizar un registro
     register_result = requests.put(server+"/users/register", json = {
@@ -78,13 +77,26 @@ def register(username, email, password, password2) -> User | None:
         if (str(update_result_json["code"]) == "200"):
             user = login( email = email, password = plain_password )
             return user
+        
+        else:
+            return Result(
+                    update_result_json["code"], 
+                    update_result_json["msg"],
+                    update_result_json["status"],
+                    update_result_json["body"]
+                )
     
     else:
         # En caso de que la primera request falle...
-        return None
+        return Result(
+            register_result_json["code"], 
+            register_result_json["msg"],
+            register_result_json["status"],
+            register_result_json["body"]
+        )
         
 
-def login(email, password) -> User | None:
+def login(email, password) -> User | Result:
     respuesta = ''
 
     if(email == '' or password == ''):
@@ -111,10 +123,15 @@ def login(email, password) -> User | None:
     
     login_result_json = json.loads(login_result.text)
     
-    print("PRE 200!")
-    print( "email", email )
-    print( "password", password )
-    if(str(json.loads(login_result.text)["code"]) == "200"):
+    if ( respuesta ):
+        return Result(
+            400,
+            respuesta,
+            False,
+            respuesta
+        )
+    
+    if(str(login_result_json["code"]) == "200"):
         
         # hacer una peticion que me devuelva la clave privada del usuario
         userID      = login_result_json["body"]["userID"]
@@ -135,7 +152,12 @@ def login(email, password) -> User | None:
         return user
     
     else:
-        return None
+        return Result(
+            login_result_json["code"],
+            login_result_json["msg"],
+            login_result_json["status"],
+            login_result_json["body"],
+        )
 
         
 

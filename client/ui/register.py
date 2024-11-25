@@ -3,6 +3,8 @@ from customtkinter import *
 from PIL import Image
 from functions import user_auth
 from functions.rsa import generate_rsa_keys
+from functions.user import User
+from functions.result import Result
 import os
 import requests, json
 
@@ -63,13 +65,14 @@ class Register(CTkFrame):
         pass2       = self.pass2_var.get()
         email       = self.email_var.get()
 
-        user = user_auth.register(username, email, password, pass2)
-        print("user:", user)
+        result = user_auth.register(username, email, password, pass2)
 
-        if(user):
-            self.controller.user = user
+        if(type(result) is User):
+            self.controller.user = result
             self.controller.load_restricted_frames()
             self.controller.show_frame("Home")
+        else:
+            self.controller.show_error(result.msg)
 
     def on_login(self):
         self.controller.show_frame("Login")

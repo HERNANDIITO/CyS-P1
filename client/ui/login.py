@@ -1,7 +1,7 @@
 from pathlib import Path
 from customtkinter import *
-from CTkMessagebox import CTkMessagebox
 from PIL import Image
+from functions.user import User
 from functions import user_auth
 from functions import google_auth
 
@@ -49,7 +49,6 @@ class Login(CTkFrame):
         self.controller.load_restricted_frames()
         self.controller.show_frame("Home")
 
-
     # Función que maneja el evento de inicio de sesión
     def on_login(self):
         password = self.password_var.get()  # Obtener el texto ingresado en el campo de contraseña
@@ -57,16 +56,18 @@ class Login(CTkFrame):
         
         result = user_auth.login(email=email, password=password)
         
-        if ( result ):
+        if ( type(result) is User ):
             self.successfullLogin(user=result)
-            
+        else:
+            self.controller.show_error(result.msg)
+
     def on_google_login(self):
         resultado = google_auth.google_login()
         
         if (resultado):
             self.successfullLogin(user = resultado)
         else:
-            CTkMessagebox(title="Error", message="Error al iniciar sesión con Google", icon="cancel")
+            self.controller.show_error("Error al iniciar sesión con Google")
 
     def on_register(self):
         self.controller.show_frame("Register")

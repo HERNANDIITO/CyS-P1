@@ -1,5 +1,6 @@
 import os
 import requests
+from functions.result import Result
 from functions.user import User
 import functions.aes as aes
 import functions.rsa as rsa
@@ -70,7 +71,10 @@ def encrypt(file_path, user):
     user_id = user.userId
     
     # Subimos el archivo
-    file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type, file_name, signature)
+    result = file_request.upload_file(file_aes_key_encrypted, user_id, b64encoded_encrypted_file, file_type, file_name, signature)
+    
+    if ( type(result) is Result ):
+        return result
 
 
 # Funcion principal para gestionar el descifrado de archivos multimedia

@@ -1,4 +1,5 @@
 from customtkinter import *
+from functions.result import Result
 from tkinter import filedialog
 from functions.encrypt_decrypt import encrypt
 # from functions.encrypt_decrypt import encrypt
@@ -76,16 +77,18 @@ class SubirArchivo(CTkFrame):
 
     def on_cifrar_archivo(self): 
         if self.archivo_path is None:
-            print('entra en la comprobacion de que no tienes archivo para encriptar')
+            self.controller.show_error("Debe subir un archivo para encriptar")
             self.archivo_cifrado_label.configure(text="Seleccione un archivo antes de cifrar", text_color="orange")
             self.archivo_cifrado_label.pack(pady=(5, 20))
             return
 
-        # (CODIGO DE EJEMPLO) no controla si se hace correctamente el cifrado
-        
         response = encrypt(self.archivo_path, self.controller.user)
         
-        print('si todo va bien el archivo se cifra')
+        if ( type(response) is Result ):
+            self.controller.show_error(response.msg)
+            return
+            
+        
         self.archivo_path = None   #reinicia el archivo seleccionado a vacio
         self.archivo_cifrado_label.configure(text="Archivo cifrado correctamente", text_color="blue")
         self.archivo_cifrado_label.pack(pady=(5, 20))

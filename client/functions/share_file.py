@@ -5,6 +5,7 @@ import functions.aes as aes
 import functions.rsa as rsa
 import functions.file_requests as file_request
 import encrypt_decrypt
+from functions.result import Result
 
 global server
 server = "http://127.0.0.1:5000"
@@ -31,5 +32,4 @@ def share(sharedFileId, recieverId, transmitter: User):
         file_request.share_file(sharedFileId, userId, recieverId, encryptedAESKeyforReciever)
 
     except Exception as e:
-        print(f"Error al compartir archivo: {e}")
-        raise
+        return Result(500, f"Error al compartir archivo: {e}", False, "")

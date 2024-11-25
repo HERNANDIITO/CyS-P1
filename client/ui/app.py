@@ -4,6 +4,7 @@ from ui.home import Home
 from ui.login import Login
 from ui.register import Register 
 from ui.subir_archivo import SubirArchivo
+from CTkMessagebox import CTkMessagebox
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -46,3 +47,6 @@ class App(customtkinter.CTk):
             frame = F(self.container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
+            
+    def show_error(self, message):
+        CTkMessagebox(title="Error", message=message, icon="cancel")
