@@ -67,6 +67,8 @@ class Register(CTkFrame):
         print("user:", user)
 
         if(user):
+            self.controller.user = user
+            self.controller.load_restriced_frames()
             self.controller.show_frame("Home")
 
     def on_login(self):
