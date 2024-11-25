@@ -355,6 +355,32 @@ def changeUserData(user_id):
     user = User(user_id)
     return json.loads(user.changeData(input_json["user"], input_json["email"]).jsonSelf())
 
+@app.post("/users/change-password/<path:user_id>")
+def changeUserPassword(user_id):
+    '''
+    Servicio para cambiar contrasenya de un usuario.
+    Parámetros en el body de la petición:
+    - user_id: str
+    - password: str
+    - oldPassword: str
+    - salt: str
+    - publicRSA: str
+    - privateRSA: str
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body:  
+        · user: Datos del usuario tras los cambios
+    '''
+
+    # Se leen los parametros del body
+    input_json = request.get_json(force=True)
+
+    user = User(user_id)
+    return json.loads(user.changePassword(input_json['password'], input_json['oldPassword'], input_json['publicRSA'], input_json['privateRSA']).jsonSelf())
+
 
 # Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
 if __name__ == "__main__":
