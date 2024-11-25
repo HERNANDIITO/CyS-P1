@@ -87,11 +87,10 @@ def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_
     file_aes_key = rsa.rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
 
     # Desciframos el archivo con la clave AES128
-    decrypted_file = str(file_name) + file_type
     print(encrypted_file)
-    aes.decrypt_file(encrypted_file, decrypted_file, file_aes_key)
+    aes.decrypt_file(file_name, file_name, file_aes_key)
 
-    autenticity = rsa.rsa_check_sign(decrypted_file, signatory_public_key, signature)
+    autenticity = rsa.rsa_check_sign(file_name, signatory_public_key, signature)
     
     if(autenticity):
         return decrypted_file
