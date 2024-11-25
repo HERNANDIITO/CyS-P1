@@ -1,4 +1,5 @@
 import customtkinter
+from customtkinter import set_appearance_mode
 from ui.home import Home
 from ui.login import Login
 from ui.register import Register 
@@ -10,7 +11,7 @@ class App(customtkinter.CTk):
         
         self.geometry("600x480")
         self.title("Asegurados")
-        self._set_appearance_mode("light")
+        set_appearance_mode("light")
         self.configure(bg = "white")
         self.frames = {}
         self.user = None
@@ -40,7 +41,7 @@ class App(customtkinter.CTk):
         frame = self.frames[translated_context[context]]
         frame.tkraise()
         
-    def load_restriced_frames(self):
+    def load_restricted_frames(self):
         for F in (Home, SubirArchivo):
             frame = F(self.container, self)
             self.frames[F] = frame

@@ -75,6 +75,18 @@ class Home(CTkFrame):
                     command=lambda archivo_id=row[0]: self.eliminar_archivo(archivo_id=archivo_id)  # Pasa el ID del archivo al botón
                 )
                 btn_action.pack(side="right", padx=(2, 0))
+                
+                btn_action = CTkButton(
+                    master=row_frame,
+                    text="Compartir",
+                    corner_radius=32,
+                    fg_color="#601E88",
+                    hover_color="#EC5E5E",
+                    text_color="#FFFFFF",
+                    width = 5,
+                    command=lambda archivo_id=row[0]: self.compartir_archivo(archivo_id=archivo_id)  # Pasa el ID del archivo al botón
+                )
+                btn_action.pack(side="right", padx=(2, 0))
 
                 btn_action = CTkButton(
                     master=row_frame,
@@ -110,5 +122,8 @@ class Home(CTkFrame):
         response.raise_for_status()
         response = response.json()
 
+    def compartir_archivo(self, archivo_id):
+        self.controller.show_frame("")
+        
     def on_subir_archivo(self):
         self.controller.show_frame("SubirArchivo")

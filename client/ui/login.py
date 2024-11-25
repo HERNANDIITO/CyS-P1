@@ -46,7 +46,7 @@ class Login(CTkFrame):
               
     def successfullLogin(self, user):
         self.controller.user = user
-        self.controller.load_restriced_frames()
+        self.controller.load_restricted_frames()
         self.controller.show_frame("Home")
 
 
