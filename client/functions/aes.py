@@ -169,6 +169,12 @@ def encrypt_file(input_file, output_file, encoded_file, aes_key):
 
 
 # Descifra un archivo codificado en Base64 utilizando AES en modo CTR
+
+
+
+
+
+
 def decrypt_file(input_file, output_file, aes_key):
     # Leer el archivo codificado en Base64 y decodificarlo
     with open(input_file, 'rb') as f:
@@ -176,8 +182,8 @@ def decrypt_file(input_file, output_file, aes_key):
         binary_data = base64.b64decode(base64_data)  # Decodificar Base64 a binario
 
     # Extraer el nonce de los primeros 16 bytes
-    nonce = binary_data[:15]  # Los primeros 16 bytes son el nonce
-    encrypted_data = binary_data[15:]  # El resto es el contenido cifrado
+    nonce = binary_data[:11]  # Los primeros 16 bytes son el nonce
+    encrypted_data = binary_data[11:]  # El resto es el contenido cifrado
 
     # Crear el cifrador en modo CTR usando el nonce extraído
     cipher = AES.new(aes_key, AES.MODE_CTR, nonce=nonce)
@@ -188,8 +194,3 @@ def decrypt_file(input_file, output_file, aes_key):
     # Guardar los datos descifrados en el archivo de salida
     with open(output_file, 'wb') as f:
         f.write(decrypted_data)
-
-
-
-
-

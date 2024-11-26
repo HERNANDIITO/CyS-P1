@@ -118,13 +118,21 @@ class Home(CTkFrame):
 # (user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
         # decrypt(self.controller.user, nombre_archivo, str(fileInfo["body"]["fileName"]), str(fileInfo["body"]["fileName"]) + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"], fileInfo["body"]["signature"])
 
+        # decrypt(user = self.controller.user, 
+        #         file_name = nombre_archivo,
+        #         encrypted_file = str(fileInfo["body"]["encryptedFile"]), 
+        #         file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
+        #         file_type = fileInfo["body"]["fileType"], 
+        #         signatory_public_key = fileInfo["body"]["signature"], 
+        #         signature = fileInfo["body"]["signature"])
+
         decrypt(user = self.controller.user, 
-                file_name = nombre_archivo,
-                encrypted_file = str(fileInfo["body"]["encryptedFile"]), 
-                file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
-                file_type = fileInfo["body"]["fileType"], 
-                signatory_public_key = fileInfo["body"]["signature"], 
-                signature = fileInfo["body"]["signature"])
+            file_name = nombre_archivo,
+            encrypted_file = nombre_archivo, 
+            file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
+            file_type = fileInfo["body"]["fileType"], 
+            signatory_public_key = fileInfo["body"]["signature"], 
+            signature = fileInfo["body"]["signature"])
 
     def eliminar_archivo(archivo_id):
         response = requests.delete(f'http://localhost:5000/files', json={"fileId": archivo_id})
