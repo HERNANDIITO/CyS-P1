@@ -29,7 +29,7 @@ class App(customtkinter.CTk):
         
         self.show_frame("Login")
             
-    def show_frame(self, context):
+    def show_frame(self, contextParam):
         
         translated_context = {
             "Login": Login,
@@ -38,8 +38,16 @@ class App(customtkinter.CTk):
             "SubirArchivo": SubirArchivo
         }
         
-        frame = self.frames[translated_context[context]]
+        context = translated_context[contextParam]
+        
+        needs_reload = [ translated_context["Home"] ]
+        
+        frame = self.frames[context]
+                
         frame.tkraise()
+        
+        if ( context in needs_reload ):
+            self.frames[context].reload()
         
     def load_restricted_frames(self):
         for F in (Home, SubirArchivo):

@@ -8,9 +8,7 @@ class Home(CTkFrame):
     def __init__(self, parent, controller):
         CTkFrame.__init__(self, parent)
         self.controller = controller
-        
-        self.archivos = self.getFiles()
-        
+                
         header_frame = CTkFrame(self, fg_color="transparent")
         header_frame.pack(pady=(30, 20), padx=20, fill="x")
         
@@ -32,7 +30,25 @@ class Home(CTkFrame):
 
         subtitle = CTkLabel(master=self, text="Estos son tus archivos:", text_color="#6B6B6B", font=("Arial", 14))
         subtitle.pack(pady=(20, 50))
+        
+        self.table = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
+        self.generateTable()
+        self.table.pack()
 
+    def getFiles(self):
+        response = ""
+        try:
+            response = requests.get(f'http://localhost:5000/files/{self.controller.user.userId}')
+            response.raise_for_status()
+            archivos = response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error al obtener archivos: {e}")
+        finally: 
+            return archivos
+
+    def generateTable(self):
+        self.archivos = self.getFiles()
+        
         # Inicializar la tabla de datos con encabezados
         table_data = [
             ["ID", "Nombre de archivo"]
@@ -50,10 +66,10 @@ class Home(CTkFrame):
         for idx, row in enumerate(table_data):
             # Establecer el marco de la fila
             if idx == 0:
-                row_frame = CTkFrame(master=self, fg_color="#601E88", border_color="#601E88", corner_radius=32, border_width=2)
+                row_frame = CTkFrame(master=self.table, fg_color="#601E88", border_color="#601E88", corner_radius=32, border_width=2)
                 row_frame.pack(fill="x", padx=20, pady=5)
             else:
-                row_frame = CTkFrame(master=self, fg_color="#FFFFFF", corner_radius=32)
+                row_frame = CTkFrame(master=self.table, fg_color="#FFFFFF", corner_radius=32)
                 row_frame.pack(fill="x", padx=20, pady=5)
 
             # Añadir celdas a la fila
@@ -100,31 +116,26 @@ class Home(CTkFrame):
                 )
                 btn_action.pack(side="right", padx=(2, 0))
 
-    def getFiles(self):  
-        response = ""
-        try:
-            response = requests.get(f'http://localhost:5000/files/{self.controller.user.userId}')
-            response.raise_for_status()
-            archivos = response.json()
-        except requests.exceptions.RequestException as e:
-            print(f"Error al obtener archivos: {e}")
-        finally: 
-            return archivos
+    def reload(self):
+        self.table.destroy()
+        self.table = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
+        self.generateTable()
+        self.table.pack()
 
     def procesar_guardado(self, archivo_id, nombre_archivo):
         nombre_archivo = str(nombre_archivo)
         download_file(archivo_id, nombre_archivo)
         fileInfo = file_request.get_file_info(archivo_id)    
-# (user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
-        # decrypt(self.controller.user, nombre_archivo, str(fileInfo["body"]["fileName"]), str(fileInfo["body"]["fileName"]) + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"], fileInfo["body"]["signature"])
+        # (user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
+                # decrypt(self.controller.user, nombre_archivo, str(fileInfo["body"]["fileName"]), str(fileInfo["body"]["fileName"]) + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"], fileInfo["body"]["signature"])
 
-        # decrypt(user = self.controller.user, 
-        #         file_name = nombre_archivo,
-        #         encrypted_file = str(fileInfo["body"]["encryptedFile"]), 
-        #         file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
-        #         file_type = fileInfo["body"]["fileType"], 
-        #         signatory_public_key = fileInfo["body"]["signature"], 
-        #         signature = fileInfo["body"]["signature"])
+                # decrypt(user = self.controller.user, 
+                #         file_name = nombre_archivo,
+                #         encrypted_file = str(fileInfo["body"]["encryptedFile"]), 
+                #         file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
+                #         file_type = fileInfo["body"]["fileType"], 
+                #         signatory_public_key = fileInfo["body"]["signature"], 
+                #         signature = fileInfo["body"]["signature"])
 
         decrypt(user = self.controller.user, 
             file_name = nombre_archivo,
