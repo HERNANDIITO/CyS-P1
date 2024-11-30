@@ -53,7 +53,7 @@ def register(username, email, password, password2) -> User | Result:
         "privateRSA": None
     })
 
-    register_result_json = json.loads(register_result.text)
+    register_result_json = register_result.json()
 
     if (str(register_result_json["code"]) == "200"):
         # Recogemos el userID
@@ -72,7 +72,7 @@ def register(username, email, password, password2) -> User | Result:
             "publicRSA": pemPublicRSA.decode("utf-8")
         })
         
-        update_result_json = json.loads(update_result.text)
+        update_result_json = update_result.json()
         
         # Comprobamos el resultado de la request
         if (str(update_result_json["code"]) == "200"):
@@ -122,7 +122,7 @@ def login(email, password) -> User | Result:
         "password": password
     })
     
-    login_result_json = json.loads(login_result.text)
+    login_result_json = login_result.json()
     
     if ( respuesta ):
         return Result(
