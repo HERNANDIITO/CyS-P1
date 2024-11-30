@@ -2,6 +2,7 @@ import json
 import secrets
 import string
 from Crypto.Hash import SHA3_256
+from Crypto.Protocol.KDF import PBKDF2
 import requests
 from pathlib import Path
 import os

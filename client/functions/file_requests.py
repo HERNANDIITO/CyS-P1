@@ -2,12 +2,13 @@ import json
 import requests
 from  functions.result import Result
 
-def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fileName: str):
+def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fileName: str, signature: str):
     payload = {
         "aesKey": aesKey,
         "userId": userId,
         "fileType": fileType,
-        "fileName": fileName
+        "fileName": fileName,
+        "signature": signature
     }
     
     try:

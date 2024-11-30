@@ -40,6 +40,10 @@ def rsa_decrypt(encrypted_data, private_key):
 # Firmamos los datos utilizando el esquema probabilistico de firmado PKCS#1 PSS basado en RSA. (RSASSA-PSS)
 def rsa_sign(data, private_key):
     try:
+        # Asegurarte de que data esté en formato bytes
+        if isinstance(data, str):
+            data = data.encode('utf-8')  # Convertir cadena a bytes
+    
         file_hash = SHA3_256.new(data)
         # encrypted_file_hash.update(bytes(encrypted_file_hash, encoding="utf-8"))
         # encrypted_file_hash_hex = encrypted_file_hash.hexdigest()
@@ -50,8 +54,15 @@ def rsa_sign(data, private_key):
     
 def rsa_check_sign(data, signatory_public_key, signature):
     try:
-        signature = base64.b64decode(signature);
+        if isinstance(data, str): 
+            data = data.encode('utf-8')
+
+        signature = base64.b64decode(signature)
         data_hash = SHA3_256.new(data)
+
+        # signatory_public_key = signatory_public_key.export_key() 'str' object has no attribute 'export_key'
+        signatory_public_key = import_public_key(signatory_public_key)
+
         verifier = pss.new(signatory_public_key)
         verifier.verify(data_hash, signature)
         return True

@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request
+from flask_compress import Compress
 from functions.user import User
 from functions.result import Result
 import json
@@ -7,6 +8,7 @@ from functions.file import File
 from functions.shared_file import SharedFile
 
 app = Flask(__name__)
+Compress(app)
 app.config['UPLOAD_FOLDER'] =  os.path.join(app.root_path, 'data', 'uploads')
 
 @app.put("/users/register")
@@ -384,4 +386,4 @@ def changeUserPassword(user_id):
 
 # Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
 if __name__ == "__main__":
-    app.run()
+    app.run(threaded=True)
