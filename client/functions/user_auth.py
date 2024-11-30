@@ -6,6 +6,8 @@ from Crypto.Protocol.KDF import PBKDF2
 import requests
 from pathlib import Path
 import os
+import base64
+
 
 from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
@@ -47,7 +49,8 @@ def register(username, email, password, password2) -> User | Result:
     plain_password = password
     salt = secrets.token_bytes(16)
     derivedPassword, aes_key = pass_management(plain_password, salt)
-    
+    salt = base64.b64encode(salt).decode('utf-8')
+
     # Llamar a la función register() para realizar un registro
     register_result = requests.put(server+"/users/register", json = {
         "user": username,
@@ -68,7 +71,11 @@ def register(username, email, password, password2) -> User | Result:
         # Exportar las claves RSA
         pemPrivateRSA, pemPublicRSA = export_keys(private_key = privateRSA, public_key = publicRSA)
         # Encriptar la RSA privada antes de subirla al servidor
-        encryptedPEMPrivateRSA = encrypt_private_key_with_aes(private_key_pem = pemPrivateRSA, aes_key = aes_key.encode("utf-8"))
+        # encryptedPEMPrivateRSA = encrypt_private_key_with_aes(private_key_pem = pemPrivateRSA, aes_key = aes_key.encode("utf-8"))
+        # print("AES KEY: " + aes_key)
+        # print("AES KEY ENCODED: " +aes_key.encode("utf-8"))
+
+        encryptedPEMPrivateRSA = encrypt_private_key_with_aes(private_key_pem = pemPrivateRSA, aes_key = aes_key)
         
         # Hacemos la peticion decodificando ambas claves para que la DB pueda interpretarlas (no acepta strings binarios)
         update_result = requests.post(server + "/users/update-keys", json = {
@@ -122,10 +129,21 @@ def login(email, password) -> User | Result:
     # ---------------------------------------------------
     # Hacer peticion si el email existe recuperar el salt
     # ---------------------------------------------------
+    salt_result = requests.post(server+"/users/getSaltByEmail", json = {
+        "email": email
+    })
 
-    salt = '';
-    derivedPassword, aes_key = pass_management(password, salt)
+    salt_result_json = salt_result.json()
+
+    if(str(salt_result_json["code"]) == "200"):
+        salt = salt_result_json["body"]["salt"];
+        derivedPassword, aes_key = pass_management(password, salt)
     
+    print("Salt")
+    print(salt)
+    print("Derived Password:")
+    print(derivedPassword)
+
     # Llamar a la función login() para realizar un registro
     login_result = requests.post(server+"/users/login", json = {
         "email": email,
@@ -173,9 +191,9 @@ def login(email, password) -> User | Result:
         
 
 def pass_management(password, salt) -> str:
-    keys = PBKDF2(password, salt, 32, count=1000000, hmac_hash_module=SHA3_256)
+    keys = PBKDF2(password, salt, 32, count=100000, hmac_hash_module=SHA3_256)
     
-    derivedPassword = keys[:16]
+    derivedPassword = base64.b64encode(keys[:16]).decode('utf-8')
     aesKey = keys[16:]
     
     return derivedPassword, aesKey
