@@ -105,7 +105,7 @@ class User:
             return Result(body= None, code="500", msg= "Error del servidor, inténtalo más tarde", status=False)
     
     def getSalt(self):
-        return Result(200, "Clave RSA pública obtenida con éxito", True, {"salt": self.salt})
+        return Result(200, "Salt enviada con éxito", True, {"salt": self.salt})
 
     def modifyUser( self, userId: str, user: str | None = None, password: str | None = None ) -> "User":
         toModify = User(userId)

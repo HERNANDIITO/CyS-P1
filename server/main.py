@@ -90,7 +90,7 @@ def getSaltByEmail():
 
     # Se consume la función de clase para crear un usuario
     user = User(email=input_json["email"])
-    result = user.getSalt(input_json["email"])
+    result = user.getSalt()
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
     return jsonify(result.jsonSelf())
