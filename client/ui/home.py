@@ -107,6 +107,7 @@ class Home(CTkFrame):
             response = requests.get(f'http://localhost:5000/shared-files-to/{self.controller.user.userId}')
             response.raise_for_status()
             archivos = response.json()
+            print("archivos: ", archivos)
         except requests.exceptions.RequestException as e:
             print(f"Error al obtener archivos: {e}")
         finally: 
@@ -134,6 +135,7 @@ class Home(CTkFrame):
         if (files["body"]):
             # Rellenar la tabla con los datos obtenidos de la respuesta del servidor
             for archivo in files["body"]["files"]:
+                print("archivo!: ", archivo)
                 archivo_id = archivo["fileId"]
                 nombre_archivo = str(archivo["fileName"]) + archivo["fileType"]
                 table_data.append([archivo_id, nombre_archivo])
@@ -287,7 +289,7 @@ class Home(CTkFrame):
         response = response.json()
 
     def compartir_archivo(self, archivo_id):
-        self.controller.show_frame("Compartir")
+        self.controller.show_frame("Compartir", archivo_id)
         
     def on_subir_archivo(self):
         self.controller.show_frame("SubirArchivo")

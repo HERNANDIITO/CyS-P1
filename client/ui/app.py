@@ -31,7 +31,7 @@ class App(customtkinter.CTk):
         
         self.show_frame("Login")
             
-    def show_frame(self, contextParam):
+    def show_frame(self, contextParam, params = None):
         
         translated_context = {
             "Login": Login,
@@ -43,18 +43,18 @@ class App(customtkinter.CTk):
         
         context = translated_context[contextParam]
         
-        needs_reload = [ translated_context["Home"] ]
-        
-        context = translated_context[contextParam]
-        
-        needs_reload = [ translated_context["Home"] ]
+        needs_reload = [ translated_context["Home"], translated_context["Compartir"] ]
+        needs_params = [ translated_context["Compartir"] ]
         
         frame = self.frames[context]
                 
         frame.tkraise()
         
         if ( context in needs_reload ):
-            self.frames[context].reload()
+            if ( context in needs_params ):
+                self.frames[context].reload(params)
+            else:
+                self.frames[context].reload()
         
     def load_restricted_frames(self):
         for F in (Home, SubirArchivo, Share):

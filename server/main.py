@@ -95,6 +95,28 @@ def getSaltByEmail():
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
     return jsonify(result.jsonSelf())
 
+@app.get("/users/shareParamsByEmail/<path:email>")
+def shareParamsByEmail(email):
+    '''
+    Servicio para recuperar el salt del servidor.
+    Parámetros en el body de la petición:
+    - email: str
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body:  
+        · salt: salt del usuario
+    '''
+
+    # Se consume la función de clase para crear un usuario
+    user = User(email=email)
+    result = user.getID()
+
+    # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
+    return jsonify(result.jsonSelf())
+
 @app.post("/users/update-keys")
 def updateKeys():
     '''
@@ -322,8 +344,8 @@ def shareFile():
     '''
     
     input_json = request.get_json(force=True)
-    file_to_share = File(input_json["fileId"])
-    return jsonify(SharedFile.share(file_to_share, input_json["recieverId"], input_json["key"]).jsonSelf())
+    file_to_share = File(input_json["file_id"])
+    return jsonify(SharedFile.share(file_to_share, input_json["reciever_id"], input_json["key"]).jsonSelf())
 
 @app.delete('/shared-files')
 def deleteSharedFile():

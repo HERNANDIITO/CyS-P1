@@ -3,6 +3,7 @@ from functions import database as db
 from functions.result import Result
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from functions.file import File
 
 class User:
     def __init__( self, userId: str = None, email: str = None ):
@@ -10,7 +11,6 @@ class User:
             userData = db.get_data( "users", { "userId": userId })
         elif ( email ):
             userData = db.get_data( "users", { "email": email })
-
         
         self.userId     = userData[0]
         self.user       = userData[1]
@@ -105,6 +105,9 @@ class User:
     def getSalt(self):
         return Result(200, "Salt enviada con éxito", True, {"salt": self.salt})
 
+    def getID(self):
+        return Result(200, "ID enviada con exito", True, {"userID": self.userId, "publicRSA": self.publicRSA})
+
     def modifyUser( self, userId: str, user: str | None = None, password: str | None = None ) -> "User":
         toModify = User(userId)
         if ( user ):
@@ -131,14 +134,28 @@ class User:
     
     def getSharedFilesOfUser(self) -> Result:
         result = db.get_data_with_map( "sharedFiles", { "transmitterId": self.userId } )
+
+        fileList = []        
         if (result != None):
-            return Result(200, "Archivos compartidos por usuario obtenidos con éxito", True, {"sharedFiles": result})
+            for sharedFile in result:
+                fileAux = File(sharedFile['sharedFileId']).jsonself()
+                if ( fileAux not in fileList ):
+                    fileList.append(fileAux)
+            return Result(200, "Archivos compartidos por usuario obtenidos con éxito", True, {"files": fileList})
+        
         return Result(404, "El usuario no ha compartido ficheros", False, {})
     
     def getSharedFilesToUser(self) -> Result:
         result = db.get_data_with_map( "sharedFiles", { "recieverId": self.userId } )
+        
+        fileList = []
+  
         if (result != None):
-            return Result(200, "Archivos compartidos al usuario obtenidos con éxito", True, {"sharedFiles": result})
+            for sharedFile in result:
+                fileAux = File(sharedFile['sharedFileId']).jsonself()
+                if ( fileAux not in fileList ):
+                    fileList.append(fileAux)
+            return Result(200, "Archivos compartidos al usuario obtenidos con éxito", True, {"files": fileList})
         return Result(404, "No hay archivos compartidos a este usuario", False, {})
     
     @classmethod

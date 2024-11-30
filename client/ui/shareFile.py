@@ -1,38 +1,41 @@
 from customtkinter import *
 from PIL import Image
 from pathlib import Path
+from functions.share_file import share
 import os
 import re
+import requests
 
 class Share(CTkFrame):
     def __init__(self, parent, controller):
         CTkFrame.__init__(self, parent)
         self.controller = controller
+        self.fileID = 0
         
-        self.patata = 0 
+        self.emailsWritten = False
         
         # Cargar icono de email
         email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/email-icon.png')))
         email_icon = CTkImage(dark_image=email_icon_data, light_image=email_icon_data, size=(20, 20))
         
         # Configurar scroll
-        self.canvas = CTkCanvas(self, bg="#DBDBDB", highlightthickness=0, width=0)
-        self.scrollbar = CTkScrollbar(self, orientation="vertical", command=self.canvas.yview)
-        self.scrollable_frame = CTkFrame(self.canvas)
+        canvas = CTkCanvas(self, bg="#DBDBDB", highlightthickness=0, width=0)
+        scrollbar = CTkScrollbar(self, orientation="vertical", command=canvas.yview)
+        scrollable_frame = CTkFrame(canvas)
         
-        self.scrollable_frame.bind(
+        scrollable_frame.bind(
             "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
         
-        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
 
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
         
         # Cabecera
-        header_frame = CTkFrame(self.scrollable_frame, fg_color="transparent")
+        header_frame = CTkFrame(scrollable_frame, fg_color="transparent")
         header_frame.pack(pady=(30, 20), padx=20, fill="x")
         
         title = CTkLabel(master=header_frame, text="Compartir archivo", font=("Arial", 24, "bold"), 
@@ -55,25 +58,25 @@ class Share(CTkFrame):
  
 
         # Contenedor para el título, email input y botón
-        email_input_frame = CTkFrame(master=self.scrollable_frame, fg_color="transparent")
+        email_input_frame = CTkFrame(master=scrollable_frame, fg_color="transparent")
         email_input_frame.pack(anchor="w", pady=(10, 20), padx=(180, 0))
 
         # Subtítulos dentro del frame
-        subtitle = CTkLabel(
+        self.fileName = CTkLabel(
             master=email_input_frame,
-            text="El archivo a compartir es:",
+            text="",
             text_color="#6B6B6B",
             font=("Arial", 14)
         )
-        subtitle.pack(anchor="w", pady=(0, 10))
+        self.fileName.pack(anchor="w", pady=(0, 10))
 
-        subtitle = CTkLabel(
+        self.emailList = CTkLabel(
             master=email_input_frame,
             text="Compartir con:",
             text_color="#6B6B6B",
             font=("Arial", 14)
         )
-        subtitle.pack(anchor="w", pady=(0, 10))
+        self.emailList.pack(anchor="w", pady=(0, 10))
 
         # Icono y etiqueta de email dentro del frame
         email_label = CTkLabel(
@@ -114,23 +117,24 @@ class Share(CTkFrame):
 
         
         # Mensaje de error
-        self.error_label = CTkLabel(master=self.scrollable_frame, text="", text_color="red", font=("Arial", 12))
+        self.error_label = CTkLabel(master=scrollable_frame, text="", text_color="red", font=("Arial", 12))
         self.error_label.pack(pady=(0, 0))
         
         # Tabla de emails
-        self.email_table = CTkFrame(master=self.scrollable_frame, fg_color="transparent")
+        self.email_table = CTkFrame(master=scrollable_frame, fg_color="transparent")
         self.email_table.pack(fill="both", expand=True, padx=20, pady=10)
         self.emails = []
 
         # Botón de compartir debajo de la tabla de emails
         self.share_button = CTkButton(
-            master=self.scrollable_frame,
+            master=scrollable_frame,
             text="Compartir",
             fg_color="#601E88",
             hover_color="#D18AF0",
             text_color="#ffffff",
             width=100,
-            state="normal"
+            state="normal",
+            command=self.share
         )
         self.share_button.pack_forget()
 
@@ -141,7 +145,7 @@ class Share(CTkFrame):
             self.add_email_to_table(email)
             self.error_label.configure(text="")
             self.email_entry.delete(0, "end") 
-            self.patata = 1 
+            self.emailsWritten = True
             self.show_share_button()
         else:
             self.error_label.configure(text="Email no válido")
@@ -164,8 +168,27 @@ class Share(CTkFrame):
             row.pack(fill="x", pady=0, padx=180)
 
     def show_share_button(self):
-        if self.patata == 1: 
+        if self.emailsWritten: 
             self.share_button.pack(pady=(20, 10), padx=(250, 0))
 
     def on_volver(self):
         self.controller.show_frame("Home")
+        
+    def share(self):
+        for email in self.emails :
+            r = requests.get(f"http://localhost:5000/users/shareParamsByEmail/{email}")
+            print(r)
+            r = r.json()
+            print(r)
+            
+            if (str(r['code']) == "200"):
+                print("sharing!")
+                result = share(sharedFileId = self.fileID, recieverId = r['body']['userID'], transmitter = self.controller.user, recieverPublicRSAKey = r['body']['publicRSA'], AESKey = self.fileJSON['body']['aesKey'])
+                print("sharing result: ", result)
+
+    def reload(self, fileID):
+        self.fileID = fileID
+        r = requests.get(f"http://localhost:5000/get-file-info/{self.fileID}")
+        self.fileJSON = r.json()
+        self.fileName.configure(text=f"El archivo a compartir es: { self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"] }" )
+        

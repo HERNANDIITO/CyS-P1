@@ -46,3 +46,16 @@ def get_file_info(fileId: int):
     r = requests.get(f'http://localhost:5000/get-file-info/{fileId}')
     
     return json.loads(r.text)
+
+def share_file(sharedFileId, userId, recieverId, encryptedAESKeyforReciever):
+    try:
+        r = requests.post(f'http://localhost:5000/share-file', json = {
+            "file_id": sharedFileId,
+            "reciever_id": recieverId,
+            "key": encryptedAESKeyforReciever,
+            "user_id": userId
+        })
+        
+        return r
+    except Exception as e:
+        return Result(500, f"Error al compartir archivo: {e}", False, "")
