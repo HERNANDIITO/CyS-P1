@@ -24,24 +24,26 @@ def generate_secure_password(length=16):
 # passphrase = generate_secure_password()
 # print(f"Generated passphrase: {passphrase}")
 
+def comprobarDatosRegistro(username, email, password, password2):
+    error = ''
+
+    if username is None or email is None or password is None or password2 is None:
+        error = "Error: Hay campos vacíos"   
+    elif len(password) < 8:
+        error = "Error: La contraseña tiene que tener minimo 8 caracteres"
+    elif password2 != password:
+        error = "Error: Datos incorrectos: las contraseñas no coinciden"
+
+    return error
 
 def register(username, email, password, password2) -> User | Result: 
     # Verificar que las contraseñas coinciden
-    error = ""
-    
-    if username is None or email is None or password is None or password2 is None:
-        error = "Error: Hay campos vacíos"
-        
-    if len(password) < 8:
-        error = "Error: La contraseña tiene que tener minimo 8 caracteres"
-    
-    if password2 != password:
-        error = "Error: Datos incorrectos: las contraseñas no coinciden"
+    error = comprobarDatosRegistro(username, email, password, password2)
     
     if ( error ):
         return Result(400, error, False, error)
     
-    # Cifrar la contraseña
+    # Proteger la contraseña introducida por el usuario
     plain_password = password
     salt = secrets.token_bytes(16)
     derivedPassword, aes_key = pass_management(plain_password, salt)

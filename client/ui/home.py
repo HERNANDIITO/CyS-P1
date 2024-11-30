@@ -287,7 +287,7 @@ class Home(CTkFrame):
         response = response.json()
 
     def compartir_archivo(self, archivo_id):
-        self.controller.show_frame("")
+        self.controller.show_frame("Compartir")
         
     def on_subir_archivo(self):
         self.controller.show_frame("SubirArchivo")
