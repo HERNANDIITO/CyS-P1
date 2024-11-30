@@ -139,6 +139,7 @@ def login(email, password) -> User | Result:
 
     if(str(salt_result_json["code"]) == "200"):
         salt = salt_result_json["body"]["salt"];
+        salt = base64.b64decode(salt)
         derivedPassword, aes_key = pass_management(password, salt)
     
     print("Salt")
