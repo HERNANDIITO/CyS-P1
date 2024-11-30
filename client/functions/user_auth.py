@@ -132,6 +132,8 @@ def login(email, password) -> User | Result:
     salt_result = requests.post(server+"/users/getSaltByEmail", json = {
         "email": email
     })
+    
+    print("SALT RESULT: ", salt_result)
 
     salt_result_json = salt_result.json()
 
@@ -149,6 +151,8 @@ def login(email, password) -> User | Result:
         "email": email,
         "password": derivedPassword
     })
+    
+    print("LOGIN RESULT: ", login_result)
     
     login_result_json = login_result.json()
     
