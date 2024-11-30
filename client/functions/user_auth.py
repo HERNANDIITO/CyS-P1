@@ -40,14 +40,17 @@ def register(username, email, password, password2) -> User | Result:
     
     if ( error ):
         return Result(400, error, False, error)
-    # Encriptar la contraseña
+    
+    # Cifrar la contraseña
     plain_password = password
-    password, aes_key = hash_management(password)
+    salt = secrets.token_bytes(16)
+    derivedPassword, aes_key = pass_management(plain_password, salt)
     
     # Llamar a la función register() para realizar un registro
     register_result = requests.put(server+"/users/register", json = {
         "user": username,
-        "password": password,
+        "password": derivedPassword,
+        "salt": salt,
         "email": email,
         "publicRSA": None,
         "privateRSA": None
@@ -113,13 +116,18 @@ def login(email, password) -> User | Result:
     #         print("Invalid email")
     if "@" not in email:
         respuesta = 'Por favor, introduce un email válido'
-        
-    password, aes_key = hash_management(password)
+    
+    # ---------------------------------------------------
+    # Hacer peticion si el email existe recuperar el salt
+    # ---------------------------------------------------
+
+    salt = '';
+    derivedPassword, aes_key = pass_management(password, salt)
     
     # Llamar a la función login() para realizar un registro
     login_result = requests.post(server+"/users/login", json = {
         "email": email,
-        "password": password
+        "password": derivedPassword
     })
     
     login_result_json = json.loads(login_result.text)
@@ -162,18 +170,15 @@ def login(email, password) -> User | Result:
 
         
 
-def hash_management(password) -> str:
-    pass_hash = SHA3_256.new()
-    pass_hash.update(bytes(password, encoding="utf-8"))
+def pass_management(password, salt) -> str:
+    keys = PBKDF2(password, salt, 32, count=1000000, hmac_hash_module=SHA3_256)
     
-    pass_hash_hex = pass_hash.hexdigest()
-
-    pass_hash_part1 = pass_hash_hex[:int(len(pass_hash_hex)/2)] # Devolvemos la parte a la BD
-    pass_hash_part2 = pass_hash_hex[-int(len(pass_hash_hex)/2):] # Guardamos en local
+    derivedPassword = keys[:16]
+    aesKey = keys[16:]
     
-    return pass_hash_part1, pass_hash_part2
+    return derivedPassword, aesKey
     
     
-if __name__ == "__main__":
-    login("uncorreo@gamil.com", "12345678")
-    register(email="uncorreo@gamil.com", password="12345678", password2="12345678", username="AAAA" )
+# if __name__ == "__main__":
+    # login("uncorreo@gamil.com", "12345678")
+    # register(email="uncorreo@gamil.com", password="12345678", password2="12345678", username="AAAA" )
