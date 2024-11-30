@@ -71,7 +71,7 @@ def loginUserPassword():
     return jsonify(result.jsonSelf())
 
 @app.post("/users/getSaltByEmail")
-def loginUserPassword():
+def getSaltByEmail():
     '''
     Servicio para recuperar el salt del servidor.
     Parámetros en el body de la petición:
