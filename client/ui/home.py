@@ -79,6 +79,25 @@ class Home(CTkFrame):
         self.generateTable()
         self.table.pack()
 
+
+        # borrar abajo
+        self.info_button_frame = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
+        self.info_button_frame.pack(pady=10)  # Añade algo de margen entre la tabla y el botón
+
+        self.info_button = CTkButton(
+            master=self.info_button_frame,
+            text="Info Archivo Compartido",
+            corner_radius=32,
+            fg_color="#601E88",
+            hover_color="#D18AF0",
+            text_color="#ffffff",
+            command=lambda: self.info_archivo_compartido(archivo_id=0)
+        )
+        self.info_button.pack(pady=5)  # Añade margen alrededor del botón
+        # borrar arriba
+
+
+
     def getFiles(self):
         response = ""
         try:
@@ -212,6 +231,9 @@ class Home(CTkFrame):
                 )
                 btn_action.pack(side="right", padx=(2, 0))
 
+
+
+
     def reload(self):
         print("reloading...")
         if ( self.firstTime ):
@@ -290,6 +312,9 @@ class Home(CTkFrame):
 
     def compartir_archivo(self, archivo_id):
         self.controller.show_frame("Compartir", archivo_id)
+
+    def info_archivo_compartido(self, archivo_id):
+        self.controller.show_frame("InfoComportido")
         
     def on_subir_archivo(self):
         self.controller.show_frame("SubirArchivo")
