@@ -1,11 +1,11 @@
 import os
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_compress import Compress
 from functions.user import User
 from functions.result import Result
-import json
 from functions.file import File
 from functions.shared_file import SharedFile
+from waitress import serve
 
 app = Flask(__name__)
 Compress(app)
@@ -40,7 +40,7 @@ def registerUserPassword():
     result = User.register(input_json["user"], input_json["password"], input_json["email"], input_json["publicRSA"], input_json["privateRSA"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(result.jsonSelf())
+    return jsonify(result.jsonSelf())
 
 @app.post("/users/login")
 def loginUserPassword():
@@ -67,7 +67,7 @@ def loginUserPassword():
     result = User.login(input_json["email"], input_json["password"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(result.jsonSelf())
+    return jsonify(result.jsonSelf())
 
 @app.post("/users/update-keys")
 def updateKeys():
@@ -96,7 +96,7 @@ def updateKeys():
     result = user.modifyKeys( privateRSA = input_json["privateRSA"], publicRSA = input_json["publicRSA"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(result.jsonSelf())
+    return jsonify(result.jsonSelf())
 
 @app.post("/users/login-google")
 def loginGoogle():
@@ -121,7 +121,7 @@ def loginGoogle():
     result = User.loginGoogle(input_json["idToken"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return json.loads(result.jsonSelf())
+    return jsonify(result.jsonSelf())
 
 @app.post('/upload')
 def uploadFile():
@@ -155,7 +155,7 @@ def uploadFile():
         result = File.upload(file, app.config['UPLOAD_FOLDER'], input_json['aesKey'], input_json['userId'], input_json['fileType'], input_json['fileName'], input_json['signature'])
         
     #file.close() 
-    return json.loads(str(result))
+    return jsonify(str(result))
 
 # TODO: Implementar algo para comprobar autenticidad del usuario (se podria usar tokens)
 @app.get('/download/<path:file_id>')
@@ -189,7 +189,7 @@ def get_file_info(file_id):
     - result.status: si ha sido realizada la petición o no
     - result.body: el fichero
     '''
-    return json.loads(File.getFileData(file_id).jsonSelf())
+    return jsonify(File.getFileData(file_id).jsonSelf())
 
 @app.delete('/files')
 def deleteFile():
@@ -209,7 +209,7 @@ def deleteFile():
     input_json = request.get_json(force=True)
     file = File(input_json["fileId"])
     result = file.delete()
-    return json.loads(result.jsonSelf())
+    return jsonify(result.jsonSelf())
 
 @app.get('/files/<path:user_id>')
 def getFiles(user_id):
@@ -226,7 +226,7 @@ def getFiles(user_id):
     '''
 
     user = User(user_id)
-    return json.loads(user.getFiles().jsonSelf())
+    return jsonify(user.getFiles().jsonSelf())
 
 @app.get('/public-rsa/<path:user_id>')
 def getPublicRsa(user_id):
@@ -243,7 +243,7 @@ def getPublicRsa(user_id):
     '''
 
     user = User(user_id)
-    return json.loads(user.getPublicRsa().jsonSelf())
+    return jsonify(user.getPublicRsa().jsonSelf())
 
 @app.get('/shared-files-of/<path:user_id>')
 def getSharedFilesOfUser(user_id):
@@ -260,7 +260,7 @@ def getSharedFilesOfUser(user_id):
     '''
 
     user = User(user_id)
-    return json.loads(user.getSharedFilesOfUser().jsonSelf())
+    return jsonify(user.getSharedFilesOfUser().jsonSelf())
 
 @app.get('/shared-files-to/<path:user_id>')
 def getSharedFilesToUser(user_id):
@@ -277,7 +277,7 @@ def getSharedFilesToUser(user_id):
     '''
 
     user = User(user_id)
-    return json.loads(user.getSharedFilesToUser().jsonSelf())
+    return jsonify(user.getSharedFilesToUser().jsonSelf())
 
 @app.post('/share-file')
 def shareFile():
@@ -297,7 +297,7 @@ def shareFile():
     
     input_json = request.get_json(force=True)
     file_to_share = File(input_json["fileId"])
-    return json.loads(SharedFile.share(file_to_share, input_json["recieverId"], input_json["key"]).jsonSelf())
+    return jsonify(SharedFile.share(file_to_share, input_json["recieverId"], input_json["key"]).jsonSelf())
 
 @app.delete('/shared-files')
 def deleteSharedFile():
@@ -316,7 +316,7 @@ def deleteSharedFile():
 
     input_json = request.get_json(force=True)
     shared_file = SharedFile(input_json["sharing_id"])
-    return json.loads(shared_file.delete().jsonSelf())
+    return jsonify(shared_file.delete().jsonSelf())
 
 @app.get('/users-shared-to/<path:file_id>')
 def getUsersSharedTo(file_id):
@@ -332,7 +332,7 @@ def getUsersSharedTo(file_id):
     - result.body: archivos compartidos por el usuario
     '''
 
-    return json.loads(SharedFile.getUsersSharedTo(file_id).jsonSelf())
+    return jsonify(SharedFile.getUsersSharedTo(file_id).jsonSelf())
 
 @app.post("/users/change-data/<path:user_id>")
 def changeUserData(user_id):
@@ -355,7 +355,7 @@ def changeUserData(user_id):
     input_json = request.get_json(force=True)
 
     user = User(user_id)
-    return json.loads(user.changeData(input_json["user"], input_json["email"]).jsonSelf())
+    return jsonify(user.changeData(input_json["user"], input_json["email"]).jsonSelf())
 
 @app.post("/users/change-password/<path:user_id>")
 def changeUserPassword(user_id):
@@ -381,9 +381,9 @@ def changeUserPassword(user_id):
     input_json = request.get_json(force=True)
 
     user = User(user_id)
-    return json.loads(user.changePassword(input_json['password'], input_json['oldPassword'], input_json['publicRSA'], input_json['privateRSA']).jsonSelf())
+    return jsonify(user.changePassword(input_json['password'], input_json['oldPassword'], input_json['publicRSA'], input_json['privateRSA']).jsonSelf())
 
 
 # Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
 if __name__ == "__main__":
-    app.run(threaded=True)
+    serve(app, host='0.0.0.0', port=5000, threads=4)

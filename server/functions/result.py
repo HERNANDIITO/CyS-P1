@@ -21,4 +21,4 @@ class Result:
             "body": self.body
         }
         
-        return json.dumps(json_self)
+        return json_self
