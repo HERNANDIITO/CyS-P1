@@ -5,6 +5,7 @@ from ui.login import Login
 from ui.register import Register 
 from ui.subir_archivo import SubirArchivo
 from CTkMessagebox import CTkMessagebox
+from ui.shareFile import Share
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -36,8 +37,13 @@ class App(customtkinter.CTk):
             "Login": Login,
             "Register": Register,
             "Home": Home,
-            "SubirArchivo": SubirArchivo
+            "SubirArchivo": SubirArchivo,
+            "Compartir": Share
         }
+        
+        context = translated_context[contextParam]
+        
+        needs_reload = [ translated_context["Home"] ]
         
         context = translated_context[contextParam]
         
@@ -51,7 +57,7 @@ class App(customtkinter.CTk):
             self.frames[context].reload()
         
     def load_restricted_frames(self):
-        for F in (Home, SubirArchivo):
+        for F in (Home, SubirArchivo, Share):
             frame = F(self.container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
