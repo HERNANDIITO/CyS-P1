@@ -5,8 +5,12 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 class User:
-    def __init__( self, userId: str ):
-        userData = db.get_data( "users", { "userId": userId })
+    def __init__( self, userId: str = None, email: str = None ):
+        if ( userId ):
+            userData = db.get_data( "users", { "userId": userId })
+        elif ( email ):
+            userData = db.get_data( "users", { "email": email })
+
         
         self.userId     = userData[0]
         self.user       = userData[1]
@@ -23,7 +27,7 @@ class User:
         return f'{{"userId": "{self.userId}","user": "{self.user}", "password": "{self.password}","salt": "{self.salt}","publicRSA": "{self.publicRSA}","privateRSA": "{self.privateRSA}","email": "{self.email}"}}'
 
     @classmethod
-    def register( self, user: str, password: str, email: str, publicRSA: str, privateRSA: str  ) -> Result:
+    def register( self, user: str, password: str, email: str, publicRSA: str, privateRSA: str, salt: str  ) -> Result:
 
         # Comprobar que tenemos todos los parametros necesarios
         # En caso de no tenerlo montamos un objeto tipo result para devolverlo
@@ -46,7 +50,7 @@ class User:
                 "userId": None,
                 "user": user, 
                 "password": password,
-                "salt": None,
+                "salt": salt,
                 "publicRSA": publicRSA,
                 "privateRSA": privateRSA,
                 "email": email
@@ -60,7 +64,7 @@ class User:
         return Result(200, "Usuario registrado con éxito", True, {"userID": userID})
     
     @classmethod
-    def login(self, email: str, password: str) -> Result:
+    def login(self, email: str, password: str, salt: str) -> Result:
 
         # Intentamos recoger un usuario con el mismo email que acabamos de recibir
         userData = db.get_data( "users", { "email": email })
@@ -99,7 +103,9 @@ class User:
             return Result(body= None, code="200", msg= "Claves modificadas con éxito", status=True)
         except:
             return Result(body= None, code="500", msg= "Error del servidor, inténtalo más tarde", status=False)
-        
+    
+    def getSalt(self):
+        return Result(200, "Clave RSA pública obtenida con éxito", True, {"salt": self.salt})
 
     def modifyUser( self, userId: str, user: str | None = None, password: str | None = None ) -> "User":
         toModify = User(userId)

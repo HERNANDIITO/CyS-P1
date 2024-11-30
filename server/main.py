@@ -22,6 +22,7 @@ def registerUserPassword():
     - user: str
     - password: str
     - email: str
+    - salt: str
     - publicRSA: str
     - privateRSA: str
 
@@ -37,7 +38,7 @@ def registerUserPassword():
     input_json = request.get_json(force=True)
 
     # Se consume la función de clase para crear un usuario
-    result = User.register(input_json["user"], input_json["password"], input_json["email"], input_json["publicRSA"], input_json["privateRSA"])
+    result = User.register(input_json["user"], input_json["password"], input_json["email"], input_json["publicRSA"], input_json["privateRSA"], input_json["salt"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
     return jsonify(result.jsonSelf())
@@ -65,6 +66,31 @@ def loginUserPassword():
 
     # Se consume la función de clase para crear un usuario
     result = User.login(input_json["email"], input_json["password"])
+
+    # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
+    return jsonify(result.jsonSelf())
+
+@app.post("/users/getSaltByEmail")
+def loginUserPassword():
+    '''
+    Servicio para recuperar el salt del servidor.
+    Parámetros en el body de la petición:
+    - email: str
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body:  
+        · salt: salt del usuario
+    '''
+
+    # Se leen los parametros del body
+    input_json = request.get_json(force=True)
+
+    # Se consume la función de clase para crear un usuario
+    user = User(email=input_json["email"])
+    result = user.getSALT(input_json["email"])
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
     return jsonify(result.jsonSelf())
