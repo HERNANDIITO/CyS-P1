@@ -193,8 +193,8 @@ class Home(CTkFrame):
                         master=row_frame,
                         text="Eliminar",
                         corner_radius=32,
-                        fg_color="#9674AC",
-                        hover_color="#EC5E5E",
+                        fg_color="#881e1e",
+                        hover_color="#b85c5c",
                         text_color="#FFFFFF",
                         width = 5,
                         command=lambda archivo_id=row[0]: self.eliminar_archivo(archivo_id=archivo_id)  # Pasa el ID del archivo al botón
@@ -202,13 +202,13 @@ class Home(CTkFrame):
                     
                     btn_action.pack(side="right", padx=(2, 0))
                     
-                if ( self.showing == 0 or self.showing == 1 ): 
+                if ( self.showing == 0 ): 
                     btn_action = CTkButton(
                         master=row_frame,
                         text="Compartir",
                         corner_radius=32,
                         fg_color="#601E88",
-                        hover_color="#EC5E5E",
+                        hover_color="#D18AF0",
                         text_color="#FFFFFF",
                         width = 5,
                         command=lambda archivo_id=row[0]: self.compartir_archivo(archivo_id=archivo_id)  # Pasa el ID del archivo al botón
@@ -217,18 +217,34 @@ class Home(CTkFrame):
                     btn_action.pack(side="right", padx=(2, 0))
                     
                 if ( self.showing == 1 ): 
+
                     btn_action = CTkButton(
                         master=row_frame,
-                        text="No compartir",
+                        text="eliminar comparticion",
                         corner_radius=32,
-                        fg_color="#601E88",
+                        fg_color="#881e1e",
                         hover_color="#EC5E5E",
                         text_color="#FFFFFF",
                         width = 5,
-                        command=lambda archivo_id=row[0]: self.compartir_archivo(archivo_id=archivo_id)  # Pasa el ID del archivo al botón
+                        command=lambda archivo_id=row[0]: self.eliminar_comparticion(archivo_id=archivo_id)  # Pasa el ID del archivo al botón
                     )
                     
                     btn_action.pack(side="right", padx=(2, 0))
+
+                    btn_action = CTkButton(
+                        master=row_frame,
+                        text="info de comparticion",
+                        corner_radius=32,
+                        fg_color="#601E88",
+                        hover_color="#D18AF0",
+                        text_color="#FFFFFF",
+                        width = 5,
+                        command=lambda archivo_id=row[0]: self.info_archivo_compartido(archivo_id=archivo_id)  # Pasa el ID del archivo al botón
+                    )   
+                    btn_action.pack(side="right", padx=(2, 0))
+
+
+
 
                 btn_action = CTkButton(
                     master=row_frame,
@@ -311,7 +327,10 @@ class Home(CTkFrame):
         self.controller.show_frame("Compartir", archivo_id)
 
     def info_archivo_compartido(self, archivo_id):
-        self.controller.show_frame("InfoComportido")
+        self.controller.show_frame("InfoComportido", archivo_id)
+
+    def eliminar_comparticion(self, archivo_id):
+        print("logica de eliminar comparticion no implementada")
         
     def on_subir_archivo(self):
         self.controller.show_frame("SubirArchivo")

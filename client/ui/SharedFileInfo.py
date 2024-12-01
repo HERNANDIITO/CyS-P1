@@ -3,12 +3,15 @@ from PIL import Image
 from pathlib import Path
 import os
 import re
+import requests
+
 
 
 class SharedInfo(CTkFrame):
     def __init__(self, parent, controller):
         CTkFrame.__init__(self, parent)
         self.controller = controller
+        self.fileID = 0
 
         self.geometry = "600x480"  # Estableciendo las dimensiones
         self.title = "Asegurados"
@@ -33,13 +36,22 @@ class SharedInfo(CTkFrame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
+
+
         # Cabecera
         header_frame = CTkFrame(self.scrollable_frame, fg_color="transparent")
         header_frame.pack(pady=(30, 20), padx=20, fill="x")
 
-        title = CTkLabel(master=header_frame, text="Informacion del archivo: ", font=("Arial", 24, "bold"),
-                         text_color="#601E88", anchor="w", justify="left")
-        title.pack(side="left")
+        self.fileName = CTkLabel(
+            master=header_frame, 
+            text="", 
+            font=("Arial", 24, "bold"),
+            text_color="#601E88", 
+            anchor="w", 
+            justify="left"
+        )
+        self.fileName.pack(side="left")
+
 
         # Botón volver
         volver_button = CTkButton(
@@ -53,7 +65,7 @@ class SharedInfo(CTkFrame):
             width=20,
             command=self.on_volver
         )
-        volver_button.pack(side="right", padx=(275, 0), pady=10)
+        volver_button.pack(side="right", padx=(0, 0), pady=10)
 
         # Contenedor para el título, email input y botón
         email_input_frame = CTkFrame(master=self.scrollable_frame, fg_color="transparent")
@@ -117,6 +129,24 @@ class SharedInfo(CTkFrame):
         self.error_label = CTkLabel(master=self.scrollable_frame, text="", text_color="red", font=("Arial", 12))
         self.error_label.pack(pady=(0, 0))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
     def create_user_table(self, parent):
         """Crea una tabla con datos ficticios de usuarios."""
         table_frame = CTkFrame(parent, fg_color="white", corner_radius=10)
@@ -136,8 +166,24 @@ class SharedInfo(CTkFrame):
             {"name": "Carlos García", "email": "carlos.garcia@example.com"}
         ]
 
+    
+        def truncate_with_ellipsis(value, max_length):
+            if len(value) > max_length:
+                return value[:max_length] + "..."
+            return value
+
+
+        max_length = 15
+        transformed_users = [
+            {
+                "name": truncate_with_ellipsis(user["name"], max_length),
+                "email": truncate_with_ellipsis(user["email"], max_length)
+            }
+            for user in users
+        ]
+
         # Filas de la tabla
-        for user in users:
+        for user in transformed_users:
             row = CTkFrame(table_frame, fg_color="#EEEEEE")
             row.pack(fill="x", pady=2)
             CTkLabel(row, text=user["name"], text_color="#000000", width=15).pack(side="left", padx=10)
@@ -151,6 +197,9 @@ class SharedInfo(CTkFrame):
                 width=10,
                 command=lambda u=user: self.remove_user(u)
             ).pack(side="right", padx=10)
+
+
+
 
     def remove_user(self, user):
         """Lógica para eliminar un usuario de la tabla."""
@@ -191,3 +240,17 @@ class SharedInfo(CTkFrame):
 
     def on_volver(self):
         self.controller.show_frame("Home")
+
+    def on_dejar_de_compartir(self):
+        self.controller.show_frame("Home")
+
+    def reload(self, fileID):
+        self.fileID = fileID
+        r = requests.get(f"http://127.0.0.1:5000/get-file-info/{self.fileID}")
+        self.fileJSON = r.json()
+        self.fileName.configure(text=f"Informacion del archivo: { self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"] }" )
+ 
+
+
+
+
