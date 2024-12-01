@@ -56,7 +56,6 @@ def request_error(response):
         response["body"]
     )
     
-
 def register(username, email, password, password2) -> User | Result: 
     error = comprobarDatosRegistro(username, email, password, password2)
     
@@ -118,50 +117,62 @@ def login(email, password, result_queue) -> User | Result:
     error = comporbarDatosLogin(email, password)
 
     if ( error ):
-        return Result(400, error, False, error)
+        result = Result(400, error, False, error)
+        result_queue.put(result)
+        return 
 
     # Obtenemos el salt correspondiente al email
     salt_result = requests.post(server+"/users/getSaltByEmail", json = {
         "email": email
     })
 
-    salt_result_json = salt_result.json()
+    
+    print("Salt_result: ", salt_result)
 
+    salt_result_json = salt_result.json()
+    
     if(str(salt_result_json["code"]) == "200"):
+        print("TO BIEN")
         salt = salt_result_json["body"]["salt"];
         salt = base64.b64decode(salt)
         derivedPassword, aes_key = pass_management(password, salt)
+
+    elif(str(salt_result_json["code"]) == "400"):
+        print("EL USUARIO NO EXISTE TONTO")
+        respuesta = 'Email o contraseña incorrectos'
+        result = Result(400, respuesta, False, respuesta)
+        result_queue.put(result)
+        return
     
-        # Llamar a la función login() para realizar un registro
-        login_result = requests.post(server+"/users/login", json = {
-            "email": email,
-            "password": derivedPassword
-        })
-        
-        login_result_json = login_result.json()
-        
-        if ( error ):
-            return Result(400, error, False, error)
-        
-        if(str(login_result_json["code"]) == "200"): 
-            userID      = login_result_json["body"]["userID"]
-            privateRSA  = login_result_json["body"]["privateRSA"]
-            publicRSA   = login_result_json["body"]["publicRSA"]
-
-            importedPublicKey  = import_public_key(public_key_pem = publicRSA)
-            decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem = privateRSA, aes_key = aes_key)
-            importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)
-
-            user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )
-            
-            result_queue.put(user)
-        
-        else:
-            result = request_error(login_result_json)
-            result_queue.put(result)
     else:
+        print("UPS EL SERVIDOR NO VA")
         result = request_error(salt_result_json)
         result_queue.put(result)
+        return
+
+    # Llamar a la función login() para realizar un registro
+    login_result = requests.post(server+"/users/login", json = {
+        "email": email,
+        "password": derivedPassword
+    })    
+    login_result_json = login_result.json()
 
 
+    if(str(login_result_json["code"]) == "200"):
+
+        userID      = login_result_json["body"]["userID"]
+        privateRSA  = login_result_json["body"]["privateRSA"]
+        publicRSA   = login_result_json["body"]["publicRSA"]
         
+        importedPublicKey  = import_public_key(public_key_pem = publicRSA)
+        decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem = privateRSA, aes_key = aes_key)
+        importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)
+
+        user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )  
+        result_queue.put(user)
+        
+    else:
+
+        result = request_error(login_result_json)
+        result_queue.put(result)
+        return

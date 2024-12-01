@@ -11,14 +11,17 @@ class User:
             userData = db.get_data( "users", { "userId": userId })
         elif ( email ):
             userData = db.get_data( "users", { "email": email })
-        
-        self.userId     = userData[0]
-        self.user       = userData[1]
-        self.password   = userData[2]
-        self.salt       = userData[3]
-        self.publicRSA  = userData[4]
-        self.privateRSA = userData[5]
-        self.email      = userData[6]
+            
+        try:
+            self.userId     = userData[0]
+            self.user       = userData[1]
+            self.password   = userData[2]
+            self.salt       = userData[3]
+            self.publicRSA  = userData[4]
+            self.privateRSA = userData[5]
+            self.email      = userData[6]
+        except:
+            self.userId = -1
     
     def __str__( self ):
         return f'{{"userId": "{self.userId}","user": "{self.user}", "password": "{self.password}","salt": "{self.salt}","publicRSA": "{self.publicRSA}","privateRSA": "{self.privateRSA}","email": "{self.email}"}}'
