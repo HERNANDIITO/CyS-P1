@@ -60,8 +60,7 @@ def rsa_check_sign(data, signatory_public_key, signature):
         signature = base64.b64decode(signature)
         data_hash = SHA3_256.new(data)
 
-        # signatory_public_key = signatory_public_key.export_key() 'str' object has no attribute 'export_key'
-        signatory_public_key = import_public_key(signatory_public_key)
+        signatory_public_key = import_public_key(str(signatory_public_key))
 
         verifier = pss.new(signatory_public_key)
         verifier.verify(data_hash, signature)

@@ -6,11 +6,14 @@ class SharedFile:
     def __init__(self, sharingId):
         fileData = db.get_data( "sharedFiles", { "sharingId": sharingId })
         
-        self.sharingId = fileData[0]
-        self.sharedFileId = fileData[1]
-        self.transmitterId = fileData[2]
-        self.recieverId = fileData[3]
-        self.key = fileData[4]
+        try:
+            self.sharingId = fileData[0]
+            self.sharedFileId = fileData[1]
+            self.transmitterId = fileData[2]
+            self.recieverId = fileData[3]
+            self.key = fileData[4]
+        except:
+            self.sharingId = -1
 
     def __str__( self ):
         return f'{{"sharingId": "{self.sharingId}", "fileId": "{self.sharedf}","transmitterId": "{self.transmitterId}", "recieverId": "{self.recieverId}", "key": "{self.key}"}}'
@@ -43,6 +46,15 @@ class SharedFile:
             users.append(db.get_data_with_map( "users", { "userId": file["recieverId"] })[0])
         
         return Result(200, "Usuario a los que se a compartido el archivo obtenidos con éxito", True, {"users": users})
+
+    def getFileDataJSON( self ):
+        return {
+            "sharingId" : self.sharingId,
+            "sharedFileId" : self.sharedFileId,
+            "transmitterId" : self.transmitterId,
+            "recieverId" : self.recieverId,
+            "key" : self.key
+        }
 
     def delete(self) -> Result:
         try:

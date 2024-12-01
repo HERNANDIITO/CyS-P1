@@ -1,9 +1,13 @@
+import json
 from customtkinter import CTkFrame, CTkLabel, CTkButton
 from functions.file_requests import download_file
 from functions.encrypt_decrypt import decrypt
 import functions.file_requests as file_request
+from CTkMessagebox import CTkMessagebox
 from functions import debug
-import requests, threading
+from functions.rsa import import_public_key
+import requests, threading, json
+
 
 class Home(CTkFrame):
     def __init__(self, parent, controller):
@@ -11,6 +15,8 @@ class Home(CTkFrame):
         CTkFrame.__init__(self, parent)
         self.controller = controller
         self.firstTime = True
+        
+        self.server = "http://127.0.0.1:5000"
         
         self.archivos = None
         self.archivosCompartidos = None
@@ -243,20 +249,30 @@ class Home(CTkFrame):
                     )   
                     btn_action.pack(side="right", padx=(2, 0))
 
-
-
-
-                btn_action = CTkButton(
-                    master=row_frame,
-                    text="Descargar",
-                    corner_radius=32,
-                    fg_color="#601E88",
-                    hover_color="#D18AF0",
-                    text_color="#ffffff",
-                    width = 5,
-                    command=lambda archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo)  # Pasa el ID del archivo al botón
-                )
-                btn_action.pack(side="right", padx=(2, 0))
+                if ( self.showing == 2 ):                    
+                    btn_action = CTkButton(
+                        master=row_frame,
+                        text="Descargar",
+                        corner_radius=32,
+                        fg_color="#601E88",
+                        hover_color="#D18AF0",
+                        text_color="#ffffff",
+                        width = 5,
+                        command=lambda sharingId = archivo['sharingId'], archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, True, sharingId)  # Pasa el ID del archivo al botón
+                    )
+                    btn_action.pack(side="right", padx=(2, 0))
+                else:              
+                    btn_action = CTkButton(
+                        master=row_frame,
+                        text="Descargar",
+                        corner_radius=32,
+                        fg_color="#601E88",
+                        hover_color="#D18AF0",
+                        text_color="#ffffff",
+                        width = 5,
+                        command=lambda sharingId = None, archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, False, sharingId)  # Pasa el ID del archivo al botón
+                    )
+                    btn_action.pack(side="right", padx=(2, 0))
 
     def reload(self):
         print(debug.printMoment(), "reloading home...")
@@ -304,20 +320,57 @@ class Home(CTkFrame):
         hilo.daemon = True  # Asegura que el hilo se cierre al cerrar la app
         hilo.start()
 
-    def procesar_guardado(self, archivo_id, nombre_archivo):
+    def procesar_guardado(self, archivo_id, nombre_archivo, compartido = False, sharingId = None):
         
         nombre_archivo = str(nombre_archivo)
         download_file(archivo_id, nombre_archivo)
-        fileInfo = file_request.get_file_info(archivo_id)    
+        fileInfo = file_request.get_file_info(archivo_id)
         
-        decrypt(user = self.controller.user, 
-            file_name = nombre_archivo,
-            encrypted_file = nombre_archivo, 
-            file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
-            file_type = fileInfo["body"]["fileType"], 
-            signatory_public_key = fileInfo["body"]["signature"], 
-            signature = fileInfo["body"]["signature"])
+        if ( compartido ):
+            
+            sharedFileInfo = file_request.get_sharedfile_info(sharingId)
+            sharedFileInfo = sharedFileInfo["body"]['file']
+            
+            print( debug.printMoment(), "sharedFileInfo: ", sharedFileInfo )
+            
+            userInfo = requests.get(f"{self.server}/users/shareParamsByID/{sharedFileInfo['transmitterId']}")
+            userInfo = userInfo.json()
+            
+            print( debug.printMoment(), "userInfo: ", userInfo)
+            print( debug.printMoment(), "userInfo: ", userInfo["body"]["publicRSA"])
+            
+            signatory_public_key = import_public_key(userInfo["body"]["publicRSA"])
 
+            result = decrypt (
+                user = self.controller.user, 
+                file_name = nombre_archivo,
+                encrypted_file = nombre_archivo, 
+                file_type = fileInfo["body"]["fileType"], 
+                signature = fileInfo["body"]["signature"],
+                file_aes_key_encrypted = sharedFileInfo["key"], 
+                signatory_public_key = signatory_public_key
+            )
+            
+        else:
+            
+            result = decrypt (
+                user = self.controller.user, 
+                file_name = nombre_archivo,
+                encrypted_file = nombre_archivo, 
+                file_type = fileInfo["body"]["fileType"], 
+                signature = fileInfo["body"]["signature"],
+                file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
+                signatory_public_key = self.controller.user.publicRSA
+            )
+        
+        print(debug.printMoment(), "result: ", result)
+        
+        if ( result is True ):
+            CTkMessagebox(title="Operación realizada con éxito", message="¡Todo ha ido bien!", icon="check")
+            
+        else:
+            CTkMessagebox(title="Alerta", message="La autenticidad o la integridad del archivo se han visto alteradas.\nPor favor, pide al autor que te lo reenvíen.", icon="warning")
+            
     def eliminar_archivo(self, archivo_id):
         response = requests.delete(f'{self.controller.server}/files', json={"fileId": archivo_id})
         response.raise_for_status()

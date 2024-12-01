@@ -189,6 +189,8 @@ def login(email, password, result_queue) -> User | Result:
         privateRSA  = login_result_json["body"]["privateRSA"]
         publicRSA   = login_result_json["body"]["publicRSA"]
         
+        print( debug.printMoment(), "publicRSA: ", publicRSA)
+        
         importedPublicKey  = import_public_key(public_key_pem = publicRSA)
         decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem = privateRSA, aes_key = aes_key)
         importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)

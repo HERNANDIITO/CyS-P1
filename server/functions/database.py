@@ -168,7 +168,7 @@ def get_file_data_map(table, data):
 def get_shared_file_data_map(table, data): 
 
     keys_str = get_keys(data, "{0}=:{1}", ", ")
-    cursor.execute("SELECT DISTINCT fileId, userId, fileName, AESKey, fileType FROM {0} JOIN sharedFiles sf ON fileId = sf.sharedFileId WHERE {1}".format(table, keys_str), data)
+    cursor.execute("SELECT DISTINCT fileId, userId, fileName, AESKey, fileType, signature, sf.sharingId FROM {0} JOIN sharedFiles sf ON fileId = sf.sharedFileId WHERE {1}".format(table, keys_str), data)
     data = cursor.fetchall()
 
     column_names = [desc[0] for desc in cursor.description]

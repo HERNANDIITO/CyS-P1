@@ -50,6 +50,14 @@ def get_file_info(fileId: int):
     
     return json.loads(r.text)
 
+def get_sharedfile_info(sharingId: int):
+    # Envia peticion GET para obtener la informacion de un fichero
+    #TODO: Usar variable global server
+    r = requests.get(f'{server}/get-shared-info/{sharingId}')
+    r = json.loads(r.text)
+    
+    return r
+
 def share_file(sharedFileId, userId, recieverId, encryptedAESKeyforReciever):
     try:
         r = requests.post(f'{server}/share-file', json = {

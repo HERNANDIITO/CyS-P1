@@ -96,10 +96,7 @@ def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_
 
     autenticity = rsa.rsa_check_sign(file_name, signatory_public_key, signature)
     
-    if(autenticity):
-        return decrypted_file
-    else:
-        return "El archivo no es válido"
+    return autenticity
 
     
 

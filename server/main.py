@@ -113,11 +113,45 @@ def shareParamsByEmail(email):
     - result.code: codigo de error http
     - result.status: si ha sido realizada la petición o no
     - result.body:  
-        · salt: salt del usuario
+        · userID: id del usuario
+        · publicRSA: publicRSA del usuario
     '''
 
     # Se consume la función de clase para crear un usuario
     user = User(email=email)
+    
+    if ( user.userId == -1 ):
+        result = Result(400, "El usuario no existe", False)
+        return(jsonify(result.jsonSelf()))
+    
+    result = user.getID()
+
+    # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
+    return jsonify(result.jsonSelf())
+
+@app.get("/users/shareParamsByID/<path:userID>")
+def shareParamsByID(userID):
+    '''
+    Servicio para recuperar el salt del servidor.
+    Parámetros en el body de la petición:
+    - userID: str
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body:  
+        · userID: id del usuario
+        · publicRSA: publicRSA del usuario
+    '''
+
+    # Se consume la función de clase para crear un usuario
+    user = User(userId=userID)
+    
+    if ( user.userId == -1 ):
+        result = Result(400, "El usuario no existe", False)
+        return(jsonify(result.jsonSelf()))
+    
     result = user.getID()
 
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
@@ -386,6 +420,33 @@ def getUsersSharedTo(file_id):
 
     result = SharedFile.getUsersSharedTo(file_id).jsonSelf()
     return jsonify(result)
+
+@app.get('/get-shared-info/<path:sharingId>')
+def getSharedInfo(sharingId):
+    '''
+    Servicio de obtencion de fila de la tabla de comparticion dada la ID del archivo
+    - sharingId: id de la comparticion
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body:
+        · sharingId
+        · sharedFileId
+        · transmitterId
+        · recieverId
+        · key
+    '''
+    
+    sharedFile = SharedFile(sharingId = sharingId)
+    
+    if ( sharedFile.sharingId == -1):
+        result = Result(400, "El archivo no existe", False)
+        return(jsonify(result.jsonSelf()))
+
+    result = Result(200, "Archivo enviado con éxito", True, { "file": sharedFile.getFileDataJSON() }) 
+    return jsonify(result.jsonSelf())
 
 @app.post("/users/change-data/<path:user_id>")
 def changeUserData(user_id):
