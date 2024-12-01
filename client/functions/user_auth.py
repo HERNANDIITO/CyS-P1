@@ -203,6 +203,7 @@ def login(email, password, result_queue) -> User | Result:
         user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )
         
         result_queue.put(user)
+        return
     
     else:
         result =  Result(
@@ -212,6 +213,7 @@ def login(email, password, result_queue) -> User | Result:
             login_result_json["body"],
         )
         result_queue.put(result)
+        return
 
         
 
