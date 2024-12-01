@@ -13,7 +13,7 @@ from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
 from functions.aes import encrypt_private_key_with_aes, decrypt_private_key_with_aes
 from functions.result import Result
-import queue
+import queue, threading
 
 global server
 server = "http://127.0.0.1:5000"
@@ -89,7 +89,12 @@ def register(username, email, password, password2) -> User | Result:
         
         # Comprobamos el resultado de la request
         if (str(update_result_json["code"]) == "200"):
-            user = login( email = email, password = plain_password )
+            result_queue = queue.Queue()
+            hilo = threading.Thread(target=login, args=(email, password, result_queue))
+            hilo.daemon = True  # Asegura que el hilo se cierre al cerrar la app
+            hilo.start()
+            hilo.join()
+            user = result_queue.get()
             return user
         
         else:
