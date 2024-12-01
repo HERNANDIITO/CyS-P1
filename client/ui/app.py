@@ -75,6 +75,8 @@ class App(customtkinter.CTk):
         for F in (Home, SubirArchivo, Share, SharedInfo):
             frame = self.generate_frame(F)
             self.frames[F] = frame
+            self.show_frame("Login")
+        print(debug.printMoment(), "generated restricted frames... ", self.frames)
             
     def show_error(self, message):
         CTkMessagebox(title="Error", message=message, icon="cancel")
