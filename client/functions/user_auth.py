@@ -147,6 +147,19 @@ def login(email, password, result_queue) -> User | Result:
         salt = salt_result_json["body"]["salt"];
         salt = base64.b64decode(salt)
         derivedPassword, aes_key = pass_management(password, salt)
+    else:
+        respuesta = 'Email o contraseña incorrectos'
+        
+    if ( respuesta ):
+        result = Result(
+            400,
+            respuesta,
+            False,
+            respuesta
+        )
+
+        result_queue.put(result)
+        return
     
     print(debug.printMoment(), "Salt", salt)
     print(debug.printMoment(), "Derived Password:", derivedPassword)
@@ -162,12 +175,14 @@ def login(email, password, result_queue) -> User | Result:
     login_result_json = login_result.json()
     
     if ( respuesta ):
-        return Result(
+        result = Result(
             400,
             respuesta,
             False,
             respuesta
         )
+        result_queue.put(result)
+        return
     
     if(str(login_result_json["code"]) == "200"):
         
