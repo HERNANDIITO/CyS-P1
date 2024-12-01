@@ -51,8 +51,8 @@ class App(customtkinter.CTk):
         
         context = translated_context[contextParam]
         
-        needs_reload = [ translated_context["Home"], translated_context["Compartir"] ]
-        needs_params = [ translated_context["Compartir"] ]
+        needs_reload = [ translated_context["Home"], translated_context["Compartir"], translated_context["InfoComportido"] ]
+        needs_params = [ translated_context["Compartir"], translated_context["InfoComportido"] ]
         
         frame = self.frames[context]
                 
