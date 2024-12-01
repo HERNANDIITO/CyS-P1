@@ -75,7 +75,7 @@ class User:
             return Result(400, "Mala solicitud: el usuario no existe", False)
 
         if str(password) != str(user.password):
-            return Result(400, "Mala solicitud: contraseña equivocada", False)
+            return Result(400, "Mala solicitud: email o contraseña equivocados", False)
 
         # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
         # y poder utilizarla en los siguientes servicios

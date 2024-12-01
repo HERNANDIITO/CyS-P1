@@ -196,7 +196,7 @@ def login(email, password, result_queue) -> User | Result:
             login_result_json["status"],
             login_result_json["body"],
         )
-        result_queue.put(user)
+        result_queue.put(result)
 
         
 
