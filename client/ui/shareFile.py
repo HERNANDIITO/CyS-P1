@@ -11,7 +11,10 @@ class Share(CTkFrame):
         CTkFrame.__init__(self, parent)
         self.controller = controller
         self.fileID = 0
-        
+
+        self.window = CTkScrollableFrame(master=self, bg_color="transparent", fg_color="transparent")
+        self.window.pack(fill="both", expand=True)
+
         self.server = "http://127.0.0.1:5000"
         
         self.emailsWritten = 0
@@ -20,24 +23,8 @@ class Share(CTkFrame):
         email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/email-icon.png')))
         email_icon = CTkImage(dark_image=email_icon_data, light_image=email_icon_data, size=(20, 20))
         
-        # Configurar scroll
-        canvas = CTkCanvas(self, bg="#DBDBDB", highlightthickness=0, width=0)
-        scrollbar = CTkScrollbar(self, orientation="vertical", command=canvas.yview)
-        scrollable_frame = CTkFrame(canvas)
-        
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-        
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-        
         # Cabecera
-        header_frame = CTkFrame(scrollable_frame, fg_color="transparent")
+        header_frame = CTkFrame(master = self.window, fg_color="transparent")
         header_frame.pack(pady=(30, 20), padx=20, fill="x")
         
         title = CTkLabel(master=header_frame, text="Compartir archivo", font=("Arial", 24, "bold"), 
@@ -60,7 +47,7 @@ class Share(CTkFrame):
  
 
         # Contenedor para el título, email input y botón
-        email_input_frame = CTkFrame(master=scrollable_frame, fg_color="transparent")
+        email_input_frame = CTkFrame(self.window, fg_color="transparent")
         email_input_frame.pack(anchor="w", pady=(10, 20), padx=(180, 0))
 
         # Subtítulos dentro del frame
@@ -119,17 +106,17 @@ class Share(CTkFrame):
 
         
         # Mensaje de error
-        self.error_label = CTkLabel(master=scrollable_frame, text="", text_color="red", font=("Arial", 12))
+        self.error_label = CTkLabel(master=self.window, text="", text_color="red", font=("Arial", 12))
         self.error_label.pack(pady=(0, 0))
         
         # Tabla de emails
-        self.email_table = CTkFrame(master=scrollable_frame, fg_color="transparent")
+        self.email_table = CTkFrame(master=self.window, fg_color="transparent")
         self.email_table.pack(fill="both", expand=True, padx=50, pady=10)
         self.emails = []
 
         # Botón de compartir debajo de la tabla de emails
         self.share_button = CTkButton(
-            master=scrollable_frame,
+            master=self.window,
             text="Compartir",
             fg_color="#601E88",
             hover_color="#D18AF0",
@@ -163,20 +150,24 @@ class Share(CTkFrame):
             if len(email) > 15:
                 email_mostrado = email[:12] + "..."
             
-            row_frame = CTkFrame(master=self.email_table, fg_color="#FFFFFF", corner_radius=32)
-            row_frame.pack(fill="x", padx=175, pady=5)
+            row_frame = CTkFrame(master=self.email_table, fg_color="#FFFFFF")
+            row_frame.pack(fill="x", padx=175, pady=0)
             
-            # Usando grid para alinear los widgets en la misma fila
+            # Configuramos el grid del row_frame para ocupar dos columnas
+            row_frame.columnconfigure(0, weight=1)  # Para que la primera columna se expanda
+            row_frame.columnconfigure(1, weight=0)  # La segunda columna no se expande
+            
+            # Label para el email
             row = CTkLabel(
                 master=row_frame,
                 text=email_mostrado,
                 text_color="#000000",
-                anchor="center",
+                anchor="w",  # Alineado a la izquierda
                 font=("Arial", 12),
                 fg_color="#FFFFFF",
-                width=100
+                width=75
             )
-            row.grid(row=0, column=0, padx=(0, 10), sticky="w")
+            row.grid(row=0, column=0, padx=(5, 15), sticky="w")
 
             # Botón para eliminar email
             add_remove_email = CTkButton(
@@ -186,9 +177,10 @@ class Share(CTkFrame):
                 hover_color="#D18AF0",
                 text_color="#ffffff",
                 width=25,
-                command=lambda: self.remove_email_of_table(row_frame, email) 
+                command=lambda: self.remove_email_of_table(row_frame, email)
             )
             add_remove_email.grid(row=0, column=1, sticky="e")
+
 
     def remove_email_of_table(self, row_frame, email):
         if email in self.emails:
@@ -201,6 +193,7 @@ class Share(CTkFrame):
     def show_share_button(self):
         if self.emailsWritten > 0: 
             self.share_button.pack(pady=(20, 10), padx=(250, 0))
+            self.share_button.configure(state="normal")
         else:
             self.share_button.configure(state="disabled")
             print(self.emailsWritten)
@@ -222,6 +215,7 @@ class Share(CTkFrame):
 
     def reload(self, fileID):
         self.fileID = fileID
+        
         r = requests.get(f"{self.server}/get-file-info/{self.fileID}")
         self.fileJSON = r.json()
         nombre_archivo = self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"]
