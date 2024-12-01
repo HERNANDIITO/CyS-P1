@@ -14,7 +14,7 @@ class Share(CTkFrame):
         
         self.server = "http://127.0.0.1:5000"
         
-        self.emailsWritten = False
+        self.emailsWritten = 0
         
         # Cargar icono de email
         email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/email-icon.png')))
@@ -56,7 +56,7 @@ class Share(CTkFrame):
             width=20,
             command=self.on_volver
         )
-        volver_button.pack(side="right", padx=(275, 0), pady=10)
+        volver_button.pack(side="right", padx=(200, 20), pady=10)
  
 
         # Contenedor para el título, email input y botón
@@ -124,7 +124,7 @@ class Share(CTkFrame):
         
         # Tabla de emails
         self.email_table = CTkFrame(master=scrollable_frame, fg_color="transparent")
-        self.email_table.pack(fill="both", expand=True, padx=20, pady=10)
+        self.email_table.pack(fill="both", expand=True, padx=50, pady=10)
         self.emails = []
 
         # Botón de compartir debajo de la tabla de emails
@@ -147,7 +147,7 @@ class Share(CTkFrame):
             self.add_email_to_table(email)
             self.error_label.configure(text="")
             self.email_entry.delete(0, "end") 
-            self.emailsWritten = True
+            self.emailsWritten += 1
             self.show_share_button()
         else:
             self.error_label.configure(text="Email no válido")
@@ -158,21 +158,53 @@ class Share(CTkFrame):
     def add_email_to_table(self, email):
         if email not in self.emails:
             self.emails.append(email)
+            
+            email_mostrado = email
+            if len(email) > 15:
+                email_mostrado = email[:12] + "..."
+            
+            row_frame = CTkFrame(master=self.email_table, fg_color="#FFFFFF", corner_radius=32)
+            row_frame.pack(fill="x", padx=175, pady=5)
+            
+            # Usando grid para alinear los widgets en la misma fila
             row = CTkLabel(
-                master=self.email_table,
-                text=email,
+                master=row_frame,
+                text=email_mostrado,
                 text_color="#000000",
                 anchor="center",
                 font=("Arial", 12),
                 fg_color="#FFFFFF",
-                width = 100
+                width=100
             )
-            row.pack(fill="x", pady=0, padx=180)
+            row.grid(row=0, column=0, padx=(0, 10), sticky="w")
+
+            # Botón para eliminar email
+            add_remove_email = CTkButton(
+                master=row_frame,
+                text="-",
+                fg_color="#601E88",
+                hover_color="#D18AF0",
+                text_color="#ffffff",
+                width=25,
+                command=lambda: self.remove_email_of_table(row_frame, email) 
+            )
+            add_remove_email.grid(row=0, column=1, sticky="e")
+
+    def remove_email_of_table(self, row_frame, email):
+        if email in self.emails:
+            self.emails.remove(email)
+            self.emailsWritten -= 1
+            self.show_share_button()
+        
+        row_frame.destroy()
 
     def show_share_button(self):
-        if self.emailsWritten: 
+        if self.emailsWritten > 0: 
             self.share_button.pack(pady=(20, 10), padx=(250, 0))
-
+        else:
+            self.share_button.configure(state="disabled")
+            print(self.emailsWritten)
+            
     def on_volver(self):
         self.controller.show_frame("Home")
         
@@ -192,5 +224,9 @@ class Share(CTkFrame):
         self.fileID = fileID
         r = requests.get(f"{self.server}/get-file-info/{self.fileID}")
         self.fileJSON = r.json()
-        self.fileName.configure(text=f"El archivo a compartir es: { self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"] }" )
-        
+        nombre_archivo = self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"]
+
+        if len(nombre_archivo) > 15:
+            nombre_archivo = nombre_archivo[:12] + "..."
+
+        self.fileName.configure(text=f"El archivo a compartir es: {nombre_archivo}")

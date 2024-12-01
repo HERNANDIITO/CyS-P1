@@ -1,5 +1,4 @@
-import json
-from customtkinter import CTkFrame, CTkLabel, CTkButton
+from customtkinter import CTkFrame, CTkLabel, CTkButton, CTkScrollableFrame
 from functions.file_requests import download_file
 from functions.encrypt_decrypt import decrypt
 import functions.file_requests as file_request
@@ -88,7 +87,7 @@ class Home(CTkFrame):
       
         self.btn_compartidos_por_mi.pack(padx=(5, 5), side = "right")
         
-        self.table = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
+        self.table = CTkScrollableFrame(master=self, bg_color="transparent", fg_color="transparent", width=500, height=500)
         
         print(debug.printMoment(), "table generated...")
 
@@ -174,6 +173,9 @@ class Home(CTkFrame):
             for archivo in files["body"]["files"]:
                 archivo_id = archivo["fileId"]
                 nombre_archivo = str(archivo["fileName"]) + archivo["fileType"]
+
+                if len(nombre_archivo) > 10:
+                    nombre_archivo = nombre_archivo[:7] + "..."
                 table_data.append([archivo_id, nombre_archivo])
 
         # Crear las filas manualmente con botones a la derecha
@@ -277,9 +279,8 @@ class Home(CTkFrame):
     def reload(self):
         print(debug.printMoment(), "reloading home...")
         
-        self.table.destroy()
-        self.table = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
-        
+        self.table.pack_forget()
+        self.table = CTkScrollableFrame(master=self, bg_color="transparent", fg_color="transparent", width= 500, height=500)
         match self.showing:
             case 0:
                 print(debug.printMoment(), "showing 0")
