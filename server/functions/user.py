@@ -72,7 +72,7 @@ class User:
         # Si no hay nada en la variable, significa que el usuario no existe
         # No permitimos otro
         if not user:
-            return Result(400, "Mala solicitud: el usuario no existe", False)
+            return Result(400, "Mala solicitud: email o contraseña equivocados", False)
 
         if str(password) != str(user.password):
             return Result(400, "Mala solicitud: email o contraseña equivocados", False)
