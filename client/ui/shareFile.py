@@ -12,6 +12,8 @@ class Share(CTkFrame):
         self.controller = controller
         self.fileID = 0
         
+        self.server = "http://127.0.0.1:5000"
+        
         self.emailsWritten = False
         
         # Cargar icono de email
@@ -176,19 +178,19 @@ class Share(CTkFrame):
         
     def share(self):
         for email in self.emails :
-            r = requests.get(f"http://127.0.0.1:5000/users/shareParamsByEmail/{email}")
+            r = requests.get(f"{self.server}/users/shareParamsByEmail/{email}")
             print(r)
             r = r.json()
             print(r)
             
             if (str(r['code']) == "200"):
-                print("sharing!")
+                print("sharing!", r)
                 result = share(sharedFileId = self.fileID, recieverId = r['body']['userID'], transmitter = self.controller.user, recieverPublicRSAKey = r['body']['publicRSA'], AESKey = self.fileJSON['body']['aesKey'])
                 print("sharing result: ", result)
 
     def reload(self, fileID):
         self.fileID = fileID
-        r = requests.get(f"http://127.0.0.1:5000/get-file-info/{self.fileID}")
+        r = requests.get(f"{self.server}/get-file-info/{self.fileID}")
         self.fileJSON = r.json()
         self.fileName.configure(text=f"El archivo a compartir es: { self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"] }" )
         
