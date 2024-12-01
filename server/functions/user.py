@@ -106,9 +106,15 @@ class User:
             return Result(body= None, code="500", msg= "Error del servidor, inténtalo más tarde", status=False)
     
     def getSalt(self):
+        if ( self.userId == -1 ):
+            return Result(400, "El usuario no existe", False, None)
+        
         return Result(200, "Salt enviada con éxito", True, {"salt": self.salt})
 
     def getID(self):
+        if ( self.userId == -1 ):
+            return Result(200, "El usuario no existe", False, None)
+            
         return Result(200, "ID enviada con exito", True, {"userID": self.userId, "publicRSA": self.publicRSA})
 
     def getPublicRsa(self) -> Result:
