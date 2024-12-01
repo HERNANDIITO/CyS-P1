@@ -1,31 +1,21 @@
-import json
-import secrets
 import string
+import secrets
 from Crypto.Hash import SHA3_256
 from Crypto.Protocol.KDF import PBKDF2
 import requests
-from pathlib import Path
-import os
 import base64
+import queue, threading
 
 from functions import debug
 from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
 from functions.aes import encrypt_private_key_with_aes, decrypt_private_key_with_aes
 from functions.result import Result
-import queue, threading
+
 
 global server
 server = "http://127.0.0.1:5000"
 
-# Geredor de contraseñas seguras formadas por letras ASCII estándar a-Z, números 0-9 y signos de
-# puntuacion !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
-def generate_secure_password(length=16):
-    characters = string.ascii_letters + string.digits + string.punctuation
-    return ''.join(secrets.choice(characters) for i in range(length))
-
-# passphrase = generate_secure_password()
-# print(f"Generated passphrase: {passphrase}")
 
 def comprobarDatosRegistro(username, email, password, password2):
     error = ''
@@ -39,17 +29,42 @@ def comprobarDatosRegistro(username, email, password, password2):
 
     return error
 
+def comporbarDatosLogin(email, password):
+    error = ''
+
+    if (email == '' or password == ''):
+        error = 'Por favor, introduce un email y contraseña'
+    elif "@" not in email:
+        error = 'Por favor, introduce un email válido'
+    
+    return error
+
+
+def pass_management(password, salt) -> str:
+    keys = PBKDF2(password, salt, 32, count=100000, hmac_hash_module=SHA3_256)
+    
+    derivedPassword = base64.b64encode(keys[:16]).decode('utf-8')
+    aesKey = keys[16:]
+
+    return derivedPassword, aesKey
+
+def request_error(response):
+    return Result(
+        response["code"], 
+        response["msg"],
+        response["status"],
+        response["body"]
+    )
+    
 def register(username, email, password, password2) -> User | Result: 
-    # Verificar que las contraseñas coinciden
     error = comprobarDatosRegistro(username, email, password, password2)
     
     if ( error ):
         return Result(400, error, False, error)
     
-    # Proteger la contraseña introducida por el usuario
-    plain_password = password
+    # Generar salt para proteger la contraseña introducida por el usuario con pbkdf2
     salt = secrets.token_bytes(16)
-    derivedPassword, aes_key = pass_management(plain_password, salt)
+    derivedPassword, aes_key = pass_management(password, salt)
     salt = base64.b64encode(salt).decode('utf-8')
 
     # Llamar a la función register() para realizar un registro
@@ -61,7 +76,6 @@ def register(username, email, password, password2) -> User | Result:
         "publicRSA": None,
         "privateRSA": None
     })
-
     register_result_json = register_result.json()
 
     if (str(register_result_json["code"]) == "200"):
@@ -71,11 +85,7 @@ def register(username, email, password, password2) -> User | Result:
         privateRSA, publicRSA = generate_rsa_keys()
         # Exportar las claves RSA
         pemPrivateRSA, pemPublicRSA = export_keys(private_key = privateRSA, public_key = publicRSA)
-        # Encriptar la RSA privada antes de subirla al servidor
-        # encryptedPEMPrivateRSA = encrypt_private_key_with_aes(private_key_pem = pemPrivateRSA, aes_key = aes_key.encode("utf-8"))
-        # print("AES KEY: " + aes_key)
-        # print("AES KEY ENCODED: " +aes_key.encode("utf-8"))
-
+        # Encriptar la clave RSA privada antes de subirla al servidor
         encryptedPEMPrivateRSA = encrypt_private_key_with_aes(private_key_pem = pemPrivateRSA, aes_key = aes_key)
         
         # Hacemos la peticion decodificando ambas claves para que la DB pueda interpretarlas (no acepta strings binarios)
@@ -84,7 +94,6 @@ def register(username, email, password, password2) -> User | Result:
             "privateRSA": encryptedPEMPrivateRSA.decode("utf-8"),
             "publicRSA": pemPublicRSA.decode("utf-8")
         })
-        
         update_result_json = update_result.json()
         
         # Comprobamos el resultado de la request
@@ -98,136 +107,72 @@ def register(username, email, password, password2) -> User | Result:
             return user
         
         else:
-            return Result(
-                    update_result_json["code"], 
-                    update_result_json["msg"],
-                    update_result_json["status"],
-                    update_result_json["body"]
-                )
-    
+            return request_error(update_result_json)
     else:
-        # En caso de que la primera request falle...
-        return Result(
-            register_result_json["code"], 
-            register_result_json["msg"],
-            register_result_json["status"],
-            register_result_json["body"]
-        )
+        # En caso de que la primera request de registro de nuevo usuario falle...
+        return request_error(register_result_json)
         
 
 def login(email, password, result_queue) -> User | Result:
-    respuesta = ''
+    error = comporbarDatosLogin(email, password)
 
-    if(email == '' or password == ''):
-        respuesta = 'Por favor, introduce un email y contraseña'
+    if ( error ):
+        result = Result(400, error, False, error)
+        result_queue.put(result)
+        return 
 
-    # Se podrian testear expresiones regular
-    #     regex = re.compile(r"([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\[[\t -Z^-~]*])")
-
-    # def isValid(email):
-    #     if re.fullmatch(regex, email):
-    #         print("Valid email")
-    #     else:
-    #         print("Invalid email")
-    if "@" not in email:
-        respuesta = 'Por favor, introduce un email válido'
-    
-    # ---------------------------------------------------
-    # Hacer peticion si el email existe recuperar el salt
-    # ---------------------------------------------------
+    # Obtenemos el salt correspondiente al email
     salt_result = requests.post(server+"/users/getSaltByEmail", json = {
         "email": email
     })
+
     
-    print(debug.printMoment(), "SALT RESULT: ", salt_result)
+    print("Salt_result: ", salt_result)
 
     salt_result_json = salt_result.json()
-
+    
     if(str(salt_result_json["code"]) == "200"):
+        print("TO BIEN")
         salt = salt_result_json["body"]["salt"];
         salt = base64.b64decode(salt)
         derivedPassword, aes_key = pass_management(password, salt)
-    else:
-        respuesta = 'Email o contraseña incorrectos'
-        
-    if ( respuesta ):
-        result = Result(
-            400,
-            respuesta,
-            False,
-            respuesta
-        )
 
+    elif(str(salt_result_json["code"]) == "400"):
+        print("EL USUARIO NO EXISTE TONTO")
+        respuesta = 'Email o contraseña incorrectos'
+        result = Result(400, respuesta, False, respuesta)
         result_queue.put(result)
         return
     
-    print(debug.printMoment(), "Salt", salt)
-    print(debug.printMoment(), "Derived Password:", derivedPassword)
+    else:
+        print("UPS EL SERVIDOR NO VA")
+        result = request_error(salt_result_json)
+        result_queue.put(result)
+        return
 
     # Llamar a la función login() para realizar un registro
     login_result = requests.post(server+"/users/login", json = {
         "email": email,
         "password": derivedPassword
-    })
-    
-    print(debug.printMoment(), "LOGIN RESULT: ", login_result)
-    
+    })    
     login_result_json = login_result.json()
-    
-    if ( respuesta ):
-        result = Result(
-            400,
-            respuesta,
-            False,
-            respuesta
-        )
-        result_queue.put(result)
-        return
-    
+
+
     if(str(login_result_json["code"]) == "200"):
-        
-        # hacer una peticion que me devuelva la clave privada del usuario
+
         userID      = login_result_json["body"]["userID"]
         privateRSA  = login_result_json["body"]["privateRSA"]
         publicRSA   = login_result_json["body"]["publicRSA"]
         
-        # desencriptar con aes la pass_hash_part2, descifrar y guardar en local
-        
-        # Las claves no van y no puedo mas :C
         importedPublicKey  = import_public_key(public_key_pem = publicRSA)
-        
         decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem = privateRSA, aes_key = aes_key)
-        
         importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)
-            
-        user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )
-        
+
+        user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )  
         result_queue.put(user)
-        return
-    
+        
     else:
-        result =  Result(
-            login_result_json["code"],
-            login_result_json["msg"],
-            login_result_json["status"],
-            login_result_json["body"],
-        )
+
+        result = request_error(login_result_json)
         result_queue.put(result)
         return
-
-        
-
-def pass_management(password, salt) -> str:
-    print(debug.printMoment(), "iniciando pass_management...")
-    keys = PBKDF2(password, salt, 32, count=100000, hmac_hash_module=SHA3_256)
-    
-    derivedPassword = base64.b64encode(keys[:16]).decode('utf-8')
-    aesKey = keys[16:]
-    
-    print(debug.printMoment(), "pass_management terminado...")
-    return derivedPassword, aesKey
-    
-    
-# if __name__ == "__main__":
-    # login("uncorreo@gamil.com", "12345678")
-    # register(email="uncorreo@gamil.com", password="12345678", password2="12345678", username="AAAA" )
