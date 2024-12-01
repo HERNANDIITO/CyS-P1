@@ -2,6 +2,9 @@ import json
 import requests
 from  functions.result import Result
 
+global server
+server = "http://127.0.0.1:5000"
+
 def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fileName: str, signature: str):
     payload = {
         "aesKey": aesKey,
@@ -17,7 +20,7 @@ def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fil
 
         # Envia petición POST con los ficheros a subir
         #TODO: Usar variable global server
-        r = requests.post('http://localhost:5000/upload', files=files, data=payload)
+        r = requests.post(f'{server}/upload', files=files, data=payload)
 
         # Cierra el fichero
         files['fichero'].close()
@@ -30,7 +33,7 @@ def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fil
 def download_file(fileId: int, savePath: str):
     # Envia petición GET para descargar un fichero
     #TODO: Usar variable global server
-    r = requests.get(f'http://localhost:5000/download/{fileId}')
+    r = requests.get(f'{server}/download/{fileId}')
 
     # Guarda el contenido de la respuesta en el fichero filePath
     try:
@@ -43,13 +46,13 @@ def download_file(fileId: int, savePath: str):
 def get_file_info(fileId: int):
     # Envia peticion GET para obtener la informacion de un fichero
     #TODO: Usar variable global server
-    r = requests.get(f'http://localhost:5000/get-file-info/{fileId}')
+    r = requests.get(f'{server}/get-file-info/{fileId}')
     
     return json.loads(r.text)
 
 def share_file(sharedFileId, userId, recieverId, encryptedAESKeyforReciever):
     try:
-        r = requests.post(f'http://localhost:5000/share-file', json = {
+        r = requests.post(f'{server}/share-file', json = {
             "file_id": sharedFileId,
             "reciever_id": recieverId,
             "key": encryptedAESKeyforReciever,

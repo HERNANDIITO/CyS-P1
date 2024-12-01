@@ -176,7 +176,7 @@ class Share(CTkFrame):
         
     def share(self):
         for email in self.emails :
-            r = requests.get(f"http://localhost:5000/users/shareParamsByEmail/{email}")
+            r = requests.get(f"http://127.0.0.1:5000/users/shareParamsByEmail/{email}")
             print(r)
             r = r.json()
             print(r)
@@ -188,7 +188,7 @@ class Share(CTkFrame):
 
     def reload(self, fileID):
         self.fileID = fileID
-        r = requests.get(f"http://localhost:5000/get-file-info/{self.fileID}")
+        r = requests.get(f"http://127.0.0.1:5000/get-file-info/{self.fileID}")
         self.fileJSON = r.json()
         self.fileName.configure(text=f"El archivo a compartir es: { self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"] }" )
         

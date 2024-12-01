@@ -9,6 +9,9 @@ from functions.user import User
 from functions.google_user import GoogleUser
 import os
 
+global server
+server = 'http://127.0.0.1:5000'
+
 flow = InstalledAppFlow.from_client_secrets_file(
     os.path.join(os.path.dirname(__file__), Path('secrets.json')),
     scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid'])
@@ -16,6 +19,7 @@ flow = InstalledAppFlow.from_client_secrets_file(
 # Abre un navegador para que el usuario elija la cuenta de google con la que autenticarse
 # y devuelve un objeto GoogleUser con la info del usuario autenticado
 # Se puede usar para obtener el email y nombre del usuario al registrarlo
+
 def get_google_user() -> GoogleUser:
     flow.run_local_server()
     credentials = flow.credentials
@@ -31,7 +35,7 @@ def google_login() -> User | None:
     flow.run_local_server()
     id_token = flow.credentials.id_token
     
-    loginGoogle = requests.post('http://localhost:5000/users/login-google', json={"idToken": id_token})
+    loginGoogle = requests.post(f'{server}/users/login-google', json={"idToken": id_token})
     
     # A partir de aqui es el mismo proceso que un login normal
     # TODO: Necesito la pass del usuario, tengo que pensar en como arreglarlo

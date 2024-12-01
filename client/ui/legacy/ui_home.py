@@ -14,7 +14,7 @@ def home(app, user):
 
     # Realiza una solicitud GET al servidor para obtener los archivos del usuario
     try:
-        response = requests.get(f'http://localhost:5000/files/{user.userId}')
+        response = requests.get(f'http://127.0.0.1:5000/files/{user.userId}')
         response.raise_for_status()
         archivos = response.json()
     except requests.exceptions.RequestException as e:
@@ -107,7 +107,7 @@ def procesar_guardado(archivo_id, nombre_archivo, user):
     decrypt(nombre_archivo, user, fileInfo["body"]["fileName"], fileInfo["body"]["fileName"] + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"])
 
 def eliminar_archivo(archivo_id, app, user):
-    response = requests.delete(f'http://localhost:5000/files', json={"fileId": archivo_id})
+    response = requests.delete(f'http://127.0.0.1:5000/files', json={"fileId": archivo_id})
     response.raise_for_status()
     response = response.json()
     

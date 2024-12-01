@@ -107,8 +107,8 @@ class Home(CTkFrame):
         response = ""
         try:
             print(debug.printMoment(), "sending request...")
-            response = requests.get(f'http://localhost:5000/files/{self.controller.user.userId}')
-            print(debug.printMoment(), "waiting response...")
+            response = requests.get(f'{self.controller.server}/files/{self.controller.user.userId}')
+            print(debug.printMoment(), "got response...")
             response.raise_for_status()
             print(debug.printMoment(), "archivos to json...")
             archivos = response.json()
@@ -122,7 +122,7 @@ class Home(CTkFrame):
         print(debug.printMoment(), "getSharedFiles...")
         response = ""
         try:
-            response = requests.get(f'http://localhost:5000/shared-files-of/{self.controller.user.userId}')
+            response = requests.get(f'{self.controller.server}/shared-files-of/{self.controller.user.userId}')
             response.raise_for_status()
             archivos = response.json()
         except requests.exceptions.RequestException as e:
@@ -135,7 +135,7 @@ class Home(CTkFrame):
         print(debug.printMoment(), "getSharedWithMeFiles...")
         response = ""
         try:
-            response = requests.get(f'http://localhost:5000/shared-files-to/{self.controller.user.userId}')
+            response = requests.get(f'{self.controller.server}/shared-files-to/{self.controller.user.userId}')
             response.raise_for_status()
             archivos = response.json()
         except requests.exceptions.RequestException as e:
@@ -202,7 +202,7 @@ class Home(CTkFrame):
                     
                     btn_action.pack(side="right", padx=(2, 0))
                     
-                if ( self.showing == 1 ): 
+                if ( self.showing == 0 or self.showing == 1 ): 
                     btn_action = CTkButton(
                         master=row_frame,
                         text="Compartir",
@@ -302,8 +302,8 @@ class Home(CTkFrame):
             signatory_public_key = fileInfo["body"]["signature"], 
             signature = fileInfo["body"]["signature"])
 
-    def eliminar_archivo(archivo_id):
-        response = requests.delete(f'http://localhost:5000/files', json={"fileId": archivo_id})
+    def eliminar_archivo(self, archivo_id):
+        response = requests.delete(f'{self.controller.server}/files', json={"fileId": archivo_id})
         response.raise_for_status()
         response = response.json()
 

@@ -20,7 +20,7 @@ class App(customtkinter.CTk):
         self.frames = {}
         self.user = None
         self.server = "http://127.0.0.1:5000"
-        
+
         self.container = customtkinter.CTkFrame(self)
         self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)

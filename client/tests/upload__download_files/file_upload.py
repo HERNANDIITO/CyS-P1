@@ -4,4 +4,4 @@ import requests
 files = {'fichero': open('image.png','rb')}
 
 # Envia petición POST con los ficheros a subir
-r = requests.post('http://localhost:5000/upload-test', files=files)
+r = requests.post('http://127.0.0.1:5000/upload-test', files=files)
