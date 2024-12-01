@@ -5,6 +5,7 @@ from Crypto.Protocol.KDF import PBKDF2
 import requests
 import base64
 import queue, threading
+import re
 
 from functions import debug
 from functions.user import User
@@ -20,10 +21,30 @@ server = "http://127.0.0.1:5000"
 def comprobarDatosRegistro(username, email, password, password2):
     error = ''
 
-    if username is None or email is None or password is None or password2 is None:
-        error = "Error: Hay campos vacíos"   
+    caracteres_especiales_permitidos = "!@#$%^&*()\-_=+<>?[]}{|~"
+    caracteres_validos = f"a-zA-Z0-9{re.escape(caracteres_especiales_permitidos)}"
+    regex_email = r"^(?=[\w!#$%&'*+/=?^_{|}~.-]{1,64}@)(?=.{1,254}$)(?!.*\.\.)[\w!#$%&'*+/=?^_{|}~-]+(?:\.[\w!#$%&'*+/=?^_{|}~-]+)*@[a-zA-Z0-9-]{1,63}(\.[a-zA-Z0-9-]{1,63}){0,255}$"
+
+    if not all([username, email, password, password2]):
+        error = "Por favor, completa todos los campos"   
+    elif len(username) < 3 or len(username) > 20:
+        error = "Error: El nombre de usuario debe tener entre 3 y 20 caracteres"
+    elif not re.match(r'^[a-zA-Z0-9_]+$', username):
+        error = "Error: El nombre de usuario solo puede contener letras del alfabeto inglés, números y guiones bajos"
+    elif not re.match(regex_email, email):
+        error = "Error: El formato del correo electrónico no es válido"
     elif len(password) < 8:
         error = "Error: La contraseña tiene que tener minimo 8 caracteres"
+    elif not re.search(r'[a-z]', password):
+        error = "Error: La contraseña debe contener al menos una letra minúscula"
+    elif not re.search(r'[A-Z]', password):
+        error = "Error: La contraseña debe contener al menos una letra mayúscula"
+    elif not re.search(r'[0-9]', password):
+        error = "Error: La contraseña debe contener al menos un número"
+    elif not re.search(r'[!@#$%^&*()\-_=+<>?[\]{}|~]', password):
+        error = "Error: La contraseña debe contener al menos un carácter especial de los siguientes: !@#$%^&*()\-_=+<>?[\]}{|~"
+    elif not re.match(f"^[{caracteres_validos}]+$", password):
+        error = "Error: La contraseña contiene caracteres no permitidos: solo se admiten letras del alfabeto inglés, números y carácteres especiales de la siguiente lista: !@#$%^&*()\-_=+<>?[\]}{|~"
     elif password2 != password:
         error = "Error: Datos incorrectos: las contraseñas no coinciden"
 
@@ -31,11 +52,15 @@ def comprobarDatosRegistro(username, email, password, password2):
 
 def comporbarDatosLogin(email, password):
     error = ''
+    regex_email = r"^(?=[\w!#$%&'*+/=?^_{|}~.-]{1,64}@)(?=.{1,254}$)(?!.*\.\.)[\w!#$%&'*+/=?^_{|}~-]+(?:\.[\w!#$%&'*+/=?^_{|}~-]+)*@[a-zA-Z0-9-]{1,63}(\.[a-zA-Z0-9-]{1,63}){0,255}$"
 
-    if (email == '' or password == ''):
+
+    if not all([email, password]):
+        error = "Por favor, completa todos los campos"   
+    elif (email == '' or password == ''):
         error = 'Por favor, introduce un email y contraseña'
-    elif "@" not in email:
-        error = 'Por favor, introduce un email válido'
+    elif not re.match(regex_email, email):
+        error = "Error: El formato del correo electrónico no es válido"
     
     return error
 
@@ -132,20 +157,20 @@ def login(email, password, result_queue) -> User | Result:
     salt_result_json = salt_result.json()
     
     if(str(salt_result_json["code"]) == "200"):
-        print("TO BIEN")
+
         salt = salt_result_json["body"]["salt"];
         salt = base64.b64decode(salt)
         derivedPassword, aes_key = pass_management(password, salt)
 
     elif(str(salt_result_json["code"]) == "400"):
-        print("EL USUARIO NO EXISTE TONTO")
+
         respuesta = 'Email o contraseña incorrectos'
         result = Result(400, respuesta, False, respuesta)
         result_queue.put(result)
         return
     
     else:
-        print("UPS EL SERVIDOR NO VA")
+  
         result = request_error(salt_result_json)
         result_queue.put(result)
         return
