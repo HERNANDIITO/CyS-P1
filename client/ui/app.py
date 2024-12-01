@@ -7,8 +7,7 @@ from ui.subir_archivo import SubirArchivo
 from CTkMessagebox import CTkMessagebox
 from ui.shareFile import Share
 from ui.SharedFileInfo import SharedInfo
-
-
+from functions import debug
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -28,13 +27,16 @@ class App(customtkinter.CTk):
         self.container.grid_columnconfigure(0, weight=1)
         
         for F in (Login, Register):
-            frame = F(self.container, self)
+            frame = self.generate_frame(F)
             self.frames[F] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
         
         self.show_frame("Login")
             
     def show_frame(self, contextParam, params = None):
+        
+        if ( contextParam is None or contextParam == "" ):
+            print(debug.printMoment(), "No context param!...")
+            return
         
         translated_context = {
             "Login": Login,
@@ -44,6 +46,8 @@ class App(customtkinter.CTk):
             "Compartir": Share,
             "InfoComportido": SharedInfo
         }
+        
+        print(debug.printMoment(), f"Mostrando... [{contextParam}]" )
         
         context = translated_context[contextParam]
         
@@ -56,15 +60,21 @@ class App(customtkinter.CTk):
         
         if ( context in needs_reload ):
             if ( context in needs_params ):
+                print(debug.printMoment(), f"Reloading with params... [{contextParam}]")
                 self.frames[context].reload(params)
             else:
+                print(debug.printMoment(), f"Reloading... [{contextParam}]")
                 self.frames[context].reload()
+    
+    def generate_frame(self, F):
+        frame = F(self.container, self)
+        frame.grid(row=0, column=0, sticky="nsew")
+        return frame
         
     def load_restricted_frames(self):
         for F in (Home, SubirArchivo, Share, SharedInfo):
-            frame = F(self.container, self)
+            frame = self.generate_frame(F)
             self.frames[F] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
             
     def show_error(self, message):
         CTkMessagebox(title="Error", message=message, icon="cancel")

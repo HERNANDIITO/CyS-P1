@@ -28,7 +28,7 @@ def start():
     #   email: email, clave alternativa
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS users (
-        userId INTEGER PRIMARY KEY, 
+        userId INTEGER PRIMARY KEY,
         user string, 
         password string,
         salt string,
@@ -76,6 +76,18 @@ def start():
         FOREIGN KEY(transmitterId) REFERENCES users(userId),
         FOREIGN KEY(recieverId) REFERENCES users(userId)
     )""")
+
+    # Indexar
+    # -- Índice para la columna userId en la tabla files
+    cursor.execute("""CREATE INDEX IF NOT EXISTS idx_userId_files ON files(userId)""")
+    
+    # -- Índice para las columnas transmitterId y sharedFileId en la tabla sharedFiles
+    cursor.execute("""CREATE INDEX IF NOT EXISTS idx_transmitterId_sharedFileId ON sharedFiles(transmitterId, sharedFileId)""")
+    
+    # -- Índice para las columnas recieverId y sharedFileId en la tabla sharedFiles
+    cursor.execute("""CREATE INDEX IF NOT EXISTS idx_recieverId_sharedFileId ON sharedFiles(recieverId, sharedFileId)""")
+    
+    database.commit()
 
 def merge_dicts(*dicts):
     'Junta el array de diccionarios pasados por parámetros en un único diccionario'
@@ -135,6 +147,28 @@ def get_data_with_map(table, data):
 
     keys_str = get_keys(data, "{0}=:{1}", ", ")
     cursor.execute("SELECT * FROM {0} WHERE {1}".format(table, keys_str), data)
+    data = cursor.fetchall()
+
+    column_names = [desc[0] for desc in cursor.description]
+    results = [dict(zip(column_names, row)) for row in data]
+
+    return results if results else None
+
+def get_file_data_map(table, data): 
+
+    keys_str = get_keys(data, "{0}=:{1}", ", ")
+    cursor.execute("SELECT fileId, userId, fileName, aesKey, fileType FROM {0} WHERE {1}".format(table, keys_str), data)
+    data = cursor.fetchall()
+
+    column_names = [desc[0] for desc in cursor.description]
+    results = [dict(zip(column_names, row)) for row in data]
+
+    return results if results else None
+
+def get_shared_file_data_map(table, data): 
+
+    keys_str = get_keys(data, "{0}=:{1}", ", ")
+    cursor.execute("SELECT DISTINCT fileId, userId, fileName, AESKey, fileType FROM {0} JOIN sharedFiles sf ON fileId = sf.sharedFileId WHERE {1}".format(table, keys_str), data)
     data = cursor.fetchall()
 
     column_names = [desc[0] for desc in cursor.description]

@@ -108,6 +108,9 @@ class User:
     def getID(self):
         return Result(200, "ID enviada con exito", True, {"userID": self.userId, "publicRSA": self.publicRSA})
 
+    def getPublicRsa(self) -> Result:
+        return Result(200, "Clave RSA pública obtenida con éxito", True, {"publicRSA": self.publicRSA})
+
     def modifyUser( self, userId: str, user: str | None = None, password: str | None = None ) -> "User":
         toModify = User(userId)
         if ( user ):
@@ -124,38 +127,27 @@ class User:
         return toModify
 
     def getFiles( self ) -> Result:
-        result = db.get_data_with_map( "files", { "userId": self.userId } )
+        result = db.get_file_data_map( "files", { "userId": self.userId } )
+        
         if (result != None):
             return Result(200, "Archivos obtenidos con éxito", True, {"files": result})
+        
         return Result(404, "El usuario no tiene ficheros", False, {})
-    
-    def getPublicRsa(self) -> Result:
-        return Result(200, "Clave RSA pública obtenida con éxito", True, {"publicRSA": self.publicRSA})
+
     
     def getSharedFilesOfUser(self) -> Result:
-        result = db.get_data_with_map( "sharedFiles", { "transmitterId": self.userId } )
-
-        fileList = []        
+        result = db.get_shared_file_data_map( "files", { "transmitterId": self.userId } )
+    
         if (result != None):
-            for sharedFile in result:
-                fileAux = File(sharedFile['sharedFileId']).jsonself()
-                if ( fileAux not in fileList ):
-                    fileList.append(fileAux)
-            return Result(200, "Archivos compartidos por usuario obtenidos con éxito", True, {"files": fileList})
+            return Result(200, "Archivos compartidos por usuario obtenidos con éxito", True, {"files": result})
         
         return Result(404, "El usuario no ha compartido ficheros", False, {})
     
     def getSharedFilesToUser(self) -> Result:
-        result = db.get_data_with_map( "sharedFiles", { "recieverId": self.userId } )
-        
-        fileList = []
+        result = db.get_shared_file_data_map( "files", { "recieverId": self.userId } )
   
         if (result != None):
-            for sharedFile in result:
-                fileAux = File(sharedFile['sharedFileId']).jsonself()
-                if ( fileAux not in fileList ):
-                    fileList.append(fileAux)
-            return Result(200, "Archivos compartidos al usuario obtenidos con éxito", True, {"files": fileList})
+            return Result(200, "Archivos compartidos al usuario obtenidos con éxito", True, {"files": result})
         return Result(404, "No hay archivos compartidos a este usuario", False, {})
     
     @classmethod

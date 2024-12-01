@@ -2,17 +2,19 @@ from customtkinter import CTkFrame, CTkLabel, CTkButton
 from functions.file_requests import download_file
 from functions.encrypt_decrypt import decrypt
 import functions.file_requests as file_request
-import requests
+from functions import debug
+import requests, threading
 
 class Home(CTkFrame):
     def __init__(self, parent, controller):
+        print(debug.printMoment(), "Home init...")
         CTkFrame.__init__(self, parent)
         self.controller = controller
         self.firstTime = True
         
-        self.archivos = self.getFiles()
-        self.archivosCompartidos = self.getSharedFiles()
-        self.archivosCompartidosConmigo = self.getSharedWithMeFiles()
+        self.archivos = None
+        self.archivosCompartidos = None
+        self.archivosCompartidosConmigo = None
         
         self.showing = 0
         
@@ -22,6 +24,8 @@ class Home(CTkFrame):
         title = CTkLabel(master=header_frame, text="Página principal", font=("Arial", 24, "bold"), 
             text_color="#601E88", anchor="w", justify="left")
         title.pack(side="left")
+        
+        print(debug.printMoment(), "btn_selec_archivo...")
         
         btn_selec_archivo = CTkButton(
             master = header_frame,
@@ -37,6 +41,7 @@ class Home(CTkFrame):
         
         archivosCompartidos = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
         archivosCompartidos.pack()
+        print(debug.printMoment(), "archivosCompartidos...")
         
         self.btn_mis_archivos = CTkButton(
             master = archivosCompartidos,
@@ -72,13 +77,14 @@ class Home(CTkFrame):
             text_color = "#ffffff",
             command = lambda pageToShow = 1 : self.swap_table(table=pageToShow)
         )
+        
+        print(debug.printMoment(), "buttons...")
       
         self.btn_compartidos_por_mi.pack(padx=(5, 5), side = "right")
         
         self.table = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
-        self.generateTable()
-        self.table.pack()
-
+        
+        print(debug.printMoment(), "table generated...")
 
         # borrar abajo
         self.info_button_frame = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
@@ -96,20 +102,24 @@ class Home(CTkFrame):
         self.info_button.pack(pady=5)  # Añade margen alrededor del botón
         # borrar arriba
 
-
-
     def getFiles(self):
+        print(debug.printMoment(), "getFiles...")
         response = ""
         try:
+            print(debug.printMoment(), "sending request...")
             response = requests.get(f'http://localhost:5000/files/{self.controller.user.userId}')
+            print(debug.printMoment(), "waiting response...")
             response.raise_for_status()
+            print(debug.printMoment(), "archivos to json...")
             archivos = response.json()
         except requests.exceptions.RequestException as e:
             print(f"Error al obtener archivos: {e}")
         finally: 
+            print(debug.printMoment(), "getFiles ended...")
             return archivos
         
     def getSharedFiles(self):
+        print(debug.printMoment(), "getSharedFiles...")
         response = ""
         try:
             response = requests.get(f'http://localhost:5000/shared-files-of/{self.controller.user.userId}')
@@ -118,32 +128,34 @@ class Home(CTkFrame):
         except requests.exceptions.RequestException as e:
             print(f"Error al obtener archivos: {e}")
         finally: 
+            print(debug.printMoment(), "getSharedFiles ended...")
             return archivos
         
     def getSharedWithMeFiles(self):
+        print(debug.printMoment(), "getSharedWithMeFiles...")
         response = ""
         try:
             response = requests.get(f'http://localhost:5000/shared-files-to/{self.controller.user.userId}')
             response.raise_for_status()
             archivos = response.json()
-            print("archivos: ", archivos)
         except requests.exceptions.RequestException as e:
             print(f"Error al obtener archivos: {e}")
         finally: 
+            print(debug.printMoment(), "getSharedWithMeFiles ended...")
             return archivos
 
     def generateTable(self):
-        print("Generating...")
+        print(debug.printMoment(), "Generating...")
         match self.showing:
             case 0:
                 files = self.archivos
-                print("my files")
+                print(debug.printMoment(), "my files")
             case 1:
                 files = self.archivosCompartidos
-                print("my shared files")
+                print(debug.printMoment(), "my shared files")
             case 2:
                 files = self.archivosCompartidosConmigo
-                print("shared with me files")
+                print(debug.printMoment(), "shared with me files")
          
         # Inicializar la tabla de datos con encabezados
         table_data = [
@@ -154,7 +166,6 @@ class Home(CTkFrame):
         if (files["body"]):
             # Rellenar la tabla con los datos obtenidos de la respuesta del servidor
             for archivo in files["body"]["files"]:
-                print("archivo!: ", archivo)
                 archivo_id = archivo["fileId"]
                 nombre_archivo = str(archivo["fileName"]) + archivo["fileType"]
                 table_data.append([archivo_id, nombre_archivo])
@@ -191,7 +202,7 @@ class Home(CTkFrame):
                     
                     btn_action.pack(side="right", padx=(2, 0))
                     
-                if ( self.showing == 0 or self.showing == 1 ): 
+                if ( self.showing == 1 ): 
                     btn_action = CTkButton(
                         master=row_frame,
                         text="Compartir",
@@ -231,30 +242,23 @@ class Home(CTkFrame):
                 )
                 btn_action.pack(side="right", padx=(2, 0))
 
-
-
-
     def reload(self):
-        print("reloading...")
-        if ( self.firstTime ):
-            print("first time")
-            self.firstTime = False
-            return
+        print(debug.printMoment(), "reloading home...")
         
         self.table.destroy()
         self.table = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
         
         match self.showing:
             case 0:
-                print("showing 0")
+                print(debug.printMoment(), "showing 0")
                 self.archivos = self.getFiles()
                 
             case 1:
-                print("showing 1")
+                print(debug.printMoment(), "showing 1")
                 self.archivosCompartidos = self.getSharedFiles()
                 
             case 2:
-                print("showing 2")
+                print(debug.printMoment(), "showing 2")
                 self.archivosCompartidosConmigo = self.getSharedWithMeFiles()
                 
         self.generateTable()
@@ -265,38 +269,31 @@ class Home(CTkFrame):
         
         match self.showing:
             case 0:
-                print("swapping to table 0")
+                print(debug.printMoment(), "swapping to table 0")
                 self.btn_mis_archivos.configure(state="disabled")
                 self.btn_compartidos_por_mi.configure(state="normal")
                 self.btn_compartidos_conmigo.configure(state="normal")
             case 1:
-                print("swapping to table 1")
+                print(debug.printMoment(), "swapping to table 1")
                 self.btn_mis_archivos.configure(state="normal")
                 self.btn_compartidos_por_mi.configure(state="disabled")
                 self.btn_compartidos_conmigo.configure(state="normal")
             case 2:
-                print("swapping to table 2")
+                print(debug.printMoment(), "swapping to table 2")
                 self.btn_mis_archivos.configure(state="normal")
                 self.btn_compartidos_por_mi.configure(state="normal")
                 self.btn_compartidos_conmigo.configure(state="disabled")
                 
-        self.reload()
+        hilo = threading.Thread(target=self.reload)
+        hilo.daemon = True  # Asegura que el hilo se cierre al cerrar la app
+        hilo.start()
 
     def procesar_guardado(self, archivo_id, nombre_archivo):
+        
         nombre_archivo = str(nombre_archivo)
         download_file(archivo_id, nombre_archivo)
         fileInfo = file_request.get_file_info(archivo_id)    
-        # (user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
-                # decrypt(self.controller.user, nombre_archivo, str(fileInfo["body"]["fileName"]), str(fileInfo["body"]["fileName"]) + fileInfo["body"]["fileType"], fileInfo["body"]["aesKey"], fileInfo["body"]["fileType"], fileInfo["body"]["signature"])
-
-                # decrypt(user = self.controller.user, 
-                #         file_name = nombre_archivo,
-                #         encrypted_file = str(fileInfo["body"]["encryptedFile"]), 
-                #         file_aes_key_encrypted = fileInfo["body"]["aesKey"], 
-                #         file_type = fileInfo["body"]["fileType"], 
-                #         signatory_public_key = fileInfo["body"]["signature"], 
-                #         signature = fileInfo["body"]["signature"])
-
+        
         decrypt(user = self.controller.user, 
             file_name = nombre_archivo,
             encrypted_file = nombre_archivo, 

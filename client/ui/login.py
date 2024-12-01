@@ -2,8 +2,8 @@ from pathlib import Path
 from customtkinter import *
 from PIL import Image
 from functions.user import User
-from functions import user_auth
-from functions import google_auth
+from functions import user_auth, google_auth, debug
+import threading, queue
 
 import os
 
@@ -47,6 +47,7 @@ class Login(CTkFrame):
     def successfullLogin(self, user):
         self.controller.user = user
         self.controller.load_restricted_frames()
+        print(debug.printMoment(), "mostrando home...")
         self.controller.show_frame("Home")
 
     # Función que maneja el evento de inicio de sesión
@@ -54,7 +55,14 @@ class Login(CTkFrame):
         password = self.password_var.get()  # Obtener el texto ingresado en el campo de contraseña
         email = self.email_var.get()  # Obtener el texto ingresado en el campo de usuario
         
-        result = user_auth.login(email=email, password=password)
+        print(debug.printMoment(), "Iniciando login...")
+        result_queue = queue.Queue()
+        hilo = threading.Thread(target=user_auth.login, args=(email, password, result_queue))
+        hilo.daemon = True  # Asegura que el hilo se cierre al cerrar la app
+        hilo.start()
+        hilo.join()
+        result = result_queue.get()
+        print(debug.printMoment(), "Loggin terminado...")
         
         if ( type(result) is User ):
             self.successfullLogin(user=result)

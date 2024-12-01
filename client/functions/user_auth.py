@@ -8,11 +8,12 @@ from pathlib import Path
 import os
 import base64
 
-
+from functions import debug
 from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
 from functions.aes import encrypt_private_key_with_aes, decrypt_private_key_with_aes
 from functions.result import Result
+import queue
 
 global server
 server = "http://127.0.0.1:5000"
@@ -109,7 +110,7 @@ def register(username, email, password, password2) -> User | Result:
         )
         
 
-def login(email, password) -> User | Result:
+def login(email, password, result_queue) -> User | Result:
     respuesta = ''
 
     if(email == '' or password == ''):
@@ -133,7 +134,7 @@ def login(email, password) -> User | Result:
         "email": email
     })
     
-    print("SALT RESULT: ", salt_result)
+    print(debug.printMoment(), "SALT RESULT: ", salt_result)
 
     salt_result_json = salt_result.json()
 
@@ -142,10 +143,8 @@ def login(email, password) -> User | Result:
         salt = base64.b64decode(salt)
         derivedPassword, aes_key = pass_management(password, salt)
     
-    print("Salt")
-    print(salt)
-    print("Derived Password:")
-    print(derivedPassword)
+    print(debug.printMoment(), "Salt", salt)
+    print(debug.printMoment(), "Derived Password:", derivedPassword)
 
     # Llamar a la función login() para realizar un registro
     login_result = requests.post(server+"/users/login", json = {
@@ -153,7 +152,7 @@ def login(email, password) -> User | Result:
         "password": derivedPassword
     })
     
-    print("LOGIN RESULT: ", login_result)
+    print(debug.printMoment(), "LOGIN RESULT: ", login_result)
     
     login_result_json = login_result.json()
     
@@ -183,24 +182,27 @@ def login(email, password) -> User | Result:
             
         user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )
         
-        return user
+        result_queue.put(user)
     
     else:
-        return Result(
+        result =  Result(
             login_result_json["code"],
             login_result_json["msg"],
             login_result_json["status"],
             login_result_json["body"],
         )
+        result_queue.put(user)
 
         
 
 def pass_management(password, salt) -> str:
+    print(debug.printMoment(), "iniciando pass_management...")
     keys = PBKDF2(password, salt, 32, count=100000, hmac_hash_module=SHA3_256)
     
     derivedPassword = base64.b64encode(keys[:16]).decode('utf-8')
     aesKey = keys[16:]
     
+    print(debug.printMoment(), "pass_management terminado...")
     return derivedPassword, aesKey
     
     

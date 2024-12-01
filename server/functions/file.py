@@ -25,6 +25,15 @@ class File:
     def __repr__( self ):
         return f'{{"fileId": "{self.fileId}", "userId": "{self.userId}","fileName": "{self.fileName}", "encryptedFile": "{self.encryptedFile}", "aesKey": "{self.aesKey}", "date": "{self.date}", "fileType": "{self.fileType}", "signature": "{self.signature}"}}'
     
+    def getFileDataJSON( self ):
+        return {
+            "fileId":        self.fileId,
+            "userId":        self.userId,
+            "fileName":      self.fileName,
+            "aesKey":        self.aesKey,
+            "fileType":      self.fileType,
+        }
+    
     def jsonself( self ):
         return {
             "fileId":        self.fileId,

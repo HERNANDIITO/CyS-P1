@@ -6,6 +6,7 @@ from functions.result import Result
 from functions.file import File
 from functions.shared_file import SharedFile
 from waitress import serve
+from functions.debug import printMoment
 
 app = Flask(__name__)
 Compress(app)
@@ -272,7 +273,6 @@ def getFiles(user_id):
     - result.status: si ha sido realizada la petición o no
     - result.body: lista de ficheros
     '''
-
     user = User(user_id)
     return jsonify(user.getFiles().jsonSelf())
 
@@ -361,7 +361,6 @@ def deleteSharedFile():
     - result.status: si ha sido realizada la petición o no
     - result.body: el fichero compartido borrado
     '''
-
     input_json = request.get_json(force=True)
     shared_file = SharedFile(input_json["sharing_id"])
     return jsonify(shared_file.delete().jsonSelf())
@@ -380,7 +379,8 @@ def getUsersSharedTo(file_id):
     - result.body: archivos compartidos por el usuario
     '''
 
-    return jsonify(SharedFile.getUsersSharedTo(file_id).jsonSelf())
+    result = SharedFile.getUsersSharedTo(file_id).jsonSelf()
+    return jsonify(result)
 
 @app.post("/users/change-data/<path:user_id>")
 def changeUserData(user_id):
@@ -434,4 +434,5 @@ def changeUserPassword(user_id):
 
 # Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
 if __name__ == "__main__":
-    serve(app, host='0.0.0.0', port=5000, threads=4)
+    # serve(app, host='0.0.0.0', port=5000, threads=4)
+    app.run(host='0.0.0.0', port=5000)
