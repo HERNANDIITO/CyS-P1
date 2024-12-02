@@ -404,6 +404,24 @@ def deleteSharedFile():
     shared_file = SharedFile(input_json["sharing_id"])
     return jsonify(shared_file.delete().jsonSelf())
 
+@app.delete('/shared-user')
+def deleteSharedUser():
+    '''
+    Servicio de eliminación de ficheros compartidos
+    
+    Parámetros en el body de la petición:
+    - reciever_id: id del usuario con el que se desea dejar de compartir
+    - file_id: id que se desea dejar de compartir
+    
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: el fichero compartido borrado
+    '''
+    input_json = request.get_json(force=True)
+    return jsonify(SharedFile.deleteSharedUser(input_json["reciever_id"], input_json["file_id"]).jsonSelf())
+
 @app.get('/users-shared-to/<path:file_id>')
 def getUsersSharedTo(file_id):
     '''
