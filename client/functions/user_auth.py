@@ -21,7 +21,7 @@ server = "http://127.0.0.1:5000"
 def comprobarDatosRegistro(username, email, password, password2):
     error = ''
 
-    caracteres_especiales_permitidos = "!@#$%^&*()\-_=+<>?[]}{|~"
+    caracteres_especiales_permitidos = "!@#$%^&*()\\-_=+<>?[]}{|~"
     caracteres_validos = f"a-zA-Z0-9{re.escape(caracteres_especiales_permitidos)}"
     regex_email = r"^(?=[\w!#$%&'*+/=?^_{|}~.-]{1,64}@)(?=.{1,254}$)(?!.*\.\.)[\w!#$%&'*+/=?^_{|}~-]+(?:\.[\w!#$%&'*+/=?^_{|}~-]+)*@[a-zA-Z0-9-]{1,63}(\.[a-zA-Z0-9-]{1,63}){0,255}$"
 
@@ -42,9 +42,9 @@ def comprobarDatosRegistro(username, email, password, password2):
     elif not re.search(r'[0-9]', password):
         error = "Error: La contraseña debe contener al menos un número"
     elif not re.search(r'[!@#$%^&*()\-_=+<>?[\]{}|~]', password):
-        error = "Error: La contraseña debe contener al menos un carácter especial de los siguientes: !@#$%^&*()\-_=+<>?[\]}{|~"
+        error = "Error: La contraseña debe contener al menos un carácter especial de los siguientes: !@#$%^&*()\\-_=+<>?[\\]}{|~"
     elif not re.match(f"^[{caracteres_validos}]+$", password):
-        error = "Error: La contraseña contiene caracteres no permitidos: solo se admiten letras del alfabeto inglés, números y carácteres especiales de la siguiente lista: !@#$%^&*()\-_=+<>?[\]}{|~"
+        error = "Error: La contraseña contiene caracteres no permitidos: solo se admiten letras del alfabeto inglés, números y carácteres especiales de la siguiente lista: !@#$%^&*()\\-_=+<>?[\\]}{|~"
     elif password2 != password:
         error = "Error: Datos incorrectos: las contraseñas no coinciden"
 
