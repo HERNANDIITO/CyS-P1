@@ -24,6 +24,10 @@ class SharedFile:
     @classmethod
     def share(self, file: File, recieverId: int, key: str) -> Result:
         
+        if ( str(recieverId) == str(file.userId) ):
+            return Result(400, "No puedes compartir un archivo contigo mismo", False)
+            
+        
         alreadyExists = db.check_sharing(recieverId=recieverId,  sharedFileId=file.fileId)
         
         if ( alreadyExists is False ):
