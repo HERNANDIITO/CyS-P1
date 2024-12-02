@@ -387,6 +387,7 @@ class Home(CTkFrame):
         response = requests.delete(f'{self.controller.server}/files', json={"fileId": archivo_id})
         response.raise_for_status()
         response = response.json()
+        self.reload()
 
     def compartir_archivo(self, archivo_id):
         self.controller.show_frame("Compartir", archivo_id)
