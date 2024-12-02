@@ -45,7 +45,6 @@ def rsa_sign(data, private_key):
         if isinstance(data, str):
             data = data.encode('utf-8')  # Convertir cadena a bytes
 
-        print(debug.printMoment(), "signing data: ", data)
         file_hash = SHA3_256.new(data)
         print(debug.printMoment(), "signigng file_hash: ", file_hash.hexdigest())
 
@@ -62,7 +61,6 @@ def rsa_check_sign(data, signatory_public_key, signature):
             data = data.encode('utf-8')
 
         signature = base64.b64decode(signature)
-        print(debug.printMoment(), "checking data: ", data)
         data_hash = SHA3_256.new(data)
         print(debug.printMoment(), "checking file_hash: ", data_hash.hexdigest())
         

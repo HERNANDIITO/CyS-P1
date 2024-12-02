@@ -2,6 +2,7 @@ from customtkinter import *
 from PIL import Image
 from pathlib import Path
 from functions.share_file import share
+from functions.debug import printMoment
 import os
 import re
 import requests
@@ -204,14 +205,19 @@ class Share(CTkFrame):
     def share(self):
         for email in self.emails :
             r = requests.get(f"{self.server}/users/shareParamsByEmail/{email}")
-            print(r)
             r = r.json()
-            print(r)
             
             if (str(r['code']) == "200"):
-                print("sharing!", r)
+                print(printMoment(), "sharing!", r)
                 result = share(sharedFileId = self.fileID, recieverId = r['body']['userID'], transmitter = self.controller.user, recieverPublicRSAKey = r['body']['publicRSA'], AESKey = self.fileJSON['body']['aesKey'])
-                print("sharing result: ", result)
+                print(printMoment(), "sharing result: ", result)
+                
+                result = result.json()
+                
+                if ( str(result['code']) != '200' ):
+                    self.controller.show_error(result['msg'])
+                else: 
+                    self.controller.show_success('¡Archivo compartido con éxito!')
 
     def reload(self, fileID):
         self.fileID = fileID

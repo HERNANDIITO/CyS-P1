@@ -23,6 +23,12 @@ class SharedFile:
     
     @classmethod
     def share(self, file: File, recieverId: int, key: str) -> Result:
+        
+        alreadyExists = db.check_sharing(recieverId=recieverId,  sharedFileId=file.fileId)
+        
+        if ( alreadyExists is False ):
+            return Result(400, "Este archivo ya se ha compartido con ese usuario", False)
+        
         try:
             db.insert_data("sharedFiles", {
                 "sharingId": None,

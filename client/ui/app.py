@@ -80,3 +80,6 @@ class App(customtkinter.CTk):
             
     def show_error(self, message):
         CTkMessagebox(title="Error", message=message, icon="cancel")
+    
+    def show_success(self, message):
+        CTkMessagebox(title="Error", message=message, icon="check")
