@@ -228,7 +228,7 @@ class Home(CTkFrame):
 
                     btn_action = CTkButton(
                         master=row_frame,
-                        text="eliminar comparticion",
+                        text="X",
                         corner_radius=32,
                         fg_color="#881e1e",
                         hover_color="#EC5E5E",
@@ -241,7 +241,7 @@ class Home(CTkFrame):
 
                     btn_action = CTkButton(
                         master=row_frame,
-                        text="info de comparticion",
+                        text="info",
                         corner_radius=32,
                         fg_color="#601E88",
                         hover_color="#D18AF0",
