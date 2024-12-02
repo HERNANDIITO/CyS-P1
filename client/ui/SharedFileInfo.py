@@ -105,17 +105,19 @@ class SharedInfo(CTkFrame):
         )
         add_email_button.pack(side="left")
 
-        self.error_label = CTkLabel(master=self, text="", text_color="red", font=("Arial", 12))
-        self.error_label.pack(pady=(0, 0))
-
         # Subtítulos dentro del frame
         subtitle = CTkLabel(
-            master=self.email_input_frame,
+            master=self,
             text="El archivo está compartido con:",
             text_color="#6B6B6B",
-            font=("Arial", 14)
+            font=("Arial", 14),
         )
-        subtitle.pack(side="bottom" , anchor="w", pady=(0, 10))
+        subtitle.pack(pady=(10, 10))
+
+        self.error_label = CTkLabel(master=self, text="", text_color="red", font=("Arial", 12))
+        self.error_label.pack(pady=(10, 0))
+
+        
 
 
 
