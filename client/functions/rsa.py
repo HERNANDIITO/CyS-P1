@@ -3,6 +3,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Signature import pss
 from Crypto.Hash import SHA3_256
+from functions import debug
 
 # Generar un par de claves RSA de 2048 bits (pública y privada).
 def generate_rsa_keys():
@@ -43,8 +44,11 @@ def rsa_sign(data, private_key):
         # Asegurarte de que data esté en formato bytes
         if isinstance(data, str):
             data = data.encode('utf-8')  # Convertir cadena a bytes
-    
+
+        print(debug.printMoment(), "signing data: ", data)
         file_hash = SHA3_256.new(data)
+        print(debug.printMoment(), "signigng file_hash: ", file_hash.hexdigest())
+
         # encrypted_file_hash.update(bytes(encrypted_file_hash, encoding="utf-8"))
         # encrypted_file_hash_hex = encrypted_file_hash.hexdigest()
         signature = pss.new(private_key).sign(file_hash)
@@ -58,14 +62,16 @@ def rsa_check_sign(data, signatory_public_key, signature):
             data = data.encode('utf-8')
 
         signature = base64.b64decode(signature)
+        print(debug.printMoment(), "checking data: ", data)
         data_hash = SHA3_256.new(data)
-
-        signatory_public_key = import_public_key(str(signatory_public_key))
+        print(debug.printMoment(), "checking file_hash: ", data_hash.hexdigest())
+        
 
         verifier = pss.new(signatory_public_key)
         verifier.verify(data_hash, signature)
         return True
-    except (ValueError):
+    except ValueError as e:
+        print(debug.printMoment(), "check_sign_error: ", e)
         return False
     except Exception as e:
         raise Exception("Lo sentimos, se ha producido un error innesperado durante la comprobación de la  firma digital: ", e)

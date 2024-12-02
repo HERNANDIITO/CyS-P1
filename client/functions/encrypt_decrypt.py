@@ -5,6 +5,7 @@ from functions.user import User
 import functions.aes as aes
 import functions.rsa as rsa
 import functions.file_requests as file_request
+import functions.debug as debug
 from Crypto.Hash import SHA3_256
 
 global server
@@ -65,7 +66,8 @@ def encrypt(file_path, user):
     file_aes_key_encrypted = rsa.rsa_encrypt(file_aes_key, rsa_public_key)
 
     # Firmamos el archivo
-    signature = rsa.rsa_sign(file_path, rsa_private_key)
+    fileToEncrypt = open(file_path, 'rb').read()
+    signature = rsa.rsa_sign(fileToEncrypt, rsa_private_key)
 
     # Subimos el archivo al servidor
     user_id = user.userId
@@ -91,10 +93,11 @@ def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_
     file_aes_key = rsa.rsa_decrypt(file_aes_key_encrypted, rsa_private_key)
 
     # Desciframos el archivo con la clave AES128
-    print(encrypted_file)
     aes.decrypt_file(file_name, file_name, file_aes_key)
+    
+    decrypted_file = open(file_name, 'rb').read()
 
-    autenticity = rsa.rsa_check_sign(file_name, signatory_public_key, signature)
+    autenticity = rsa.rsa_check_sign(decrypted_file, signatory_public_key, signature)
     
     return autenticity
 

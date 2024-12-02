@@ -1,4 +1,4 @@
-from customtkinter import CTkFrame, CTkLabel, CTkButton, CTkScrollableFrame
+from customtkinter import CTkFrame, CTkLabel, CTkButton, CTkScrollableFrame, filedialog
 from functions.file_requests import download_file
 from functions.encrypt_decrypt import decrypt
 import functions.file_requests as file_request
@@ -324,6 +324,10 @@ class Home(CTkFrame):
     def procesar_guardado(self, archivo_id, nombre_archivo, compartido = False, sharingId = None):
         
         nombre_archivo = str(nombre_archivo)
+        
+        #  TODO: terminar de preguntar directorio
+        # filedialog.askdirectory()
+        
         download_file(archivo_id, nombre_archivo)
         fileInfo = file_request.get_file_info(archivo_id)
         
@@ -338,7 +342,10 @@ class Home(CTkFrame):
             userInfo = userInfo.json()
             
             print( debug.printMoment(), "userInfo: ", userInfo)
-            print( debug.printMoment(), "userInfo: ", userInfo["body"]["publicRSA"])
+            
+            print(debug.printMoment(), "signature: ", fileInfo["body"]["signature"])
+            print(debug.printMoment(), "publicRSA: ", userInfo["body"]["publicRSA"])
+            print(debug.printMoment(), "file_name: ", nombre_archivo)
             
             signatory_public_key = import_public_key(userInfo["body"]["publicRSA"])
 
@@ -353,6 +360,10 @@ class Home(CTkFrame):
             )
             
         else:
+            
+            print(debug.printMoment(), "signature: ", fileInfo["body"]["signature"])
+            print(debug.printMoment(), "signatory_public_key: ", self.controller.user.publicRSA)
+            print(debug.printMoment(), "file_name: ", nombre_archivo)
             
             result = decrypt (
                 user = self.controller.user, 
