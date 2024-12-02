@@ -173,6 +173,7 @@ class Home(CTkFrame):
             for archivo in files["body"]["files"]:
                 archivo_id = archivo["fileId"]
                 nombre_archivo = str(archivo["fileName"]) + archivo["fileType"]
+                nombre_archivo_completo = nombre_archivo
 
                 if len(nombre_archivo) > 10:
                     nombre_archivo = nombre_archivo[:7] + "..."
@@ -260,7 +261,7 @@ class Home(CTkFrame):
                         hover_color="#D18AF0",
                         text_color="#ffffff",
                         width = 5,
-                        command=lambda sharingId = archivo['sharingId'], archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, True, sharingId)  # Pasa el ID del archivo al botón
+                        command=lambda sharingId = archivo['sharingId'], archivo_id=row[0], nombre_archivo=nombre_archivo_completo: self.procesar_guardado(archivo_id, nombre_archivo, True, sharingId)  # Pasa el ID del archivo al botón
                     )
                     btn_action.pack(side="right", padx=(2, 0))
                 else:              
@@ -272,7 +273,7 @@ class Home(CTkFrame):
                         hover_color="#D18AF0",
                         text_color="#ffffff",
                         width = 5,
-                        command=lambda sharingId = None, archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, False, sharingId)  # Pasa el ID del archivo al botón
+                        command=lambda sharingId = None, archivo_id=row[0], nombre_archivo=nombre_archivo_completo: self.procesar_guardado(archivo_id, nombre_archivo, False, sharingId)  # Pasa el ID del archivo al botón
                     )
                     btn_action.pack(side="right", padx=(2, 0))
 
