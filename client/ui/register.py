@@ -70,7 +70,7 @@ class Register(CTkFrame):
         if(type(result) is User):
             self.controller.user = result
             self.controller.load_restricted_frames()
-            self.controller.show_frame("Home")
+            self.controller.show_frame("OtpQrCode")
         else:
             self.controller.show_error(result.msg)
 

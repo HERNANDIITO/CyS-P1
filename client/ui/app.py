@@ -1,6 +1,7 @@
 import customtkinter
 from customtkinter import set_appearance_mode
 from ui.home import Home
+from ui.otp_qr_code import OtpQrCode
 from ui.login import Login
 from ui.register import Register 
 from ui.subir_archivo import SubirArchivo
@@ -44,7 +45,8 @@ class App(customtkinter.CTk):
             "Home": Home,
             "SubirArchivo": SubirArchivo,
             "Compartir": Share,
-            "InfoComportido": SharedInfo
+            "InfoComportido": SharedInfo,
+            "OtpQrCode": OtpQrCode
         }
         
         print(debug.printMoment(), f"Mostrando... [{contextParam}]" )
@@ -72,7 +74,7 @@ class App(customtkinter.CTk):
         return frame
         
     def load_restricted_frames(self):
-        for F in (Home, SubirArchivo, Share, SharedInfo):
+        for F in (Home, SubirArchivo, Share, SharedInfo, OtpQrCode):
             frame = self.generate_frame(F)
             self.frames[F] = frame
             self.show_frame("Login")

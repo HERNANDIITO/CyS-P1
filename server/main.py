@@ -497,6 +497,43 @@ def changeUserPassword(user_id):
     user = User(user_id)
     return jsonify(user.changePassword(input_json['password'], input_json['oldPassword'], input_json['publicRSA'], input_json['privateRSA']).jsonSelf())
 
+@app.get('/otp-url/<path:user_id>')
+def getOtpUrl(user_id):
+    '''
+    Servicio de obtencion de la URl para el qr de doble factor de autenticacion de un usuario
+    Parámetros en el body de la petición:
+    - user_id: id del usuario
+
+    return Response
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: url para el qr de doble factor de autenticacion
+    '''
+    user = User(user_id)
+    return jsonify(user.getOtpUrl().jsonSelf())
+
+@app.post("/users/check-otp")
+def checkUserOtpCode():
+    '''
+    Servicio para comprobar el codigo OTP del doble factor de autenticacion.
+    Parámetros en el body de la petición:
+    - user_id: str
+    - otp_code: str
+
+    return Result
+    - result.msg: mensaje de contexto
+    - result.code: codigo de error http
+    - result.status: si ha sido realizada la petición o no
+    - result.body: si el codigo es correcto o no
+    '''
+
+    # Se leen los parametros del body
+    input_json = request.get_json(force=True)
+    
+    user = User(input_json["user_id"])
+    
+    return jsonify(user.checkOtpCode(input_json["otp_code"]).jsonSelf())
 
 # Ejecuta el app.run() solo si se ejecuta con "python main.py". Hace falta para que funcione en el servidor real
 if __name__ == "__main__":
