@@ -8,6 +8,8 @@ from CTkMessagebox import CTkMessagebox
 from ui.shareFile import Share
 from ui.SharedFileInfo import SharedInfo
 from functions import debug
+import os
+from pathlib import Path
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -20,6 +22,10 @@ class App(customtkinter.CTk):
         self.frames = {}
         self.user = None
         self.server = "http://127.0.0.1:5000"
+        
+        icon = "E:/GitHub/CyS-P1/client/ui/imgs/icon.ico"
+        self.iconbitmap(bitmap=icon, default=icon)
+        
 
         self.container = customtkinter.CTkFrame(self)
         self.container.pack(side="top", fill="both", expand=True)

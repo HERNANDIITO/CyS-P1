@@ -12,6 +12,28 @@ app = Flask(__name__)
 Compress(app)
 app.config['UPLOAD_FOLDER'] =  os.path.join(app.root_path, 'data', 'uploads')
 
+@app.get("/")
+def landingPage():
+    return """
+        <head>
+            <title>Asegurados</title>
+        </head>
+        <h1 style='
+            background-color: #601E88;
+            color: #ffffff;
+            padding: 5px 10px
+        '>Asegurados</h1>
+        <h2>Servidor de Asegurados.</h2>
+        <p>Creado por: </p>
+        <ul>
+            <li>David González  </li>
+            <li>Pablo Hernández </li>
+            <li>Marcos Ruiz     </li>
+            <li>Laura Saval     </li>
+            <li>Javier Silva    </li>
+        </ul>
+    """
+
 @app.put("/users/register")
 def registerUserPassword():
     # Esto de aquí abajo de un docstirng, es como un comentario multilinea para comentar sobre una funcion
