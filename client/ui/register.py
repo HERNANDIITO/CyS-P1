@@ -2,11 +2,8 @@ from pathlib import Path
 from customtkinter import *
 from PIL import Image
 from functions import user_auth
-from functions.rsa import generate_rsa_keys
 from functions.user import User
-from functions.result import Result
 import os
-import requests, json
 
 # LA LINEA 43 NO VA
 # Todo ha sido hecho sin ayuda de ChatGPT, tened huevos a acribillarme ahora SIUUUUUUU

@@ -6,6 +6,7 @@ from functions.debug import printMoment
 import os
 import re
 import requests
+from functions.consts import server
 
 class Share(CTkFrame):
     def __init__(self, parent, controller):
@@ -16,7 +17,7 @@ class Share(CTkFrame):
         self.window = CTkScrollableFrame(master=self, bg_color="transparent", fg_color="transparent")
         self.window.pack(fill="both", expand=True)
 
-        self.server = "http://127.0.0.1:5000"
+        self.server = server
         
         self.emailsWritten = 0
         

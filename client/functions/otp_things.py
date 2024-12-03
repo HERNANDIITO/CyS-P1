@@ -1,8 +1,6 @@
 import json
 import requests
-
-global server
-server = "http://127.0.0.1:5000"
+from functions.consts import server
 
 # Obtiene la URL que se usa para generar el codigo QR
 def obtain_user_url(user_id) -> str:

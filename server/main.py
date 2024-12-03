@@ -12,6 +12,112 @@ app = Flask(__name__)
 Compress(app)
 app.config['UPLOAD_FOLDER'] =  os.path.join(app.root_path, 'data', 'uploads')
 
+@app.get("/")
+def landingPage():
+    return """
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <style>
+            body {
+            margin: 0;
+            background-color: #000;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.85);
+            margin: 50px 10%;
+            padding: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        #canv {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        @keyframes grow {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(2.25);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        </style>
+        <canvas id="canv"></canvas>
+        <div class="container">
+        <head>
+            <title>Asegurados</title>
+        </head>
+        <h1 style='
+            background-color: #601E88;
+            color: #ffffff;
+            padding: 5px 10px
+        '>Asegurados</h1>
+        <h2>Servidor de Asegurados.</h2>
+        <p>Creado por: </p>
+        <ul>
+            <li>David González  </li>
+            <li>Pablo Hernández </li>
+            <li>Marcos Ruiz     </li>
+            <li>Laura Saval     </li>
+            <li>Javier Silva    </li>
+        </ul>
+        <audio id="epicMusic" src="https://marcosruizrubio.com/multimedia/cyberpunk.mp3" autoplay></audio>
+        <button id="downloadBtn" style="animation:grow 2s linear infinite;">Descargar</button>
+        </div>
+        
+        <script>
+            Swal.fire('Bienvenido a Asegurados, el servicio más seguro de la historia 😈').then(() => document.getElementById('epicMusic').play());
+            document.getElementById('downloadBtn').addEventListener('click', (e) => {
+                Swal.fire('Esto debería descargar el exe');
+            });
+            
+            const canvas = document.getElementById('canv');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+            let cols = Math.floor(window.innerWidth / 20) + 1;
+            let ypos = Array(cols).fill(0);
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            function matrix () {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                
+                if (canvas.width !== w) {
+                    canvas.width = w;
+                    cols = Math.floor(window.innerWidth / 20) + 1;
+                    ypos = Array(cols).fill(0);
+                }
+                if (canvas.height !== h) {
+                    canvas.height = h;
+                }
+
+                ctx.fillStyle = '#0001';
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = '#0f0';
+                ctx.font = '15pt monospace';
+
+                ypos.forEach((y, ind) => {
+                    const text = String.fromCharCode(Math.random() * 128);
+                    const x = ind * 20;
+                    ctx.fillText(text, x, y);
+                    if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
+                    else ypos[ind] = y + 20;
+                });
+            }
+
+            setInterval(matrix, 50);
+        </script>
+    """
+
 @app.put("/users/register")
 def registerUserPassword():
     # Esto de aquí abajo de un docstirng, es como un comentario multilinea para comentar sobre una funcion

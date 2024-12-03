@@ -9,6 +9,7 @@ from CTkMessagebox import CTkMessagebox
 from ui.shareFile import Share
 from ui.SharedFileInfo import SharedInfo
 from functions import debug
+from functions.consts import server
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -20,7 +21,7 @@ class App(customtkinter.CTk):
         self.configure(bg = "white")
         self.frames = {}
         self.user = None
-        self.server = "http://127.0.0.1:5000"
+        self.server = server
 
         self.container = customtkinter.CTkFrame(self)
         self.container.pack(side="top", fill="both", expand=True)

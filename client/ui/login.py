@@ -2,7 +2,7 @@ from pathlib import Path
 from customtkinter import *
 from PIL import Image
 from functions.user import User
-from functions import user_auth, google_auth, debug, otp_things
+from functions import user_auth, debug, otp_things
 import threading, queue
 
 import os
