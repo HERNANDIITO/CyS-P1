@@ -109,3 +109,31 @@ Una vez hecho esto, vais a la raíz del proyecto y escribis el siguiente comando
 Desde la carpeta server...
 
 `flask --app main run`
+
+# Compilación del programa
+
+## Creación del entorno virtual
+
+`python -m venv .venv`
+
+## Activación del entorno virtual
+
+### Windows
+
+`.myenv\Scripts\activate`
+
+### Linux
+
+`source myenv/bin/activate`
+
+## Instalación de dependencias
+
+`pip install -r ./client/requirements.txt`
+
+`pip install pyinstaller`
+
+## Creación del .exe
+
+`pyinstaller ./client/main.spec`
+
+Una vez finalice, deberías poder ir a `./client/dist` y encontrar allí un archivo llamado `Asegurados.exe`
