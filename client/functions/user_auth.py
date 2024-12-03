@@ -1,7 +1,5 @@
-import string
 import secrets
-from Crypto.Hash import SHA3_256
-from Crypto.Protocol.KDF import PBKDF2
+from argon2 import PasswordHasher, Type
 import requests
 import base64
 import queue, threading
@@ -64,12 +62,26 @@ def comporbarDatosLogin(email, password):
     
     return error
 
-
 def pass_management(password, salt) -> str:
-    keys = PBKDF2(password, salt, 32, count=100000, hmac_hash_module=SHA3_256)
-    
-    derivedPassword = base64.b64encode(keys[:16]).decode('utf-8')
-    aesKey = keys[16:]
+
+    ph = PasswordHasher(
+        time_cost=3,          # iterations
+        memory_cost=65536,    # KiB (1024 bytes)
+        parallelism=4,        # threads
+        hash_len=32,          # bytes
+        salt_len=16,          # bytes
+        encoding='utf-8', 
+        type=Type.ID
+    )
+
+    resultArgon2id = ph.hash(password, salt=salt)
+
+    parts = resultArgon2id.split('$')
+    finalHash = parts[-1] + '=='
+    finalHash = base64.b64decode(finalHash)
+
+    derivedPassword = base64.b64encode(finalHash[:16]).decode('utf-8')
+    aesKey = finalHash[16:]
 
     return derivedPassword, aesKey
 
@@ -151,7 +163,6 @@ def login(email, password, result_queue) -> User | Result:
         "email": email
     })
 
-    
     print("Salt_result: ", salt_result)
 
     salt_result_json = salt_result.json()

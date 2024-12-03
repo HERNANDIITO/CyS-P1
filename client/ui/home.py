@@ -91,22 +91,6 @@ class Home(CTkFrame):
         
         print(debug.printMoment(), "table generated...")
 
-        # borrar abajo
-        self.info_button_frame = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
-        self.info_button_frame.pack(pady=10)  # Añade algo de margen entre la tabla y el botón
-
-        self.info_button = CTkButton(
-            master=self.info_button_frame,
-            text="Info Archivo Compartido",
-            corner_radius=32,
-            fg_color="#601E88",
-            hover_color="#D18AF0",
-            text_color="#ffffff",
-            command=lambda: self.info_archivo_compartido(archivo_id=0)
-        )
-        self.info_button.pack(pady=5)  # Añade margen alrededor del botón
-        # borrar arriba
-
     def getFiles(self):
         print(debug.printMoment(), "getFiles...")
         response = ""
@@ -173,6 +157,7 @@ class Home(CTkFrame):
             for archivo in files["body"]["files"]:
                 archivo_id = archivo["fileId"]
                 nombre_archivo = str(archivo["fileName"]) + archivo["fileType"]
+                nombre_archivo_completo = nombre_archivo
 
                 if len(nombre_archivo) > 10:
                     nombre_archivo = nombre_archivo[:7] + "..."
@@ -228,7 +213,7 @@ class Home(CTkFrame):
 
                     btn_action = CTkButton(
                         master=row_frame,
-                        text="eliminar comparticion",
+                        text="X",
                         corner_radius=32,
                         fg_color="#881e1e",
                         hover_color="#EC5E5E",
@@ -241,7 +226,7 @@ class Home(CTkFrame):
 
                     btn_action = CTkButton(
                         master=row_frame,
-                        text="info de comparticion",
+                        text="info",
                         corner_radius=32,
                         fg_color="#601E88",
                         hover_color="#D18AF0",
@@ -260,7 +245,7 @@ class Home(CTkFrame):
                         hover_color="#D18AF0",
                         text_color="#ffffff",
                         width = 5,
-                        command=lambda sharingId = archivo['sharingId'], archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, True, sharingId)  # Pasa el ID del archivo al botón
+                        command=lambda sharingId = archivo['sharingId'], archivo_id=row[0], nombre_archivo=nombre_archivo_completo: self.procesar_guardado(archivo_id, nombre_archivo, True, sharingId)  # Pasa el ID del archivo al botón
                     )
                     btn_action.pack(side="right", padx=(2, 0))
                 else:              
@@ -272,7 +257,7 @@ class Home(CTkFrame):
                         hover_color="#D18AF0",
                         text_color="#ffffff",
                         width = 5,
-                        command=lambda sharingId = None, archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, False, sharingId)  # Pasa el ID del archivo al botón
+                        command=lambda sharingId = None, archivo_id=row[0], nombre_archivo=nombre_archivo_completo: self.procesar_guardado(archivo_id, nombre_archivo, False, sharingId)  # Pasa el ID del archivo al botón
                     )
                     btn_action.pack(side="right", padx=(2, 0))
 
@@ -326,9 +311,10 @@ class Home(CTkFrame):
         nombre_archivo = str(nombre_archivo)
         
         #  TODO: terminar de preguntar directorio
-        # filedialog.askdirectory()
+        selectedDirectory = filedialog.askdirectory()
+        selectedDirectory = f"{selectedDirectory}/{nombre_archivo}"
         
-        download_file(archivo_id, nombre_archivo)
+        download_file(archivo_id, selectedDirectory )
         fileInfo = file_request.get_file_info(archivo_id)
         
         if ( compartido ):
@@ -351,7 +337,7 @@ class Home(CTkFrame):
 
             result = decrypt (
                 user = self.controller.user, 
-                file_name = nombre_archivo,
+                file_name = selectedDirectory,
                 encrypted_file = nombre_archivo, 
                 file_type = fileInfo["body"]["fileType"], 
                 signature = fileInfo["body"]["signature"],
@@ -367,7 +353,7 @@ class Home(CTkFrame):
             
             result = decrypt (
                 user = self.controller.user, 
-                file_name = nombre_archivo,
+                file_name = selectedDirectory,
                 encrypted_file = nombre_archivo, 
                 file_type = fileInfo["body"]["fileType"], 
                 signature = fileInfo["body"]["signature"],

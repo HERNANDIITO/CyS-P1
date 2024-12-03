@@ -1,3 +1,4 @@
+from functions.user import User
 from functions import database as db 
 from functions.result import Result
 from functions.file import File
@@ -23,6 +24,10 @@ class SharedFile:
     
     @classmethod
     def share(self, file: File, recieverId: int, key: str) -> Result:
+        
+        if ( str(recieverId) == str(file.userId) ):
+            return Result(400, "No puedes compartir un archivo contigo mismo", False)
+            
         
         alreadyExists = db.check_sharing(recieverId=recieverId,  sharedFileId=file.fileId)
         
@@ -70,12 +75,14 @@ class SharedFile:
             return Result(500, "Error del servidor al dejar de compartir archivo", False)
         
     @classmethod
-    def deleteSharedUser(self, reciever_id, file_id) -> Result:
-        print(reciever_id, file_id)
-    
-        shared_files_with_user = db.get_data_with_map( "sharedFiles", { "recieverId": reciever_id})
-        result = list(filter(lambda file: file["recieverId"] == reciever_id, shared_files_with_user))
-        
-        db.remove_data("sharedFiles", {"sharingId": result[0]["sharingId"]})
-        return Result(200, "Archivo dejado de compartir con usuario con éxito", True, {"file": result[0]})
+    def deleteSharedUser(self, reciever_email: str, file_id) -> Result:
+        try:
+            user = User(email=reciever_email)
+            shared_files = db.get_data_with_map( "sharedFiles", { "sharedFileId": file_id})
+            result = list(filter(lambda file: file["recieverId"] == user.userId, shared_files))
+            
+            db.remove_data("sharedFiles", {"sharingId": result[0]["sharingId"]})
+            return Result(200, "Archivo dejado de compartir con usuario con éxito", True, {"file": result[0]})
+        except:
+            return Result(500, "Error del servidor al dejar de compartir archivo con usuario", False)
       
