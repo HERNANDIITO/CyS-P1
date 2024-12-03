@@ -1,7 +1,5 @@
-import string
 import secrets
-from Crypto.Hash import SHA3_256
-from Crypto.Protocol.KDF import PBKDF2
+from argon2 import PasswordHasher, Type
 import requests
 import base64
 import queue, threading
@@ -21,7 +19,7 @@ server = "http://127.0.0.1:5000"
 def comprobarDatosRegistro(username, email, password, password2):
     error = ''
 
-    caracteres_especiales_permitidos = "!@#$%^&*()\-_=+<>?[]}{|~"
+    caracteres_especiales_permitidos = "!@#$%^&*()\\-_=+<>?[]}{|~"
     caracteres_validos = f"a-zA-Z0-9{re.escape(caracteres_especiales_permitidos)}"
     regex_email = r"^(?=[\w!#$%&'*+/=?^_{|}~.-]{1,64}@)(?=.{1,254}$)(?!.*\.\.)[\w!#$%&'*+/=?^_{|}~-]+(?:\.[\w!#$%&'*+/=?^_{|}~-]+)*@[a-zA-Z0-9-]{1,63}(\.[a-zA-Z0-9-]{1,63}){0,255}$"
 
@@ -42,9 +40,9 @@ def comprobarDatosRegistro(username, email, password, password2):
     elif not re.search(r'[0-9]', password):
         error = "Error: La contraseña debe contener al menos un número"
     elif not re.search(r'[!@#$%^&*()\-_=+<>?[\]{}|~]', password):
-        error = "Error: La contraseña debe contener al menos un carácter especial de los siguientes: !@#$%^&*()\-_=+<>?[\]}{|~"
+        error = "Error: La contraseña debe contener al menos un carácter especial de los siguientes: !@#$%^&*()\\-_=+<>?[\\]}{|~"
     elif not re.match(f"^[{caracteres_validos}]+$", password):
-        error = "Error: La contraseña contiene caracteres no permitidos: solo se admiten letras del alfabeto inglés, números y carácteres especiales de la siguiente lista: !@#$%^&*()\-_=+<>?[\]}{|~"
+        error = "Error: La contraseña contiene caracteres no permitidos: solo se admiten letras del alfabeto inglés, números y carácteres especiales de la siguiente lista: !@#$%^&*()\\-_=+<>?[\\]}{|~"
     elif password2 != password:
         error = "Error: Datos incorrectos: las contraseñas no coinciden"
 
@@ -64,12 +62,26 @@ def comporbarDatosLogin(email, password):
     
     return error
 
-
 def pass_management(password, salt) -> str:
-    keys = PBKDF2(password, salt, 32, count=100000, hmac_hash_module=SHA3_256)
-    
-    derivedPassword = base64.b64encode(keys[:16]).decode('utf-8')
-    aesKey = keys[16:]
+
+    ph = PasswordHasher(
+        time_cost=3,          # iterations
+        memory_cost=65536,    # KiB (1024 bytes)
+        parallelism=4,        # threads
+        hash_len=32,          # bytes
+        salt_len=16,          # bytes
+        encoding='utf-8', 
+        type=Type.ID
+    )
+
+    resultArgon2id = ph.hash(password, salt=salt)
+
+    parts = resultArgon2id.split('$')
+    finalHash = parts[-1] + '=='
+    finalHash = base64.b64decode(finalHash)
+
+    derivedPassword = base64.b64encode(finalHash[:16]).decode('utf-8')
+    aesKey = finalHash[16:]
 
     return derivedPassword, aesKey
 
@@ -151,7 +163,6 @@ def login(email, password, result_queue) -> User | Result:
         "email": email
     })
 
-    
     print("Salt_result: ", salt_result)
 
     salt_result_json = salt_result.json()

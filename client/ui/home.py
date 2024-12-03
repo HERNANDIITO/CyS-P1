@@ -1,4 +1,4 @@
-from customtkinter import CTkFrame, CTkLabel, CTkButton, CTkScrollableFrame
+from customtkinter import CTkFrame, CTkLabel, CTkButton, CTkScrollableFrame, filedialog
 from functions.file_requests import download_file
 from functions.encrypt_decrypt import decrypt
 import functions.file_requests as file_request
@@ -91,22 +91,6 @@ class Home(CTkFrame):
         
         print(debug.printMoment(), "table generated...")
 
-        # borrar abajo
-        self.info_button_frame = CTkFrame(master=self, bg_color="transparent", fg_color="transparent")
-        self.info_button_frame.pack(pady=10)  # Añade algo de margen entre la tabla y el botón
-
-        self.info_button = CTkButton(
-            master=self.info_button_frame,
-            text="Info Archivo Compartido",
-            corner_radius=32,
-            fg_color="#601E88",
-            hover_color="#D18AF0",
-            text_color="#ffffff",
-            command=lambda: self.info_archivo_compartido(archivo_id=0)
-        )
-        self.info_button.pack(pady=5)  # Añade margen alrededor del botón
-        # borrar arriba
-
     def getFiles(self):
         print(debug.printMoment(), "getFiles...")
         response = ""
@@ -173,6 +157,7 @@ class Home(CTkFrame):
             for archivo in files["body"]["files"]:
                 archivo_id = archivo["fileId"]
                 nombre_archivo = str(archivo["fileName"]) + archivo["fileType"]
+                nombre_archivo_completo = nombre_archivo
 
                 if len(nombre_archivo) > 10:
                     nombre_archivo = nombre_archivo[:7] + "..."
@@ -228,7 +213,7 @@ class Home(CTkFrame):
 
                     btn_action = CTkButton(
                         master=row_frame,
-                        text="eliminar comparticion",
+                        text="X",
                         corner_radius=32,
                         fg_color="#881e1e",
                         hover_color="#EC5E5E",
@@ -241,7 +226,7 @@ class Home(CTkFrame):
 
                     btn_action = CTkButton(
                         master=row_frame,
-                        text="info de comparticion",
+                        text="info",
                         corner_radius=32,
                         fg_color="#601E88",
                         hover_color="#D18AF0",
@@ -260,7 +245,7 @@ class Home(CTkFrame):
                         hover_color="#D18AF0",
                         text_color="#ffffff",
                         width = 5,
-                        command=lambda sharingId = archivo['sharingId'], archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, True, sharingId)  # Pasa el ID del archivo al botón
+                        command=lambda sharingId = archivo['sharingId'], archivo_id=row[0], nombre_archivo=nombre_archivo_completo: self.procesar_guardado(archivo_id, nombre_archivo, True, sharingId)  # Pasa el ID del archivo al botón
                     )
                     btn_action.pack(side="right", padx=(2, 0))
                 else:              
@@ -272,7 +257,7 @@ class Home(CTkFrame):
                         hover_color="#D18AF0",
                         text_color="#ffffff",
                         width = 5,
-                        command=lambda sharingId = None, archivo_id=row[0], nombre_archivo=row[1]: self.procesar_guardado(archivo_id, nombre_archivo, False, sharingId)  # Pasa el ID del archivo al botón
+                        command=lambda sharingId = None, archivo_id=row[0], nombre_archivo=nombre_archivo_completo: self.procesar_guardado(archivo_id, nombre_archivo, False, sharingId)  # Pasa el ID del archivo al botón
                     )
                     btn_action.pack(side="right", padx=(2, 0))
 
@@ -324,7 +309,12 @@ class Home(CTkFrame):
     def procesar_guardado(self, archivo_id, nombre_archivo, compartido = False, sharingId = None):
         
         nombre_archivo = str(nombre_archivo)
-        download_file(archivo_id, nombre_archivo)
+        
+        #  TODO: terminar de preguntar directorio
+        selectedDirectory = filedialog.askdirectory()
+        selectedDirectory = f"{selectedDirectory}/{nombre_archivo}"
+        
+        download_file(archivo_id, selectedDirectory )
         fileInfo = file_request.get_file_info(archivo_id)
         
         if ( compartido ):
@@ -338,13 +328,16 @@ class Home(CTkFrame):
             userInfo = userInfo.json()
             
             print( debug.printMoment(), "userInfo: ", userInfo)
-            print( debug.printMoment(), "userInfo: ", userInfo["body"]["publicRSA"])
+            
+            print(debug.printMoment(), "signature: ", fileInfo["body"]["signature"])
+            print(debug.printMoment(), "publicRSA: ", userInfo["body"]["publicRSA"])
+            print(debug.printMoment(), "file_name: ", nombre_archivo)
             
             signatory_public_key = import_public_key(userInfo["body"]["publicRSA"])
 
             result = decrypt (
                 user = self.controller.user, 
-                file_name = nombre_archivo,
+                file_name = selectedDirectory,
                 encrypted_file = nombre_archivo, 
                 file_type = fileInfo["body"]["fileType"], 
                 signature = fileInfo["body"]["signature"],
@@ -354,9 +347,13 @@ class Home(CTkFrame):
             
         else:
             
+            print(debug.printMoment(), "signature: ", fileInfo["body"]["signature"])
+            print(debug.printMoment(), "signatory_public_key: ", self.controller.user.publicRSA)
+            print(debug.printMoment(), "file_name: ", nombre_archivo)
+            
             result = decrypt (
                 user = self.controller.user, 
-                file_name = nombre_archivo,
+                file_name = selectedDirectory,
                 encrypted_file = nombre_archivo, 
                 file_type = fileInfo["body"]["fileType"], 
                 signature = fileInfo["body"]["signature"],
@@ -376,6 +373,7 @@ class Home(CTkFrame):
         response = requests.delete(f'{self.controller.server}/files', json={"fileId": archivo_id})
         response.raise_for_status()
         response = response.json()
+        self.reload()
 
     def compartir_archivo(self, archivo_id):
         self.controller.show_frame("Compartir", archivo_id)

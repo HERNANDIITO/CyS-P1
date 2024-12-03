@@ -25,13 +25,11 @@ class Register(CTkFrame):
         side_img_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/side-img.png')))
         email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/email-icon.png')))
         password_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/password-icon.png')))
-        google_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/google-icon.png')))
         user_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/user_icon.png')))
 
         side_img = CTkImage(dark_image=side_img_data, light_image=side_img_data, size=(300, 480))
         email_icon = CTkImage(dark_image=email_icon_data, light_image=email_icon_data, size=(20,20))
         password_icon = CTkImage(dark_image=password_icon_data, light_image=password_icon_data, size=(17,17))
-        google_icon = CTkImage(dark_image=google_icon_data, light_image=google_icon_data, size=(17,17))
         user_icon = CTkImage(dark_image=user_icon_data, light_image=user_icon_data, size=(17,17))
 
         CTkLabel(master=self, text="", image=side_img).pack(expand=True, side="left")
@@ -57,7 +55,6 @@ class Register(CTkFrame):
         
         CTkButton(master=frame, text="Registrarse", fg_color="#601E88", hover_color="#D18AF0", font=("Arial Bold", 12), text_color="#ffffff", corner_radius = 32, width=225, command=self.on_register).pack(anchor="w", pady=(15, 0), padx=(25, 0))
         CTkButton(master=frame, text="Iniciar sesión", fg_color="#9674AC", hover_color="#D18AF0", font=("Arial Bold", 12), text_color="#ffffff", corner_radius = 32, width=225, command= self.on_login).pack(anchor="w", pady=(10, 0), padx=(25, 0))
-        CTkButton(master=frame, text="Continue With Google", fg_color="#EEEEEE", hover_color="#CCCCCC", font=("Arial Bold", 9), text_color="#601E88", corner_radius = 32, width=225, image=google_icon).pack(anchor="w", pady=(10, 0), padx=(25, 0))
 
     def on_register(self):
         username    = self.username_var.get()

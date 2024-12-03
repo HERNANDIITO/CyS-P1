@@ -169,14 +169,26 @@ def get_file_data_map(table, data):
 def get_shared_file_data_map(table, data): 
 
     keys_str = get_keys(data, "{0}=:{1}", ", ")
-    cursor.execute("SELECT DISTINCT fileId, userId, fileName, AESKey, fileType, signature, sf.sharingId FROM {0} JOIN sharedFiles sf ON fileId = sf.sharedFileId WHERE {1}".format(table, keys_str), data)
+    cursor.execute(" SELECT DISTINCT fileId, userId, fileName, AESKey, fileType, signature, sf.sharingId FROM {0}  JOIN sharedFiles sf ON fileId = sf.sharedFileId WHERE {1} GROUP BY fileId;".format(table, keys_str), data)
     data = cursor.fetchall()
 
     column_names = [desc[0] for desc in cursor.description]
     results = [dict(zip(column_names, row)) for row in data]
 
     return results if results else None
+
+def check_sharing(sharedFileId, recieverId):
+    cursor.execute(f"SELECT sharedFileId FROM sharedFiles WHERE sharedFileId = {sharedFileId} AND recieverId = {recieverId};")
+    data = cursor.fetchall()
     
+    column_names = [desc[0] for desc in cursor.description]
+    results = [dict(zip(column_names, row)) for row in data]
+    
+    if (results): # En caso de que se haya compartido ese archivo con ese usuario
+        return False
+    
+    return True 
+
 
 def remove_data(table, data):
     '''

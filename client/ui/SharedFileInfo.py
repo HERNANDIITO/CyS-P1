@@ -4,6 +4,8 @@ from pathlib import Path
 import os
 import re
 import requests
+from functions.share_file import share
+
 
 global server
 server = "http://127.0.0.1:5000"
@@ -15,17 +17,17 @@ class SharedInfo(CTkFrame):
         self.fileID = 0  #el id del archivo que obtendremos haciendo reload
         self.usersShared = []  #el listado de usuarios con los que se ha compartido el archivo que lo obtendremos haciendo reload
 
-        self.geometry = "600x480"  # Estableciendo las dimensiones
-        self.title = "Asegurados"
+        self.emailsWritten = 0
+        self.main_frame = CTkFrame(master=self)
+        self.main_frame.pack(fill='both')
 
         # Cargar icono de email
         email_icon_data = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/email-icon.png')))
         email_icon = CTkImage(dark_image=email_icon_data, light_image=email_icon_data, size=(20, 20))
 
-
         # Cabecera
-        header_frame = CTkFrame(self, fg_color="transparent")
-        header_frame.pack(pady=(30, 20), padx=20, fill="x")
+        header_frame = CTkFrame(self.main_frame, fg_color="transparent")
+        header_frame.pack(padx=20, fill="x")
 
         self.fileName = CTkLabel(
             master=header_frame, 
@@ -35,7 +37,7 @@ class SharedInfo(CTkFrame):
             anchor="w", 
             justify="left"
         )
-        self.fileName.pack(side="left")
+        self.fileName.pack(side="left", pady=10)
 
 
         # Botón volver
@@ -50,17 +52,36 @@ class SharedInfo(CTkFrame):
             width=20,
             command=self.on_volver
         )
-        volver_button.pack(side="right", padx=(0, 0), pady=10)
-
-        # Contenedor para el título, email input y botón
-        self.email_input_frame = CTkFrame(master=self, fg_color="transparent")
-        self.email_input_frame.pack(anchor="w", pady=(10, 20), padx=(180, 0))
-
-        
+        volver_button.pack(side="right", padx=2)
 
         # Crear tabla justo debajo del subtítulo
-        self.table_frame = CTkScrollableFrame(self, fg_color="white", corner_radius=10)
-        # self.create_user_table(self.email_input_frame)
+        
+        self.table_frame = CTkScrollableFrame(self.main_frame, fg_color="white", corner_radius=10, height=125)
+        self.table_frame._scrollbar.configure(height=0)
+
+        # Contenedor para el título, email input y botón
+        self.email_input_frame = CTkFrame(master=self.main_frame, fg_color="transparent")
+        self.email_input_frame.pack(anchor="w", padx=(180, 0))
+
+        # Tabla de emails
+        self.email_table = CTkScrollableFrame(master=self.main_frame, fg_color="transparent", width=150, height=125)
+        self.email_table.pack(fill='x', padx=20)
+        self.email_table._scrollbar.configure(height=0)
+        self.emails = []
+        
+        # Botón de compartir debajo de la tabla de emails
+        self.share_button = CTkButton(
+            master=header_frame,
+            text="Compartir",
+            fg_color="#601E88",
+            text_color="white",
+            font=("Arial", 12),
+            hover_color="#D18AF0",
+            corner_radius=32,
+            width=20,
+            command=self.share
+        )
+        self.share_button.pack(side="right", padx=2)
 
         subtitle = CTkLabel(
             master=self.email_input_frame,
@@ -68,8 +89,7 @@ class SharedInfo(CTkFrame):
             text_color="#6B6B6B",
             font=("Arial", 14)
         )
-        subtitle.pack(anchor="w", pady=(20, 10))
-
+        subtitle.pack(anchor="w")
         # Resto de componentes (input, botón, etc.)
         email_label = CTkLabel(
             master=self.email_input_frame,
@@ -81,8 +101,7 @@ class SharedInfo(CTkFrame):
             image=email_icon,
             compound="left"
         )
-        email_label.pack(anchor="w", pady=(0, 5))
-
+        email_label.pack(anchor="w")
         self.email_entry = CTkEntry(
             master=self.email_input_frame,
             width=225,
@@ -105,17 +124,16 @@ class SharedInfo(CTkFrame):
         )
         add_email_button.pack(side="left")
 
-        self.error_label = CTkLabel(master=self, text="", text_color="red", font=("Arial", 12))
-        self.error_label.pack(pady=(0, 0))
-
         # Subtítulos dentro del frame
         subtitle = CTkLabel(
-            master=self.email_input_frame,
+            master=self.main_frame,
             text="El archivo está compartido con:",
             text_color="#6B6B6B",
-            font=("Arial", 14)
+            font=("Arial", 14),
         )
-        subtitle.pack(side="bottom" , anchor="w", pady=(0, 10))
+        subtitle.pack(pady=(0, 10))
+        self.error_label = CTkLabel(master=self, text="", text_color="red", font=("Arial", 12))
+        self.error_label.pack()
 
 
 
@@ -127,22 +145,18 @@ class SharedInfo(CTkFrame):
 
 
 
-
-
-
-
-
-
-    
 
     def create_user_table(self):
         """Crea una tabla con datos de usuarios con los que se ha compartido el archivo."""
-        self.table_frame = CTkFrame(self, fg_color="white", corner_radius=10)
-        self.table_frame.pack(fill="x", padx=20, pady=(10, 20))
+        self.table_frame.pack_forget()
+
+        # Eliminar todas las filas existentes en la tabla
+        for widget in self.table_frame.winfo_children():
+            widget.destroy()
 
         # Cabecera de la tabla
         header = CTkFrame(self.table_frame, fg_color="#601E88")
-        header.pack(fill="x", pady=(0, 5))
+        header.pack(fill="x")
         CTkLabel(header, text="Nombre", text_color="white", width=15).pack(side="left", padx=10)
         CTkLabel(header, text="Email", text_color="white", width=20).pack(side="left", padx=10)
         CTkLabel(header, text="Acción", text_color="white", width=10).pack(side="right", padx=10)
@@ -173,7 +187,7 @@ class SharedInfo(CTkFrame):
         # Filas de la tabla
         for user in transformed_users:
             row = CTkFrame(self.table_frame, fg_color="#EEEEEE")
-            row.pack(fill="x", pady=2)
+            row.pack(fill="x")
             CTkLabel(row, text=user["name"], text_color="#000000", width=15).pack(side="left", padx=10)
             CTkLabel(row, text=user["email"], text_color="#000000", width=20).pack(side="left", padx=10)
             CTkButton(
@@ -185,13 +199,15 @@ class SharedInfo(CTkFrame):
                 width=10,
                 command=lambda u=user: self.remove_user(u)
             ).pack(side="right", padx=10)
+        
+        row.pack_forget()
 
-
-
-
+        self.table_frame.pack(fill="x", padx=20)
     def remove_user(self, user):
         """Lógica para eliminar un usuario de la tabla."""
         print(f"Usuario eliminado: {user}")
+        # inserte endpoint para eliminar usuario de un archivo compartido mediante fileID y user
+        self.reload(self.fileID)
 
 
     def validate_and_add_email(self):
@@ -200,7 +216,7 @@ class SharedInfo(CTkFrame):
             self.add_email_to_table(email)
             self.error_label.configure(text="")
             self.email_entry.delete(0, "end") 
-            self.patata = 1 
+            self.emailsWritten += 1 
             self.show_share_button()
         else:
             self.error_label.configure(text="Email no válido")
@@ -211,35 +227,83 @@ class SharedInfo(CTkFrame):
     def add_email_to_table(self, email):
         if email not in self.emails:
             self.emails.append(email)
+            
+            email_mostrado = email
+            if len(email) > 15:
+                email_mostrado = email[:12] + "..."
+            
+            row_frame = CTkFrame(master=self.email_table, fg_color="#FFFFFF")
+            row_frame.pack(fill="x")
+            
+            # Configuramos el grid del row_frame para ocupar dos columnas
+            row_frame.columnconfigure(0, weight=1)  # Para que la primera columna se expanda
+            row_frame.columnconfigure(1, weight=0)  # La segunda columna no se expande
+            
+            # Label para el email
             row = CTkLabel(
-                master=self.email_table,
-                text=email,
+                master=row_frame,
+                text=email_mostrado,
                 text_color="#000000",
-                anchor="center",
+                anchor="w",  # Alineado a la izquierda
                 font=("Arial", 12),
                 fg_color="#FFFFFF",
-                width = 100
+                width=75
             )
-            row.pack(fill="x", pady=0, padx=180)
+            row.grid(row=0, column=0, padx=(5, 15), sticky="w")
+
+            # Botón para eliminar email
+            add_remove_email = CTkButton(
+                master=row_frame,
+                text="-",
+                fg_color="#601E88",
+                hover_color="#D18AF0",
+                text_color="#ffffff",
+                width=25,
+                command=lambda: self.remove_email_of_table(row_frame, email)
+            )
+            add_remove_email.grid(row=0, column=1, sticky="e")
+
+    
+    def remove_email_of_table(self, row_frame, email):
+        if email in self.emails:
+            self.emails.remove(email)
+            self.emailsWritten -= 1
+            self.show_share_button()
+        
+        row_frame.destroy()
 
     def show_share_button(self):
-        if self.patata == 1: 
-            self.share_button.pack(pady=(20, 10), padx=(250, 0))
+        if self.emailsWritten > 0: 
+            self.share_button.pack()
+            self.share_button.configure(state="normal")
+        else:
+            self.share_button.configure(state="disabled")
+            print(self.emailsWritten)
 
     def on_volver(self):
         self.controller.show_frame("Home")
 
-    def on_dejar_de_compartir(self):
-        self.controller.show_frame("Home")
+     
+    def share(self):
+        for email in self.emails :
+            r = requests.get(f"{server}/users/shareParamsByEmail/{email}")
+            print(r)
+            r = r.json()
+            print(r)
+            
+            if (str(r['code']) == "200"):
+                print("sharing!", r)
+                result = share(sharedFileId = self.fileID, recieverId = r['body']['userID'], transmitter = self.controller.user, recieverPublicRSAKey = r['body']['publicRSA'], AESKey = self.fileJSON['body']['aesKey'])
+                print("sharing result: ", result)
+                self.reload(self.fileID)
+
+
 
     def reload(self, fileID):
         self.fileID = fileID
         r = requests.get(f"{server}/get-file-info/{self.fileID}")
         self.fileJSON = r.json()
         self.fileName.configure(text=f"Informacion del archivo: { self.fileJSON['body']["fileName"] + self.fileJSON['body']["fileType"] }" )
- 
-
-
 
         req = requests.get(f"{server}/users-shared-to/{self.fileID}")
         print(req)
@@ -258,16 +322,9 @@ class SharedInfo(CTkFrame):
             newUser = {"name": user["user"], "email": user["email"]}
             self.usersShared.append(newUser)
             
-        
-
-
         # self.usersShared = [
         #     for user in users_data:
         #         {"name": user["user"], "email": user["email"]}
         # ]
         print(self.usersShared)
         self.create_user_table()
-
-
-
-

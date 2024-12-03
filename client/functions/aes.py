@@ -98,8 +98,8 @@ def encrypt_file(input_file, output_file, encoded_file, aes_key):
     if isinstance(aes_key, str):
         aes_key = aes_key.encode('utf-8')
 
-    # Generar un nonce adecuado de 11 bytes (11 por si se da el caso de un archivo gigantesco, y dado que 11 bytes de nonce es mas que seguro y es el tamanyo recomendado en varios estandares modernos)
-    nonce = secrets.token_bytes(11)
+    # Generar un nonce adecuado de 12 bytes (12 por si se da el caso de un archivo gigantesco, y dado que 12 bytes de nonce es mas que seguro y es el tamanyo recomendado en varios estandares modernos)
+    nonce = secrets.token_bytes(12)
 
     # Crear el cifrador en modo CTR
     cipher = AES.new(aes_key, AES.MODE_CTR, nonce=nonce)
@@ -150,9 +150,9 @@ def decrypt_file(input_file, output_file, aes_key):
         base64_data = f.read()  # Leer el contenido del archivo en Base64
         binary_data = base64.b64decode(base64_data)  # Decodificar Base64 a binario
 
-    # Extraer el nonce de los primeros 11 bytes
-    nonce = binary_data[:11]  # Los primeros 11 bytes son el nonce
-    encrypted_data = binary_data[11:]  # El resto es el contenido cifrado
+    # Extraer el nonce de los primeros 12 bytes
+    nonce = binary_data[:12]  # Los primeros 12 bytes son el nonce
+    encrypted_data = binary_data[12:]  # El resto es el contenido cifrado
 
     # Crear el cifrador en modo CTR usando el nonce extraído
     cipher = AES.new(aes_key, AES.MODE_CTR, nonce=nonce)
