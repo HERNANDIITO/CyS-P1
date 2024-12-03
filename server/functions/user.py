@@ -4,6 +4,7 @@ from functions.result import Result
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from functions.file import File
+from functions.otp_utils import *
 
 class User:
     def __init__( self, userId: str = None, email: str = None ):
@@ -20,14 +21,15 @@ class User:
             self.publicRSA  = userData[4]
             self.privateRSA = userData[5]
             self.email      = userData[6]
+            self.otpSecret  = userData[7] # Esto no deberia salir del servidor
         except:
             self.userId = -1
     
     def __str__( self ):
-        return f'{{"userId": "{self.userId}","user": "{self.user}", "password": "{self.password}","salt": "{self.salt}","publicRSA": "{self.publicRSA}","privateRSA": "{self.privateRSA}","email": "{self.email}"}}'
+        return f'{{"userId": "{self.userId}","user": "{self.user}", "password": "{self.password}","salt": "{self.salt}","publicRSA": "{self.publicRSA}","privateRSA": "{self.privateRSA}","email": "{self.email}", "otpSecret": "{self.otpSecret}"}}'
     
     def __repr__( self ):
-        return f'{{"userId": "{self.userId}","user": "{self.user}", "password": "{self.password}","salt": "{self.salt}","publicRSA": "{self.publicRSA}","privateRSA": "{self.privateRSA}","email": "{self.email}"}}'
+        return f'{{"userId": "{self.userId}","user": "{self.user}", "password": "{self.password}","salt": "{self.salt}","publicRSA": "{self.publicRSA}","privateRSA": "{self.privateRSA}","email": "{self.email}", "otpSecret": "{self.otpSecret}"}}'
 
     @classmethod
     def register( self, user: str, password: str, email: str, publicRSA: str, privateRSA: str, salt: str  ) -> Result:
@@ -49,6 +51,7 @@ class User:
 
         # Intentamos introducir el usuario nuevo en la base de datos 
         try:
+            codigo_otp = generate_secret_key()
             db.insert_data("users", {
                 "userId": None,
                 "user": user, 
@@ -56,7 +59,8 @@ class User:
                 "salt": salt,
                 "publicRSA": publicRSA,
                 "privateRSA": privateRSA,
-                "email": email
+                "email": email,
+                "otpSecret": codigo_otp
             })
             userID = db.get_data( "users", { "email": email } )[0]
         # Si algo falla devolvemos un result informando
@@ -217,3 +221,12 @@ class User:
             return Result(200, "Contraseña del usuario modificada con éxito", True, {"userId": self.userId, "user": self.user, "email": self.email, "publicRSA": self.publicRSA, "privateRSA": self.privateRSA, "password": self.password, "salt": self.salt})
         except:
             return Result(500, "Error del servidor al cambiar contraseña del usuario", False)
+        
+    def getOtpUrl(self) -> Result:
+        url = generate_url(self.otpSecret, self.email)
+        return Result(200, "URL de OTP generada con éxito", True, {"url": url})
+    
+    def checkOtpCode(self, code: str) -> Result:
+        if (verify_otp(self.otpSecret, code)):
+            return Result(200, "Código OTP correcto", True)
+        return Result(400, "Mala solicitud: código OTP incorrecto", False)

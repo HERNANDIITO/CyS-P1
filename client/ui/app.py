@@ -1,6 +1,7 @@
 import customtkinter
 from customtkinter import set_appearance_mode
 from ui.home import Home
+from ui.otp_qr_code import OtpQrCode
 from ui.login import Login
 from ui.register import Register 
 from ui.subir_archivo import SubirArchivo
@@ -8,8 +9,7 @@ from CTkMessagebox import CTkMessagebox
 from ui.shareFile import Share
 from ui.SharedFileInfo import SharedInfo
 from functions import debug
-import os
-from pathlib import Path
+from functions.consts import server
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -21,11 +21,7 @@ class App(customtkinter.CTk):
         self.configure(bg = "white")
         self.frames = {}
         self.user = None
-        self.server = "http://127.0.0.1:5000"
-        
-        self.resizable(False,False)
-        icon = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path("ui/imgs/icon.ico"))
-        self.iconbitmap(bitmap=icon, default=icon)
+        self.server = server
 
         self.container = customtkinter.CTkFrame(self)
         self.container.pack(side="top", fill="both", expand=True)
@@ -50,7 +46,8 @@ class App(customtkinter.CTk):
             "Home": Home,
             "SubirArchivo": SubirArchivo,
             "Compartir": Share,
-            "InfoComportido": SharedInfo
+            "InfoComportido": SharedInfo,
+            "OtpQrCode": OtpQrCode
         }
         
         print(debug.printMoment(), f"Mostrando... [{contextParam}]" )
@@ -78,7 +75,7 @@ class App(customtkinter.CTk):
         return frame
         
     def load_restricted_frames(self):
-        for F in (Home, SubirArchivo, Share, SharedInfo):
+        for F in (Home, SubirArchivo, Share, SharedInfo, OtpQrCode):
             frame = self.generate_frame(F)
             self.frames[F] = frame
             self.show_frame("Login")

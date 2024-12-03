@@ -1,15 +1,9 @@
 import os
-import requests
 from functions.result import Result
 from functions.user import User
 import functions.aes as aes
 import functions.rsa as rsa
 import functions.file_requests as file_request
-import functions.debug as debug
-from Crypto.Hash import SHA3_256
-
-global server
-server = "http://127.0.0.1:5000"
 
 def get_file_name_and_type(file_path):
     try:

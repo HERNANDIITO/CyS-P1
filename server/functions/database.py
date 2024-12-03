@@ -34,7 +34,8 @@ def start():
         salt string,
         publicRSA string,
         privateRSA string,
-        email string
+        email string,
+        otpSecret string
     )""")
 
     # Creamos la tabla files

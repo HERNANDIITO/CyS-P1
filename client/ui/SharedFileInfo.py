@@ -5,10 +5,7 @@ import os
 import re
 import requests
 from functions.share_file import share
-
-
-global server
-server = "http://127.0.0.1:5000"
+from functions.consts import server
 
 class SharedInfo(CTkFrame):
     def __init__(self, parent, controller):
