@@ -24,7 +24,7 @@ class App(customtkinter.CTk):
         self.server = "http://127.0.0.1:5000"
         
         self.resizable(False,False)
-        icon = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path("E:/GitHub/CyS-P1/client/ui/imgs/icon.ico"))
+        icon = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path("ui/imgs/icon.ico"))
         self.iconbitmap(bitmap=icon, default=icon)
 
         self.container = customtkinter.CTkFrame(self)
