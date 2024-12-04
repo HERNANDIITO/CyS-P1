@@ -5,10 +5,16 @@ from functions.user import User
 from functions.result import Result
 from functions.file import File
 from functions.shared_file import SharedFile
-from waitress import serve
-from functions.debug import printMoment
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["5000 per day", "500 per hour"],
+    storage_uri="memory://",
+)
 Compress(app)
 app.config['UPLOAD_FOLDER'] =  os.path.join(app.root_path, 'data', 'uploads')
 
@@ -49,6 +55,7 @@ def registerUserPassword():
     return jsonify(result.jsonSelf())
 
 @app.post("/users/login")
+@limiter.limit("1/second;6/minute;60/hour;100/day")
 def loginUserPassword():
     '''
     Servicio para iniciar sesión como usuario.
@@ -536,6 +543,7 @@ def getOtpUrl(user_id):
     return jsonify(user.getOtpUrl().jsonSelf())
 
 @app.post("/users/check-otp")
+@limiter.limit("1/second;6/minute;60/hour;100/day")
 def checkUserOtpCode():
     '''
     Servicio para comprobar el codigo OTP del doble factor de autenticacion.
