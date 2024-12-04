@@ -5,13 +5,24 @@
 ```
 .
 ├── main.py                     # Inicia el programa
-├── __init__.py                 # Init
+├── main.spec                   # Plantilla de argumentos para el compilador
 ├── __init__.py                 # Hace de raíz para el paquete y se ejecuta cuando se importa
 ├── requirements.txt            # Dependencias
 ├── functions                   # Carpeta contenedora de los módulos    
 │   ├── __init__.py             # Init de functions
-│   └── aes.py                  # Funciones relacionadas con AES
-│   └── rsa.py                  # Funciones relacionadas con RSA
+│   ├── aes.py                  # Funciones relacionadas con AES
+│   ├── rsa.py                  # Funciones relacionadas con RSA
+│   ├── consts.py               # Constantes del programa
+│   ├── debug.py                # Funciones para imprimir el log comodamente
+│   ├── file_requests.py        # Funciones sobre las peticiones de los archivos
+│   ├── google_auth.py          # Funciones sobre la autentificacion por Google (en desuso)
+│   ├── google_user.py          # Funciones sobre la autentificacion por Google (en desuso)
+│   ├── otp_things.py           # Funciones sobre la autentificacion en dos pasos
+│   ├── result.py               # Clase de respuesta HTTP
+│   ├── secrets.json            # Dependendias sobre la autentificación por Google (en desuso)
+│   ├── share_file.py           # Funciones sobre las peticiones de los archivos compartidos
+│   ├── user_auth.py            # Funciones sobre la autentificacion de usuarios
+│   ├── user.py                 # Clase de usuario
 │   └── encrypt_decrypt.py      # Utiliza las funciones de AES y RSA para hacer el cifrado y descifrado.
 ├── tests                       # Carpeta con pruebas varias
 ├── ui                          # Carpeta que contiene el sistema de interfaces
@@ -23,11 +34,8 @@
 │   ├── login.py                # Clase de la pantalla "login"
 │   ├── registro.py             # Clase de la pantalla "registro"
 │   ├── subir_archivo.py        # Clase de la pantalla "subir_archivo"
-│   └── legacy                  # Clase de la interfaz viejas
+│   └── legacy                  # Carpeta contenedora de la interfaz vieja
 │       └── ··· 
-├── keys                        # Carpeta con claves
-│   ├── public_key.pem          # Contenedor de claves publicas (CLIENT SIDE)
-│   └── private_key.pem         # Contenedor de claves privadas (CLIENT SIDE)
 └── ...
 ```
 
@@ -41,13 +49,17 @@
 ├── functions           # Carpeta contenedora de los módulos    
 │   ├── database.py     # Gestor de la base de datos
 │   ├── user.py         # Clase de los usuarios
+│   ├── result.py       # Clase de las respuestas HTTP
+│   ├── shared_file.py  # Clase de los archivos compartidos
+│   ├── debug.py        # Funciones para depurar
+│   ├── otp_utils.py    # Funciones relacionadas con la autentificacion en dos pasos
 │   └── file.py         # Clase de los ficheros
 ├── data                # Almacena datos server side
 │   └── database.db     # Almacena la base de datos
+├── templates           # Almacena los ficheros HTML
+│   ├── landing.html    # Landing page del servidor
+│   └── imgs            # Imagenes relacionadas con el HTML
 ├── tests               # Carpeta con pruebas varias
-├── private_key.pem     # Contenedor de claves privadas (CLIENT SIDE)
-├── public_key.pem      # Contenedor de claves publicas (CLIENT SIDE)
-├── public_key.pem      # Dependencias
 └── ...
 ```
 
