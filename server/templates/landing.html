@@ -1,0 +1,200 @@
+<head>
+    <title>Asegurados</title>
+    <link rel="icon" type="image/x-icon" href="./imgs/icon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            font-family: "Hind", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 450;
+            font-style: normal;
+        }
+
+        h1 {
+            font-weight: 600;
+        }
+
+        header {
+            background-color: #601E88;
+            color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            flex-flow: row;
+
+            img {
+                width: 128px;
+            }
+
+            h1 {
+                font-size: 75px;
+                margin: auto 15px;
+            }
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .h2Wrapper {
+            margin: 20px 0;
+        }
+        
+        body {
+            background-color: #000;
+            height: 100%;
+            display: flex;
+            flex-flow: column;
+        }
+
+        body {
+            background-color: rgba(255, 255, 255, 0.85);
+            height: 100%;
+        }
+
+        .row {
+            display: flex;
+            flex-flow: row;
+            padding: 30px;
+
+            .col {
+                width: 50%;
+                text-align: center;
+
+                li {
+                    width: fit-content;
+                }
+            }
+        }
+
+        footer {
+            background-color: #601E88;
+            color: #ffffff;
+            padding: 10px 20px;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        button {
+            border: none;
+            background-color: #601E88;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 30px;
+            display: block;
+            margin: 20px auto;
+            transition: all .25s;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #7e2faf;
+                scale: 1.1;
+                transition: all .25s;
+            }
+
+        }
+
+        main {
+            flex-grow: 1;
+            perspective: 1000px;
+        }
+
+        .imgWrapper {
+            position: relative;
+            height: 470px;
+            width: 800px;
+            display: block;
+            margin: auto;
+
+            .izq, .drc, .mid {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .izq {
+                left: 0%;
+            }
+
+            .drc {
+                right: 0%;
+            }
+
+            .mid {
+                left: 50%;
+                z-index: 10;
+                transform: translateX(-50%) translateY(-50%) scale(1.1);
+                box-shadow: 0px 0px 20px black;
+            }
+
+            img {
+                width: 500px;
+            }
+        }
+
+        .text-align-left {
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="./imgs/icon.ico" alt="">
+        <h1>Asegurados</h1>
+    </header>
+    <main>
+        <section class="h2Wrapper">
+            <h2>El software de almacenamiento en la nube más seguro</h2>
+            <p>Descarga ya nuestro cliente y empieza a cifrar tus archivos.</p>
+        </section>
+        <section class="imgWrapper">
+            <img class="izq" src="./imgs/home.jpeg"     alt="">
+            <img class="mid" src="./imgs/login.jpeg"    alt="">
+            <img class="drc" src="./imgs/home.jpeg"    alt="">
+        </section>
+        <button id="downloadBtn" style="animation:grow 2s linear infinite;">Descargar</button>
+    </main>
+    <footer>
+        <section class="row">
+            <section class="col">
+                <p class="text-align-left">Creado por: </p>
+                <ul>
+                    <li>David González  </li>
+                    <li>Pablo Hernández </li>
+                    <li>Marcos Ruiz     </li>
+                    <li>Laura Saval     </li>
+                    <li>Javier Silva    </li>
+                </ul>
+            </section>
+            <section class="col">
+                <p>
+                    Para la asignatura de Ingeniería Multimedia: Compresión y Seguridad en el año 2024.
+                </p>
+            </section>
+        </section>
+    </footer>
+
+</body>
+
+<script>
+    document.getElementById('downloadBtn').addEventListener('click', (e) => {
+        Swal.fire('Esto debería descargar el exe');
+    });
+</script>
