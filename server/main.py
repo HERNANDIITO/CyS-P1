@@ -197,31 +197,6 @@ def updateKeys():
     # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
     return jsonify(result.jsonSelf())
 
-@app.post("/users/login-google")
-def loginGoogle():
-    '''
-    Servicio para iniciar sesión como usuario.
-    Parámetros en el body de la petición:
-    - idToken: str
-
-    return Result
-    - result.msg: mensaje de contexto
-    - result.code: codigo de error http
-    - result.status: si ha sido realizada la petición o no
-    - result.body:  
-        · userId: ID del usuario
-        · privateRSA: RSA Privado
-    '''
-
-    # Se leen los parametros del body
-    input_json = request.get_json(force=True)
-
-    # Se consume la función de clase para crear un usuario
-    result = User.loginGoogle(input_json["idToken"])
-
-    # Se formatea el objeto tipo result como json y se devuelve como resultado de la peticion
-    return jsonify(result.jsonSelf())
-
 @app.post('/upload')
 def uploadFile():
     '''

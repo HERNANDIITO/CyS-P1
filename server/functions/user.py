@@ -1,9 +1,6 @@
 from typing import List
 from functions import database as db 
 from functions.result import Result
-from google.oauth2 import id_token
-from google.auth.transport import requests
-from functions.file import File
 from functions.otp_utils import *
 
 class User:
@@ -162,34 +159,7 @@ class User:
         if (result != None):
             return Result(200, "Archivos compartidos al usuario obtenidos con éxito", True, {"files": result})
         return Result(404, "No hay archivos compartidos a este usuario", False, {})
-    
-    @classmethod
-    def loginGoogle(sel, token: str) -> Result:
-        try:
-            # Comprueba que el token es valido
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), '930275995654-845nchda7mj5aqm2dit8c7kvv8h92ag4.apps.googleusercontent.com')
 
-            # ID token is valid. Get the user's email from the decoded token.
-            user_email = idinfo['email']
-            
-            # Intentamos recoger un usuario con el mismo email que acabamos de recibir
-            userData = db.get_data( "users", { "email": user_email })
-
-            # Si no hay nada en la variable, significa que el usuario no existe
-            # No permitimos otro
-            if not userData:
-                return Result(400, "Mala solicitud: el usuario no existe", False)
-            
-            user = User(userData[0])
-            # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
-            # y poder utilizarla en los siguientes servicios
-            return Result(200, "Sesión iniciada con éxito", True, {"userID": user.userId, "privateRSA": user.privateRSA, "publicRSA": user.publicRSA})
-
-        
-        except ValueError:
-            # Invalid token
-            return Result(400, "Mala solicitud: el id_token de Google no es válido", False)
-        
     def changeData(self, user: str, email: str) -> Result:
         try:
             db.update_data( "users", {
