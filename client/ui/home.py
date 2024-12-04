@@ -5,7 +5,8 @@ import functions.file_requests as file_request
 from CTkMessagebox import CTkMessagebox
 from functions import debug
 from functions.rsa import import_public_key
-import requests, threading, json
+import requests, threading
+from functions.consts import server
 
 
 class Home(CTkFrame):
@@ -15,7 +16,7 @@ class Home(CTkFrame):
         self.controller = controller
         self.firstTime = True
         
-        self.server = "http://127.0.0.1:5000"
+        self.server = server
         
         self.archivos = None
         self.archivosCompartidos = None

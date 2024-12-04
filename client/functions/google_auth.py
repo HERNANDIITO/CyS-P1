@@ -3,14 +3,11 @@ from pathlib import Path
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import requests
-from functions.aes import decrypt_private_key_with_aes
-from functions.rsa import import_private_key, import_public_key
+from functions.rsa import import_public_key
 from functions.user import User
 from functions.google_user import GoogleUser
 import os
-
-global server
-server = 'http://127.0.0.1:5000'
+from functions.consts import server
 
 flow = InstalledAppFlow.from_client_secrets_file(
     os.path.join(os.path.dirname(__file__), Path('secrets.json')),

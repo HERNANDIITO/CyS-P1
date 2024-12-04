@@ -1,9 +1,7 @@
 import json
 import requests
 from  functions.result import Result
-
-global server
-server = "http://127.0.0.1:5000"
+from functions.consts import server
 
 def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fileName: str, signature: str):
     payload = {

@@ -5,10 +5,7 @@ import os
 import re
 import requests
 from functions.share_file import share
-
-
-global server
-server = "http://127.0.0.1:5000"
+from functions.consts import server
 
 class SharedInfo(CTkFrame):
     def __init__(self, parent, controller):
@@ -185,7 +182,7 @@ class SharedInfo(CTkFrame):
         ]
 
         # Filas de la tabla
-        for user in transformed_users:
+        for user in self.usersShared: #hay que cambiarlo por transformed_users para que se vean recortados los nombres
             row = CTkFrame(self.table_frame, fg_color="#EEEEEE")
             row.pack(fill="x")
             CTkLabel(row, text=user["name"], text_color="#000000", width=15).pack(side="left", padx=10)
@@ -203,10 +200,30 @@ class SharedInfo(CTkFrame):
         row.pack_forget()
 
         self.table_frame.pack(fill="x", padx=20)
+
+
     def remove_user(self, user):
         """Lógica para eliminar un usuario de la tabla."""
         print(f"Usuario eliminado: {user}")
-        # inserte endpoint para eliminar usuario de un archivo compartido mediante fileID y user
+        # r = requests.delete(f"{server}/shared-user/{user["email"], self.fileID}")
+        user_email = user["email"]  # Cambiar por la clave adecuada
+        file_id = self.fileID       # Cambiar por el valor adecuado
+
+        # Crear el body de la solicitud
+        body = {
+            "reciever_email": user_email,
+            "file_id": file_id
+        }
+
+        # Realizar la solicitud DELETE con datos en el body
+        r = requests.delete(f"{server}/shared-user", json=body)
+
+        # Manejo de la respuesta
+        if r.status_code == 200:
+            print("Usuario compartido eliminado con éxito:", r.json())
+        else:
+            print(f"Error al eliminar usuario compartido: {r.status_code}, {r.text}")
+
         self.reload(self.fileID)
 
 

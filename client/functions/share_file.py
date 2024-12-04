@@ -3,9 +3,6 @@ import functions.rsa as rsa
 import functions.file_requests as file_request
 from functions.result import Result
 
-global server
-server = "http://127.0.0.1:5000"
-
 
 def share(sharedFileId, recieverId, transmitter: User, recieverPublicRSAKey, AESKey): 
     try:

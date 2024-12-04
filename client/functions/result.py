@@ -1,5 +1,3 @@
-import json
-
 class Result:
     def __init__(self, code = None, msg = None, status = None, body = None):
         self.code = code

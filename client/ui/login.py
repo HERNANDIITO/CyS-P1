@@ -2,7 +2,7 @@ from pathlib import Path
 from customtkinter import *
 from PIL import Image
 from functions.user import User
-from functions import user_auth, google_auth, debug
+from functions import user_auth, debug, otp_things
 import threading, queue
 
 import os
@@ -42,10 +42,15 @@ class Login(CTkFrame):
         CTkButton(master=frame, text="Registrarse", fg_color="#9674AC", hover_color="#D18AF0", font=("Arial Bold", 12), text_color="#ffffff", corner_radius = 32, width=225, command=self.on_register).pack(anchor="w", pady=(10, 0), padx=(25, 0))
               
     def successfullLogin(self, user):
-        self.controller.user = user
-        self.controller.load_restricted_frames()
-        print(debug.printMoment(), "mostrando home...")
-        self.controller.show_frame("Home")
+        dialog = CTkInputDialog(text="Escribe tu código de doble factor de autenticación:", title="Código OTP")
+        resultado = dialog.get_input()
+        if otp_things.check_otp(user.userId, resultado):
+            self.controller.user = user
+            self.controller.load_restricted_frames()
+            print(debug.printMoment(), "mostrando home...")
+            self.controller.show_frame("Home")
+        else:
+            self.controller.show_error("Código OTP incorrecto")
 
     # Función que maneja el evento de inicio de sesión
     def on_login(self):

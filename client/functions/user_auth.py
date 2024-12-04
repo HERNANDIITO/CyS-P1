@@ -10,10 +10,7 @@ from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
 from functions.aes import encrypt_private_key_with_aes, decrypt_private_key_with_aes
 from functions.result import Result
-
-
-global server
-server = "http://127.0.0.1:5000"
+from functions.consts import server
 
 
 def comprobarDatosRegistro(username, email, password, password2):
