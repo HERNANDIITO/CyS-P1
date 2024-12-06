@@ -48,15 +48,18 @@ class SharedFile:
     
     @classmethod
     def getUsersSharedTo(self, file_id: int) -> Result:
-        # Obtiene todas las comparticiones del fichero con el id facilitado
-        shared_files: list[dict] = db.get_data_with_map( "sharedFiles", { "sharedFileId": file_id })
+        try:
+            # Obtiene todas las comparticiones del fichero con el id facilitado
+            shared_files: list[dict] = db.get_data_with_map( "sharedFiles", { "sharedFileId": file_id })
 
-        users: list = []
-        # Va guardando los usuarios a los que se ha compartido ese fichero en una lista
-        for file in shared_files:
-            users.append(db.get_data_with_map( "users", { "userId": file["recieverId"] })[0])
-        
-        return Result(200, "Usuario a los que se a compartido el archivo obtenidos con éxito", True, {"users": users})
+            users: list = []
+            # Va guardando los usuarios a los que se ha compartido ese fichero en una lista
+            for file in shared_files:
+                users.append(db.get_data_with_map( "users", { "userId": file["recieverId"] })[0])
+            
+            return Result(200, "Usuario a los que se a compartido el archivo obtenidos con éxito", True, {"users": users})
+        except:
+            return Result(404, "El fichero no se ha compartido con ningún usuario", False, {"users": []})
 
     def getFileDataJSON( self ):
         return {
