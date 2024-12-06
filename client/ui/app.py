@@ -10,6 +10,8 @@ from ui.shareFile import Share
 from ui.SharedFileInfo import SharedInfo
 from functions import debug
 from functions.consts import server
+import os
+from pathlib import Path
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -22,6 +24,8 @@ class App(customtkinter.CTk):
         self.frames = {}
         self.user = None
         self.server = server
+        
+        self.iconbitmap(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), Path('ui/imgs/icon.ico')))
 
         self.container = customtkinter.CTkFrame(self)
         self.container.pack(side="top", fill="both", expand=True)

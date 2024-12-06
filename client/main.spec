@@ -10,7 +10,7 @@ a = Analysis(
         ('ui/imgs*', 'ui/imgs'),
         ('ui/components*', 'ui/components'),
         ('functions/*', 'functions'),
-
+        ('icon.ico', '.')
     ],
     hiddenimports=[],
     hookspath=[],

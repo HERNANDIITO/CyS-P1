@@ -197,8 +197,6 @@ class SharedInfo(CTkFrame):
                 command=lambda u=user: self.remove_user(u)
             ).pack(side="right", padx=10)
         
-        row.pack_forget()
-
         self.table_frame.pack(fill="x", padx=20)
 
 

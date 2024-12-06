@@ -132,11 +132,11 @@ Desde la carpeta server...
 
 ### Windows
 
-`.myenv\Scripts\activate`
+`.venv\Scripts\activate`
 
 ### Linux
 
-`source myenv/bin/activate`
+`source venv/bin/activate`
 
 ## Instalación de dependencias
 
