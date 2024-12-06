@@ -9,7 +9,7 @@ def obtain_user_url(user_id) -> str:
     return mapRes["body"]["url"]
 
 # Comprueba si el codigo OTP es correcto
-def check_otp(user_id, otp_code) -> bool:
+def check_otp(user_id, otp_code):
     r = requests.post(f'{server}/users/check-otp', json={"user_id": user_id, "otp_code": otp_code})
     mapRes = json.loads(r.text)
-    return bool(mapRes["status"])
+    return mapRes

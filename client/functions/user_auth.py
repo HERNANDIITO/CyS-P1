@@ -5,6 +5,7 @@ import base64
 import queue, threading
 import re
 
+from functions import otp_things
 from functions import debug
 from functions.user import User
 from functions.rsa import generate_rsa_keys, export_keys, import_public_key, import_private_key
@@ -145,6 +146,29 @@ def register(username, email, password, password2) -> User | Result:
     else:
         # En caso de que la primera request de registro de nuevo usuario falle...
         return request_error(register_result_json)
+    
+
+def check2fa(user: User, otp, result_queue) -> User | Result:
+    # Llamar a la función login() para realizar un registro
+    otp_result = otp_things.check_otp(user.userId, otp)
+    if otp_result["code"] == 200:
+        privateRSA  = otp_result["body"]["privateRSA"]
+        publicRSA   = otp_result["body"]["publicRSA"]
+        
+        print( debug.printMoment(), "publicRSA: ", publicRSA)
+        
+        importedPublicKey  = import_public_key(public_key_pem = publicRSA)
+        decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem = privateRSA, aes_key = user.aesHash)
+        importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)
+        
+        user.privateRSA = importedPrivateKey
+        user.publicRSA = importedPublicKey
+        result_queue.put(user)
+    
+    else:
+        result = request_error(otp_result)
+        result_queue.put(result)
+        return
         
 
 def login(email, password, result_queue) -> User | Result:
@@ -194,16 +218,8 @@ def login(email, password, result_queue) -> User | Result:
     if(str(login_result_json["code"]) == "200"):
 
         userID      = login_result_json["body"]["userID"]
-        privateRSA  = login_result_json["body"]["privateRSA"]
-        publicRSA   = login_result_json["body"]["publicRSA"]
-        
-        print( debug.printMoment(), "publicRSA: ", publicRSA)
-        
-        importedPublicKey  = import_public_key(public_key_pem = publicRSA)
-        decryptedPrivateKey = decrypt_private_key_with_aes(encrypted_private_key_pem = privateRSA, aes_key = aes_key)
-        importedPrivateKey = import_private_key(private_key_pem = decryptedPrivateKey)
 
-        user = User( userId = userID, privateRSA = importedPrivateKey, publicRSA = importedPublicKey, aesHash = aes_key )  
+        user = User( userId = userID, privateRSA = 'tmp', publicRSA = 'tmp', aesHash = aes_key )  
         result_queue.put(user)
         
     else:

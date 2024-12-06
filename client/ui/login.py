@@ -41,10 +41,18 @@ class Login(CTkFrame):
         CTkButton(master=frame, text="Iniciar Sesión", fg_color="#601E88", hover_color="#D18AF0", font=("Arial Bold", 12), text_color="#ffffff", corner_radius = 32, width=225, command=self.on_login).pack(anchor="w", pady=(40, 0), padx=(25, 0))
         CTkButton(master=frame, text="Registrarse", fg_color="#9674AC", hover_color="#D18AF0", font=("Arial Bold", 12), text_color="#ffffff", corner_radius = 32, width=225, command=self.on_register).pack(anchor="w", pady=(10, 0), padx=(25, 0))
               
-    def successfullLogin(self, user):
+    def successfullLogin(self, user: User):
         dialog = CTkInputDialog(text="Escribe tu código de doble factor de autenticación:", title="Código OTP")
-        resultado = dialog.get_input()
-        if otp_things.check_otp(user.userId, resultado):
+        otp_code = dialog.get_input()
+
+        result_queue = queue.Queue()
+        hilo = threading.Thread(target=user_auth.check2fa, args=(user, otp_code, result_queue))
+        hilo.daemon = True  # Asegura que el hilo se cierre al cerrar la app
+        hilo.start()
+        hilo.join()
+        result = result_queue.get()
+        
+        if ( type(result) is User ):
             self.controller.user = user
             self.controller.load_restricted_frames()
             print(debug.printMoment(), "mostrando home...")

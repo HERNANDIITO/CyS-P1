@@ -83,7 +83,7 @@ class User:
 
         # Añadimos el id de usuario a la solicitud para recogerla desde desde el cliente
         # y poder utilizarla en los siguientes servicios
-        return Result(200, "Sesión iniciada con éxito", True, {"userID": user.userId, "privateRSA": user.privateRSA, "publicRSA": user.publicRSA})
+        return Result(200, "Sesión iniciada con éxito", True, {"userID": user.userId})
 
     @classmethod
     def getAllUsers( self ) -> List['User']:
@@ -198,5 +198,5 @@ class User:
     
     def checkOtpCode(self, code: str) -> Result:
         if (verify_otp(self.otpSecret, code)):
-            return Result(200, "Código OTP correcto", True)
+            return Result(200, "Código OTP correcto", True, {"privateRSA": self.privateRSA, "publicRSA": self.publicRSA})
         return Result(400, "Mala solicitud: código OTP incorrecto", False)
