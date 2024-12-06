@@ -378,7 +378,7 @@ def deleteSharedFile():
     Servicio de eliminación de ficheros compartidos
     
     Parámetros en el body de la petición:
-    - sharing_id: id del fichero a descargar
+    - file_id: id del fichero a borra la comparticion
 
     return Response
     - result.msg: mensaje de contexto
@@ -387,8 +387,7 @@ def deleteSharedFile():
     - result.body: el fichero compartido borrado
     '''
     input_json = request.get_json(force=True)
-    shared_file = SharedFile(input_json["sharing_id"])
-    return jsonify(shared_file.delete().jsonSelf())
+    return jsonify(SharedFile.delete(input_json["file_id"]).jsonSelf())
 
 @app.delete('/shared-user')
 def deleteSharedUser():

@@ -384,6 +384,9 @@ class Home(CTkFrame):
 
     def eliminar_comparticion(self, archivo_id):
         print("logica de eliminar comparticion no implementada")
+        response = requests.delete(f'{self.controller.server}/shared-files', json={"file_id": archivo_id})
+        response.raise_for_status()
+        self.reload()
         
     def on_subir_archivo(self):
         self.controller.show_frame("SubirArchivo")
