@@ -20,8 +20,8 @@ key = RSA.generate(3072)
 
 
 # Estas funciones las pongo simplemente a modo de demostracion, para facilitar la compresion
-print("Dimensiones de la clave en bits:", key.size_in_bits());
-print("Dimensiones de la clave en bytes:", key.size_in_bytes());
+print("Dimensiones de la clave en bits:", key.size_in_bits())
+print("Dimensiones de la clave en bytes:", key.size_in_bytes())
 
 # Si queremos imprimir las claves y no ves cosas sin sentido debemos esportarla previamente a formato PEM, 
 # para mas informacion consultar la seccion extra de info.md

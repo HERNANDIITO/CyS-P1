@@ -130,6 +130,7 @@ class Share(CTkFrame):
         self.share_button.pack_forget()
 
 
+    #Comprobar que el email introducido es correcto y en tal caso se añade a la tabla de emails
     def validate_and_add_email(self):
         email = self.email_entry.get().strip()
         if self.is_valid_email(email):
@@ -141,16 +142,18 @@ class Share(CTkFrame):
         else:
             self.error_label.configure(text="Email no válido")
     
+    #Validar que el formato del email es válido
     def is_valid_email(self, email):
         return re.match(r"[^@]+@[^@]+", email) is not None
     
+    #Añadir email a la tabla
     def add_email_to_table(self, email):
         if email not in self.emails:
             self.emails.append(email)
             
             email_mostrado = email
             if len(email) > 15:
-                email_mostrado = email[:12] + "..."
+                email_mostrado = email[:12] + "..."      #En caso de tener una longitud mayor a 15 caracteres, tan solo se muestran ls 12 primeros
             
             row_frame = CTkFrame(master=self.email_table, fg_color="#FFFFFF")
             row_frame.pack(fill="x", padx=175, pady=0)
@@ -164,7 +167,7 @@ class Share(CTkFrame):
                 master=row_frame,
                 text=email_mostrado,
                 text_color="#000000",
-                anchor="w",  # Alineado a la izquierda
+                anchor="w",
                 font=("Arial", 12),
                 fg_color="#FFFFFF",
                 width=75
@@ -183,7 +186,7 @@ class Share(CTkFrame):
             )
             add_remove_email.grid(row=0, column=1, sticky="e")
 
-
+    #Quitar email de la tabla
     def remove_email_of_table(self, row_frame, email):
         if email in self.emails:
             self.emails.remove(email)
@@ -192,17 +195,19 @@ class Share(CTkFrame):
         
         row_frame.destroy()
 
+    #Mostrar botón de compartir
     def show_share_button(self):
         if self.emailsWritten > 0: 
             self.share_button.pack(pady=(20, 10), padx=(250, 0))
             self.share_button.configure(state="normal")
         else:
-            self.share_button.configure(state="disabled")
+            self.share_button.configure(state="disabled")   #En caso de quitar emails y quedarse la tabla a 0 emails, desabilitar el botón
             print(self.emailsWritten)
             
     def on_volver(self):
         self.controller.show_frame("Home")
         
+    #Compartir archivo con los emails especificados
     def share(self):
         for email in self.emails :
             r = requests.get(f"{self.server}/users/shareParamsByEmail/{email}")

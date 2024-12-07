@@ -4,14 +4,14 @@ from Crypto.Cipher import AES
 import secrets
 
 
-    #Genera una clave AES de 16 bytes (128 bits).
+#Genera una clave AES de 16 bytes (128 bits).
 def generate_aes_key():
     return secrets.token_bytes(16)
 
 
 # Cifra una clave privada RSA utilizando AES128 en modo CTR.
 def encrypt_private_key_with_aes(private_key_pem, aes_key):
-    # Generar un nonce único de 12 bytes (12 es un buen punto medio para proporcionar buean seguridad y dejar 4 bytes para la clave privada)
+    # Generar un nonce único de 12 bytes (12 es un buen punto medio para proporcionar buena seguridad y dejar 4 bytes para la clave privada)
     nonce = secrets.token_bytes(12)
     
     # Crear el cifrador en modo CTR
@@ -35,7 +35,7 @@ def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
     encrypted_data = base64.b64decode(encrypted_private_key_pem)
     
     # Separar el nonce del contenido cifrado
-    nonce = encrypted_data[:12]  # El nonce siempre es los primeros 15 bytes
+    nonce = encrypted_data[:12]  # El nonce siempre es los primeros 12 bytes
     encrypted_private_key = encrypted_data[12:]
     
     # Crear el cifrador en modo CTR usando el mismo nonce

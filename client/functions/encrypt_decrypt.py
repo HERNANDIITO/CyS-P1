@@ -13,7 +13,7 @@ def get_file_name_and_type(file_path):
     except FileNotFoundError:
         print("Error: No se encontró el archivo especificado.")
 
-# FUNCIONES DE ENCRIPTADO Y DESENCRIPTADO--------------------------------------------------------------------------------------------------------
+# FUNCIONES DE CIFRADO Y DESCIFRADO--------------------------------------------------------------------------------------------------------
 
 # Funcion principal para gestionar el cifrado de archivos multimedia
 def encrypt(file_path, user): 
@@ -52,7 +52,7 @@ def encrypt(file_path, user):
 
 
 # Funcion principal para gestionar el descifrado de archivos multimedia
-def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
+def decrypt(user: User, file_name, file_aes_key_encrypted, signatory_public_key, signature):
     # Obtenemos la clave RSA privada del usuario
     rsa_private_key = user.privateRSA
 

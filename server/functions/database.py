@@ -11,8 +11,8 @@ def start():
     # Creamos dos variables globales para acceder desde cualquier lado del archivo
     global cursor, database
 
-    # Les proporcionamos un valo:
-    # database: guarda la conexción con la base de datos
+    # Les proporcionamos un valor:
+    # database: guarda la conexión con la base de datos
     # cursor: guarda el cursor que ejectuta las sentencias
     database = sqlite3.connect(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'database.db'), check_same_thread=False)
     cursor = database.cursor()

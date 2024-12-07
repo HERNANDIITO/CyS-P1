@@ -18,7 +18,7 @@ class User:
             self.publicRSA  = userData[4]
             self.privateRSA = userData[5]
             self.email      = userData[6]
-            self.otpSecret  = userData[7] # Esto no deberia salir del servidor
+            self.otpSecret  = userData[7] # Esto no sale del servidor
         except:
             self.userId = -1
     
@@ -35,7 +35,6 @@ class User:
         # En caso de no tenerlo montamos un objeto tipo result para devolverlo
         if user == None or password == None or email == None:
             # Esta funcion crea un objeto tipo result con los parametros indicados
-            # en este ejemplo concreto he puesto lo que significan los parametros, pero mas adelante se omitira
             return Result( code = 400, msg = "Mala solicitud: faltan parámetros", status = False)
         
         # Intentamos recoger un usuario con el mismo email que acabamos de recibir

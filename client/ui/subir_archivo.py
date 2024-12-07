@@ -41,7 +41,6 @@ class SubirArchivo(CTkFrame):
         cifrar_button.pack(pady=(5, 20))
 
         # Etiqueta para mostrar si el archivo se ha cifrado bien (vacía por defecto)
-        
         self.archivo_cifrado_label = CTkLabel(master=self, text="", 
                                         text_color="green", font=("Arial", 12))
 
@@ -88,7 +87,7 @@ class SubirArchivo(CTkFrame):
             return
             
         
-        self.archivo_path = None   #reinicia el archivo seleccionado a vacio
+        self.archivo_path = None   #Reinicia el archivo seleccionado a vacio
         self.archivo_cifrado_label.configure(text="Archivo cifrado correctamente", text_color="blue")
         self.archivo_cifrado_label.pack(pady=(5, 20))
 

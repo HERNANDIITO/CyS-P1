@@ -12,6 +12,7 @@ class Login(CTkFrame):
         CTkFrame.__init__(self, parent)
         self.controller = controller
         self.parent = parent
+        
         # Variables para almacenar los datos introducidos por el usuario
         self.email_var = StringVar()
         self.password_var = StringVar()
