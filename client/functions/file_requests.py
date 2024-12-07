@@ -17,7 +17,6 @@ def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fil
         files = {'fichero': open(localFilePath,'rb')}
 
         # Envia petición POST con los ficheros a subir
-        #TODO: Usar variable global server
         r = requests.post(f'{server}/upload', files=files, data=payload)
 
         # Cierra el fichero
@@ -30,7 +29,6 @@ def upload_file(aesKey: str, userId: int, localFilePath: str, fileType: str, fil
 
 def download_file(fileId: int, savePath: str):
     # Envia petición GET para descargar un fichero
-    #TODO: Usar variable global server
     r = requests.get(f'{server}/download/{fileId}')
 
     # Guarda el contenido de la respuesta en el fichero filePath
@@ -43,14 +41,12 @@ def download_file(fileId: int, savePath: str):
         
 def get_file_info(fileId: int):
     # Envia peticion GET para obtener la informacion de un fichero
-    #TODO: Usar variable global server
     r = requests.get(f'{server}/get-file-info/{fileId}')
     
     return json.loads(r.text)
 
 def get_sharedfile_info(sharingId: int):
     # Envia peticion GET para obtener la informacion de un fichero
-    #TODO: Usar variable global server
     r = requests.get(f'{server}/get-shared-info/{sharingId}')
     r = json.loads(r.text)
     

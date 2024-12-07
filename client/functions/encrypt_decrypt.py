@@ -13,28 +13,6 @@ def get_file_name_and_type(file_path):
     except FileNotFoundError:
         print("Error: No se encontró el archivo especificado.")
 
-# FUNCIONES DE CONTACTO CON LA BD----------------------------------------------------------------------------------------------------------------
-
-
-# def store_encrypted_data_in_db(file_name, encrypted_file, file_aes_key_encrypted, rsa_public_key_pem, encrypted_rsa_private_key_pem, rsa_aes_key, file_type):
-#     # obtener userId, date con SYSDATE?, fileId creo que no hace falta
-#     file_data = {
-#         'fileName': file_name,
-#         'encryptedFile': encrypted_file,
-#         'AESKey': file_aes_key_encrypted,
-#         'publicRSA':  rsa_public_key_pem,
-#         'privateRSA': encrypted_rsa_private_key_pem,
-#         'rsaAESKey': rsa_aes_key,  # deberiamos de protegerla de algun modo
-#         'fileType': file_type
-#     }
-
-#     save_new_file(file_data)
-
-
-# def get_encrypted_data_from_db(file_path):
-    
-
-
 # FUNCIONES DE ENCRIPTADO Y DESENCRIPTADO--------------------------------------------------------------------------------------------------------
 
 # Funcion principal para gestionar el cifrado de archivos multimedia
@@ -75,11 +53,6 @@ def encrypt(file_path, user):
 
 # Funcion principal para gestionar el descifrado de archivos multimedia
 def decrypt(user: User, file_name, encrypted_file, file_aes_key_encrypted, file_type, signatory_public_key, signature):
-
-    # PETICION PARA RECUPERAR EL ARCHIVO DEL SERVIDOR
-    # Recuperamos la información almacenada en la base de datos
-    #file_name, encrypted_file, file_aes_key_encrypted, file_type = get_encrypted_data_from_db(file_path)
-
     # Obtenemos la clave RSA privada del usuario
     rsa_private_key = user.privateRSA
 

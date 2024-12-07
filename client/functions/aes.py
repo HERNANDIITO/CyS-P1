@@ -1,23 +1,12 @@
 
 import base64
 from Crypto.Cipher import AES
-# from Crypto.Util.Padding import pad, unpad
 import secrets
 
 
     #Genera una clave AES de 16 bytes (128 bits).
 def generate_aes_key():
     return secrets.token_bytes(16)
-
-
-
-#     # Cifra una clave privada RSA utilizando AES128.
-# def encrypt_private_key_with_aes(private_key_pem, aes_key):
-#     padded_private_key = pad(private_key_pem, AES.block_size)
-#     cipher = AES.new(aes_key, AES.MODE_ECB)
-#     encrypted_private_key = base64.b64encode(cipher.encrypt(padded_private_key))
-#     return encrypted_private_key
-
 
 
 # Cifra una clave privada RSA utilizando AES128 en modo CTR.
@@ -35,21 +24,6 @@ def encrypt_private_key_with_aes(private_key_pem, aes_key):
     # Incluye el nonce para poder usarlo al descifrar
     encrypted_private_key_with_nonce = base64.b64encode(nonce + encrypted_private_key)
     return encrypted_private_key_with_nonce
-
-
-
-
-#     #Descifra una clave privada RSA utilizando AES128.
-# def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
-#     encrypted_private_key_pem = base64.b64decode(encrypted_private_key_pem)
-    
-#     aes_key =  aes_key.encode("utf8")
-    
-#     cipher = AES.new(aes_key, AES.MODE_ECB)
-#     decrypted_private_key_pem = cipher.decrypt(encrypted_private_key_pem)
-#     private_key_pem = unpad(decrypted_private_key_pem, AES.block_size)
-#     return private_key_pem
-
 
 
 def decrypt_private_key_with_aes(encrypted_private_key_pem, aes_key):
@@ -119,27 +93,6 @@ def encrypt_file(input_file, output_file, encoded_file, aes_key):
     with open(output_file, 'rb') as f_in, open(encoded_file, 'wb') as f_out:
         encoded_data_b64 = base64.b64encode(f_in.read())
         f_out.write(encoded_data_b64)
-
-
-
-
-# #    Descifra un archivo utilizando AES en modo ECB.
-# def decrypt_file(input_file, output_file, aes_key):
-#     with open(input_file, 'rb') as f:
-#         encrypted_data = f.read()
-
-#     encrypted_data = base64.b64decode(encrypted_data)
-#     cipher = AES.new(aes_key, AES.MODE_ECB)
-#     decrypted_data = cipher.decrypt(encrypted_data)
-#     original_data = unpad(decrypted_data, AES.block_size)
-
-#     with open(output_file, 'wb') as f:
-#         f.write(original_data)
-
-
-
-
-
 
 
 # Descifra un archivo codificado en Base64 utilizando AES en modo CTR

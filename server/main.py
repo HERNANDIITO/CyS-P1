@@ -231,7 +231,6 @@ def uploadFile():
     #file.close() 
     return jsonify(str(result))
 
-# TODO: Implementar algo para comprobar autenticidad del usuario (se podria usar tokens)
 @app.get('/download/<path:file_id>')
 def download(file_id):
     '''
@@ -473,32 +472,6 @@ def changeUserData(user_id):
 
     user = User(user_id)
     return jsonify(user.changeData(input_json["user"], input_json["email"]).jsonSelf())
-
-@app.post("/users/change-password/<path:user_id>")
-def changeUserPassword(user_id):
-    '''
-    Servicio para cambiar contrasenya de un usuario.
-    Parámetros en el body de la petición:
-    - user_id: str
-    - password: str
-    - oldPassword: str
-    - salt: str
-    - publicRSA: str
-    - privateRSA: str
-
-    return Result
-    - result.msg: mensaje de contexto
-    - result.code: codigo de error http
-    - result.status: si ha sido realizada la petición o no
-    - result.body:  
-        · user: Datos del usuario tras los cambios
-    '''
-
-    # Se leen los parametros del body
-    input_json = request.get_json(force=True)
-
-    user = User(user_id)
-    return jsonify(user.changePassword(input_json['password'], input_json['oldPassword'], input_json['publicRSA'], input_json['privateRSA']).jsonSelf())
 
 @app.get('/otp-url/<path:user_id>')
 def getOtpUrl(user_id):

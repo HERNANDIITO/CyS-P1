@@ -19,7 +19,7 @@ def rsa_encrypt(data, public_key):
     except ValueError as e:
         raise Exception("Error, mensaje demasiado largo máximo 190 bytes: ", e)
     except Exception as e:
-        raise Exception("Lo sentimos, se ha producido un error innesperado durante la encriptación con RSA: ", e)
+        raise Exception("Lo sentimos, se ha producido un error inesperado durante el descifrado con RSA: ", e)
 
 # Descifra datos utilizando la clave privada RSA con OAEP durante el descifrado validamos el relleno y la 
 # estructura del mensaje cifrado y eliminamos el padding.
@@ -35,7 +35,7 @@ def rsa_decrypt(encrypted_data, private_key):
         print("Error, la clave RSA no tiene la mitad de clave privada: ", e)
         return None
     except Exception as e:
-        print("Lo sentimos, se ha producido un error innesperado durante la desencriptación con RSA: ", e)
+        print("Lo sentimos, se ha producido un error inesperado durante el descifrado con RSA: ", e)
         return None
     
 # Firmamos los datos utilizando el esquema probabilistico de firmado PKCS#1 PSS basado en RSA. (RSASSA-PSS)
@@ -48,12 +48,10 @@ def rsa_sign(data, private_key):
         file_hash = SHA3_256.new(data)
         print(debug.printMoment(), "signigng file_hash: ", file_hash.hexdigest())
 
-        # encrypted_file_hash.update(bytes(encrypted_file_hash, encoding="utf-8"))
-        # encrypted_file_hash_hex = encrypted_file_hash.hexdigest()
         signature = pss.new(private_key).sign(file_hash)
         return base64.b64encode(signature)
     except Exception as e:
-        raise Exception("Lo sentimos, se ha producido un error innesperado durante el firmado digital: ", e)
+        raise Exception("Lo sentimos, se ha producido un error inesperado durante el firmado digital: ", e)
     
 def rsa_check_sign(data, signatory_public_key, signature):
     try:
@@ -72,7 +70,7 @@ def rsa_check_sign(data, signatory_public_key, signature):
         print(debug.printMoment(), "check_sign_error: ", e)
         return False
     except Exception as e:
-        raise Exception("Lo sentimos, se ha producido un error innesperado durante la comprobación de la  firma digital: ", e)
+        raise Exception("Lo sentimos, se ha producido un error inesperado durante la comprobación de la firma digital: ", e)
 
 #Exporta las claves RSA a archivos PEM.
 def export_keys(private_key, public_key):
@@ -85,7 +83,7 @@ def export_keys(private_key, public_key):
         print("Error, formato desconocido: ", e)
         return None, None
     except Exception as e:
-        print("Lo sentimos, se ha producido un error innesperado durante la exportación de claves RSA: ", e)
+        print("Lo sentimos, se ha producido un error inesperado durante la exportación de claves RSA: ", e)
         return None, None
 
 # Importa las claves RSA desde archivos PEM.

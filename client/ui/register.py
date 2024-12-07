@@ -5,9 +5,6 @@ from functions import user_auth
 from functions.user import User
 import os
 
-# LA LINEA 43 NO VA
-# Todo ha sido hecho sin ayuda de ChatGPT, tened huevos a acribillarme ahora SIUUUUUUU
-
 class Register(CTkFrame):
     def __init__(self, parent, controller):
         CTkFrame.__init__(self, parent)

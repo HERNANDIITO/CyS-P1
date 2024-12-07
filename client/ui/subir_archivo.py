@@ -2,7 +2,6 @@ from customtkinter import *
 from functions.result import Result
 from tkinter import filedialog
 from functions.encrypt_decrypt import encrypt
-# from functions.encrypt_decrypt import encrypt
 
 class SubirArchivo(CTkFrame):
     def __init__(self, parent, controller):

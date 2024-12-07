@@ -133,16 +133,6 @@ class SharedInfo(CTkFrame):
         self.error_label.pack()
 
 
-
-
-
-
-
-
-
-
-
-
     def create_user_table(self):
         """Crea una tabla con datos de usuarios con los que se ha compartido el archivo."""
         self.table_frame.pack_forget()
@@ -158,31 +148,8 @@ class SharedInfo(CTkFrame):
         CTkLabel(header, text="Email", text_color="white", width=20).pack(side="left", padx=10)
         CTkLabel(header, text="Acción", text_color="white", width=10).pack(side="right", padx=10)
 
-        # Datos ficticios
-        users = [
-            {"name": "Juan Pérez", "email": "juan.perez@example.com"},
-            {"name": "Ana López", "email": "ana.lopez@example.com"},
-            {"name": "Carlos García", "email": "carlos.garcia@example.com"}
-        ]
-
-    
-        def truncate_with_ellipsis(value, max_length):
-            if len(value) > max_length:
-                return value[:max_length] + "..."
-            return value
-
-
-        max_length = 15
-        transformed_users = [
-            {
-                "name": truncate_with_ellipsis(user["name"], max_length),
-                "email": truncate_with_ellipsis(user["email"], max_length)
-            }
-            for user in self.usersShared
-        ]
-
         # Filas de la tabla
-        for user in self.usersShared: #hay que cambiarlo por transformed_users para que se vean recortados los nombres
+        for user in self.usersShared:
             row = CTkFrame(self.table_frame, fg_color="#EEEEEE")
             row.pack(fill="x")
             CTkLabel(row, text=user["name"], text_color="#000000", width=15).pack(side="left", padx=10)
@@ -203,7 +170,6 @@ class SharedInfo(CTkFrame):
     def remove_user(self, user):
         """Lógica para eliminar un usuario de la tabla."""
         print(f"Usuario eliminado: {user}")
-        # r = requests.delete(f"{server}/shared-user/{user["email"], self.fileID}")
         user_email = user["email"]  # Cambiar por la clave adecuada
         file_id = self.fileID       # Cambiar por el valor adecuado
 
@@ -336,10 +302,6 @@ class SharedInfo(CTkFrame):
         for user in users_data:
             newUser = {"name": user["user"], "email": user["email"]}
             self.usersShared.append(newUser)
-            
-        # self.usersShared = [
-        #     for user in users_data:
-        #         {"name": user["user"], "email": user["email"]}
-        # ]
+
         print(self.usersShared)
         self.create_user_table()

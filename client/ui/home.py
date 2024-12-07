@@ -311,7 +311,6 @@ class Home(CTkFrame):
         
         nombre_archivo = str(nombre_archivo)
         
-        #  TODO: terminar de preguntar directorio
         selectedDirectory = filedialog.askdirectory()
         selectedDirectory = f"{selectedDirectory}/{nombre_archivo}"
         
@@ -383,7 +382,6 @@ class Home(CTkFrame):
         self.controller.show_frame("InfoComportido", archivo_id)
 
     def eliminar_comparticion(self, archivo_id):
-        print("logica de eliminar comparticion no implementada")
         response = requests.delete(f'{self.controller.server}/shared-files', json={"file_id": archivo_id})
         response.raise_for_status()
         self.reload()

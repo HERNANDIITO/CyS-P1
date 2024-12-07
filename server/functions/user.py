@@ -172,26 +172,6 @@ class User:
         except:
             return Result(500, "Error del servidor al cambiar datos del usuario", False)
         
-    # TODO: Cambiar parametro de salt cuando ya se haya implementado
-    def changePassword(self, password: str, oldPassword: str, publicRSA: str, privateRSA: str, salt: str = 'not implemented') -> Result:
-        if (self.password != oldPassword):
-            return Result(400, "Mala solicitud: contraseña antigua incorrecta", False)
-        
-        try:
-            db.update_data( "users", {
-                "password": password,
-                "salt": salt,
-                "publicRSA": publicRSA,
-                "privateRSA": privateRSA
-            }, { "userId": self.userId })
-            self.password = password
-            self.salt = salt
-            self.publicRSA = publicRSA
-            self.privateRSA = privateRSA
-            return Result(200, "Contraseña del usuario modificada con éxito", True, {"userId": self.userId, "user": self.user, "email": self.email, "publicRSA": self.publicRSA, "privateRSA": self.privateRSA, "password": self.password, "salt": self.salt})
-        except:
-            return Result(500, "Error del servidor al cambiar contraseña del usuario", False)
-        
     def getOtpUrl(self) -> Result:
         url = generate_url(self.otpSecret, self.email)
         return Result(200, "URL de OTP generada con éxito", True, {"url": url})
