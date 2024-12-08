@@ -9,8 +9,7 @@ a = Analysis(
         ('ui/*', 'ui'),
         ('ui/imgs*', 'ui/imgs'),
         ('ui/components*', 'ui/components'),
-        ('functions/*', 'functions'),
-        ('icon.ico', '.')
+        ('functions/*', 'functions')
     ],
     hiddenimports=[],
     hookspath=[],
