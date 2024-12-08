@@ -12,6 +12,7 @@ from functions.rsa import generate_rsa_keys, export_keys, import_public_key, imp
 from functions.aes import encrypt_private_key_with_aes, decrypt_private_key_with_aes
 from functions.result import Result
 from functions.consts import server
+from functions.debug import printMoment
 
 
 def comprobarDatosRegistro(username, email, password, password2):
@@ -139,6 +140,7 @@ def register(username, email, password, password2) -> User | Result:
             hilo.start()
             hilo.join()
             user = result_queue.get()
+            print(f"{printMoment()} Login automatico: {user}")
             return user
         
         else:
